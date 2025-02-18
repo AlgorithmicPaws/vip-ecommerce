@@ -6,7 +6,7 @@ Follow these steps to set up the VIP E-commerce project on your local machine.
 
 Make sure you have the following installed:
 - [Node.js](https://nodejs.org/) (version 14 or higher)
-- [npm](https://www.npmjs.com/) (version 6 or higher)
+- [pnpm](https://pnpm.io/) (version 6 or higher)
 - [Git](https://git-scm.com/)
 
 ## Steps
@@ -21,32 +21,21 @@ Make sure you have the following installed:
     ```
 3. **Install dependencies:**
     ```bash
-    npm install
+    pnpm install
     ```
 4. **Set up environment variables:**
     - Create a `.env` file in the root directory.
     - Add the necessary environment variables as specified in `.env.example`.
 
-5. **Run the development server:**
-    ```bash
-    npm start
+5. **Open your browser and visit:**
     ```
-
-6. **Open your browser and visit:**
-    ```
-    http://localhost:3000
+    http://localhost:5173
     ```
 
 ## Additional Commands
 
 - **Build the project:**
   ```bash
-  npm run build
+  pnpm run build
   ```
 
-- **Run tests:**
-  ```bash
-  npm test
-  ```
-
-For more information, refer to the [documentation](./docs).
