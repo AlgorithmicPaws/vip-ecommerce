@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './slyles/Login.css';
+import { Link, useNavigate } from 'react-router-dom';
+import '../styles/Login.css';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,8 +20,17 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí implementarías la lógica de autenticación
-    console.log('Datos de login:', formData);
+    setIsLoading(true);
+    
+    // Simulamos una petición al servidor
+    setTimeout(() => {
+      // Aquí implementarías la lógica real de autenticación
+      console.log('Datos de login:', formData);
+      
+      // Simulamos una respuesta exitosa y redirigimos al perfil
+      setIsLoading(false);
+      navigate('/profile');
+    }, 1500); // Simulamos un retraso de 1.5 segundos para mostrar el estado de carga
   };
 
   return (
@@ -47,8 +58,12 @@ const Login = () => {
               required
             />
           </div>
-          <button type="submit" className="submit-btn">
-            Iniciar Sesión
+          <button 
+            type="submit" 
+            className={`submit-btn ${isLoading ? 'loading' : ''}`}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
           </button>
         </form>
         <p className="register-link">
