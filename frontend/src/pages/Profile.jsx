@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Profile.css';
+import '../styles/Profile.css';
 
 const Profile = () => {
   // Datos de usuario simulados - en una aplicación real vendría de una API/backend
