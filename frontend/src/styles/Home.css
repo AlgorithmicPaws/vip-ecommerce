@@ -1,56 +1,63 @@
 .home-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f5f5f5;
-  }
-  
-  .home-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  h1 {
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    color: #333;
-  }
-  
-  p {
-    margin-bottom: 1.5rem;
-    color: #666;
-  }
-  
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .home-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  
-  .home-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .admin-button {
-    background-color: #28a745;
-  }
-  
-  .admin-button:hover {
-    background-color: #1e7e34;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.home-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  color: #666;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.home-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.home-button:hover {
+  background-color: #0056b3;
+}
+
+.catalog-button {
+  background-color: #ff7300;
+}
+
+.catalog-button:hover {
+  background-color: #e56700;
+}
+
+.admin-button {
+  background-color: #28a745;
+}
+
+.admin-button:hover {
+  background-color: #1e7e34;
+}

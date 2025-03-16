@@ -8,9 +8,12 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="home-card">
-        <h1>Bienvenido al Marketplace</h1>
-        <p>Elige una opción para continuar</p>
+        <h1>Bienvenido a ConstructMarket</h1>
+        <p>El marketplace especializado en productos de construcción</p>
         <div className="button-group">
+          <button onClick={() => navigate("/catalog")} className="home-button catalog-button">
+            Ver Catálogo de Productos
+          </button>
           <button onClick={() => navigate("/login")} className="home-button">
             Iniciar Sesión / Registrarse
           </button>
