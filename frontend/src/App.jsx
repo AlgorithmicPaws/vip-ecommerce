@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import ProductManagement from "./pages/ProductManagement";
 import ProductCatalog from "./pages/ProductCatalog";
+import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
             {/* Rutas para productos */}
             <Route path="/products" element={<ProductManagement />} />
             <Route path="/catalog" element={<ProductCatalog />} />
+            <Route path="/catalog/product/:productId" element={<ProductDetail />} />
             
             {/* Ruta para el carrito */}
             <Route path="/cart" element={<ShoppingCart />} />
