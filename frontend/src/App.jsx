@@ -9,11 +9,13 @@ import ProductManagement from "./pages/ProductManagement";
 import ProductCatalog from "./pages/ProductCatalog";
 import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
+import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
   return (
     <CartProvider>
       <Router>
+      <ScrollToTop />
         <div className="app">
           <Routes>
             {/* Página de inicio */}
