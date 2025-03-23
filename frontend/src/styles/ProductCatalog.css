@@ -247,6 +247,7 @@
 /* Main content */
 .catalog-content {
   flex-grow: 1;
+  position: relative;
 }
 
 .catalog-heading {
@@ -254,6 +255,13 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  position: sticky;
+  top: 0; /* Define la posición en la pantalla */
+  background-color: white; /* Evita que sea transparente */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  padding: 10px 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
 }
 
 .catalog-heading h1 {
@@ -265,6 +273,10 @@
 .view-options {
   display: flex;
   gap: 10px;
+  background: white;
+  z-index: 1001; /* Mayor que el heading */
+  padding: 5px 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .view-btn {
