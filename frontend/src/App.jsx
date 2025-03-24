@@ -6,7 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import ProductManagement from "./pages/ProductManagement";
-import ProductCatalog from "./pages/ProductCatalog";
+import ProductCatalog from "./pages/ProductCatalog"; // Importación actualizada
 import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
 import ScrollToTop from "./ScrollToTop";
