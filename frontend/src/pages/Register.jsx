@@ -36,8 +36,18 @@ const Register = () => {
           <div className="form-group">
             <input
               type="text"
-              name="fullName"
-              placeholder="Nombre completo"
+              name="firstName"
+              placeholder="Nombres"
+              value={formData.fullName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <input
+              type="text"
+              name="lastName"
+              placeholder="Apellidos"
               value={formData.fullName}
               onChange={handleChange}
               required

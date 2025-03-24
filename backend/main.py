@@ -27,7 +27,7 @@ app.add_middleware(
 # Create database tables if they don't exist
 Base.metadata.create_all(bind=engine)
 
-# Include service routers
+# Include service routers   
 app.include_router(user_router)
 
 # Root endpoint
