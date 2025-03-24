@@ -8,3 +8,4 @@ uvicorn
 passlib
 python-jose
 psycopg2-binary
+pytest
