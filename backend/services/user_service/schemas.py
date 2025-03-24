@@ -17,4 +17,6 @@ class UserResponse(UserBase):
     created_at: datetime
     
     class Config:
-        orm_mode = True
+        # Updated to use from_orm - but we're not using it directly in our implementation
+        # Keeping this for future reference if you want to use .from_orm() method
+        from_attributes = True  # In newer Pydantic versions, replace orm_mode=True
