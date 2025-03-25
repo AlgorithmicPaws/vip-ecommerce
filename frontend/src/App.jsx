@@ -4,9 +4,9 @@ import { CartProvider } from "./pages/CartContext";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile";
+import Profile from "./pages/Profile"; // Importando el componente componetizado
 import ProductManagement from "./pages/ProductManagement";
-import ProductCatalog from "./pages/ProductCatalog"; // Importación actualizada
+import ProductCatalog from "./pages/ProductCatalog";
 import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
 import ScrollToTop from "./ScrollToTop";
