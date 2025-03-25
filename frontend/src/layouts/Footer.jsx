@@ -41,6 +41,13 @@ const Footer = () => {
     { name: "Lista de Deseos", path: "/wishlist" },
   ];
   
+  const sellerLinks = [
+    { name: "Regístrate como Vendedor", path: "/sell" },
+    { name: "Ventajas para Vendedores", path: "/seller-benefits" },
+    { name: "Cómo Funciona", path: "/how-selling-works" },
+    { name: "Preguntas Frecuentes", path: "/seller-faq" },
+  ];
+  
   // Métodos de pago
   const paymentMethods = [
     "Visa", "Mastercard", "American Express", "PayPal", "Transferencia", "Contrareembolso"
@@ -138,6 +145,22 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
+          </div>
+          
+          <div className="footer-links-column">
+            <h3>Área de Vendedores</h3>
+            <ul>
+              {sellerLinks.map((item, index) => (
+                <li key={index}>
+                  <Link to={item.path}>{item.name}</Link>
+                </li>
+              ))}
+            </ul>
+            <div className="seller-cta">
+              <Link to="/sell" className="become-seller-link">
+                ¡Vende tus productos en ConstructMarket!
+              </Link>
+            </div>
           </div>
         </div>
       </div>

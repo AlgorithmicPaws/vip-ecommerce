@@ -4,11 +4,12 @@ import { CartProvider } from "./pages/CartContext";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile"; // Importando el componente componetizado
+import Profile from "./pages/Profile";
 import ProductManagement from "./pages/ProductManagement";
 import ProductCatalog from "./pages/ProductCatalog";
 import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
+import SellerRegistration from "./pages/SellerRegistration"; // Importamos el componente de registro de vendedores
 import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
@@ -35,6 +36,9 @@ const App = () => {
             
             {/* Ruta para el carrito */}
             <Route path="/cart" element={<ShoppingCart />} />
+            
+            {/* Ruta para registro de vendedores */}
+            <Route path="/sell" element={<SellerRegistration />} />
             
             {/* Redirección en caso de rutas no encontradas */}
             <Route path="*" element={<Home />} />

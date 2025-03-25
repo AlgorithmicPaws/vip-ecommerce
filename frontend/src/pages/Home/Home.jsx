@@ -15,6 +15,7 @@ import Blog from "./Blog";
 import Marcas from "./Marcas";
 import Beneficios from "./Beneficios";
 import PreguntasFrecuentes from "./PreguntasFrecuentes";
+import SellWithUs from "./SellWithUs"; // Importamos el nuevo componente
 
 const Home = () => {
   const navigate = useNavigate();
@@ -63,6 +64,9 @@ const Home = () => {
       
       {/* Testimonios */}
       <Testimonios/>
+      
+      {/* Sección Vende con Nosotros */}
+      <SellWithUs navigate={navigate} />
       
       {/* Herramientas Rápidas */}
       <HerramientasRapidas navigate={navigate}/>

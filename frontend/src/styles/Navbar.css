@@ -274,6 +274,57 @@
     z-index: 90;
     display: none;
   }
+
+  /* Estilos para el botón de vender */
+.sell-btn {
+  display: flex;
+  align-items: center;
+  background-color: #28a745;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-right: 15px;
+  transition: background-color 0.3s;
+}
+
+.sell-btn:hover {
+  background-color: #218838;
+}
+
+.sell-icon {
+  margin-right: 6px;
+  font-size: 1.1rem;
+}
+
+.sell-text {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.sell-with-us-nav {
+  position: relative;
+}
+
+.sell-with-us-nav::after {
+  content: 'Nuevo';
+  position: absolute;
+  top: -8px;
+  right: -25px;
+  background-color: #28a745;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Media query para dispositivos móviles */
+@media (max-width: 768px) {
+  .sell-btn {
+    display: none; /* Ocultar en móviles, ya tenemos la opción en el menú */
+  }
+}
   
   /* Media Queries */
   @media (max-width: 992px) {

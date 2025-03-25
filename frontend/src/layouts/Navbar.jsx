@@ -85,6 +85,11 @@ const Navbar = () => {
           </form>
           
           <div className="navbar-actions">
+            <Link to="/sell" className="sell-btn">
+              <span className="sell-icon">🏪</span>
+              <span className="sell-text">Vende con nosotros</span>
+            </Link>
+            
             <div className="action-links">
               <Link to="/profile" className="action-link">
                 <span className="action-icon">👤</span>
@@ -137,6 +142,9 @@ const Navbar = () => {
             </li>
             <li className={isActive('/professionals') ? 'active' : ''}>
               <Link to="/professionals">Área Profesional</Link>
+            </li>
+            <li className={isActive('/sell') ? 'active' : ''}>
+              <Link to="/sell" className="sell-with-us-nav">Vende con Nosotros</Link>
             </li>
             <li className={isActive('/blog') ? 'active' : ''}>
               <Link to="/blog">Blog</Link>

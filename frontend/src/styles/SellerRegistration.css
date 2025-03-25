@@ -1,0 +1,529 @@
+/* ===== Estilos Generales ===== */
+.seller-registration-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+    box-sizing: border-box;
+  }
+  
+  /* ===== Header ===== */
+  .seller-registration-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .home-link {
+    display: flex;
+    align-items: center;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 20px;
+    width: fit-content;
+  }
+  
+  .home-link:hover {
+    text-decoration: underline;
+  }
+  
+  .header-icon {
+    margin-right: 8px;
+  }
+  
+  .registration-title {
+    font-size: 2.5rem;
+    margin: 0 0 16px;
+    color: #1a202c;
+  }
+  
+  .registration-subtitle {
+    font-size: 1.25rem;
+    color: #4a5568;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  /* ===== Progress Steps ===== */
+  .progress-steps {
+    margin-bottom: 40px;
+  }
+  
+  .progress-bar {
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background-color: #007bff;
+    transition: width 0.3s ease;
+  }
+  
+  .steps-labels {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+    text-align: center;
+  }
+  
+  .step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #495057;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .step.active .step-number {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .step.completed .step-number {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .step-label {
+    font-size: 0.875rem;
+    color: #6c757d;
+    transition: color 0.3s ease;
+  }
+  
+  .step.active .step-label {
+    color: #1a202c;
+    font-weight: 600;
+  }
+  
+  .step.completed .step-label {
+    color: #28a745;
+  }
+  
+  /* ===== Form Container ===== */
+  .seller-registration-form-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .seller-form h2 {
+    font-size: 1.5rem;
+    margin: 0 0 25px;
+    color: #1a202c;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 15px;
+  }
+  
+  /* ===== Form Groups ===== */
+  .form-group {
+    margin-bottom: 24px;
+  }
+  
+  .field-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #4a5568;
+  }
+  
+  .form-input,
+  .form-select {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .form-input:focus,
+  .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    outline: none;
+  }
+  
+  .form-input.error,
+  .form-select.error,
+  .file-upload-field.error {
+    border-color: #dc3545;
+  }
+  
+  .field-error {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 8px;
+  }
+  
+  /* ===== File Upload ===== */
+  .file-upload-field {
+    border: 2px dashed #ced4da;
+    border-radius: 4px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .file-upload-field:hover {
+    border-color: #adb5bd;
+    background-color: #f8f9fa;
+  }
+  
+  .file-upload-field.error {
+    border-color: #dc3545;
+  }
+  
+  .file-upload-field.has-file {
+    border-style: solid;
+    border-color: #28a745;
+    background-color: #f0fff4;
+  }
+  
+  .file-upload-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .upload-icon {
+    font-size: 2rem;
+    margin-right: 16px;
+    color: #6c757d;
+  }
+  
+  .file-upload-field.has-file .upload-icon {
+    color: #28a745;
+  }
+  
+  .upload-text {
+    flex: 1;
+  }
+  
+  .upload-placeholder {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  
+  .upload-description {
+    display: block;
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  
+  .file-name {
+    font-weight: 500;
+    word-break: break-all;
+  }
+  
+  .clear-file-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 8px;
+  }
+  
+  .clear-file-btn:hover {
+    color: #bd2130;
+  }
+  
+  /* ===== Person Type Selection ===== */
+  .person-type-selection {
+    margin-bottom: 30px;
+  }
+  
+  .radio-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  
+  .radio-option {
+    flex: 1;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .radio-option:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .radio-option.selected {
+    border-color: #007bff;
+    background-color: #f0f7ff;
+  }
+  
+  .radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .radio-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .radio-icon {
+    font-size: 2rem;
+    margin-right: 16px;
+  }
+  
+  .radio-text {
+    flex: 1;
+  }
+  
+  .radio-title {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  
+  .radio-description {
+    display: block;
+    font-size: 0.875rem;
+    color: #6c757d;
+  }
+  
+  /* ===== Form Layout Helpers ===== */
+  .nit-container,
+  .name-container {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .nit-number {
+    flex: 3;
+  }
+  
+  .verification-digit {
+    flex: 1;
+  }
+  
+  .first-name,
+  .last-name {
+    flex: 1;
+  }
+  
+  /* ===== Form Navigation ===== */
+  .form-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .previous-btn,
+  .next-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .previous-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    color: #495057;
+  }
+  
+  .previous-btn:hover {
+    background-color: #e9ecef;
+  }
+  
+  .next-btn {
+    background-color: #007bff;
+    border: none;
+    color: white;
+  }
+  
+  .next-btn:hover {
+    background-color: #0069d9;
+  }
+  
+  /* ===== Info Notes ===== */
+  .form-info-note {
+    background-color: #f8f9fa;
+    border-left: 4px solid #6c757d;
+    padding: 16px;
+    margin-top: 30px;
+    font-size: 0.875rem;
+  }
+  
+  .form-info-note p {
+    margin: 8px 0;
+  }
+  
+  .form-info-note strong {
+    font-weight: 600;
+  }
+  
+  /* ===== Confirmation Step ===== */
+  .confirmation-step h3 {
+    font-size: 1.25rem;
+    margin: 30px 0 15px;
+    color: #1a202c;
+  }
+  
+  .confirmation-details {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .confirmation-details p {
+    margin: 8px 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  .confirmation-details strong {
+    min-width: 200px;
+    margin-right: 10px;
+  }
+  
+  .terms-agreement {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .terms-agreement a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .terms-agreement a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ===== Success Message ===== */
+  .success-message {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 40px 30px;
+    text-align: center;
+  }
+  
+  .success-icon {
+    font-size: 4rem;
+    color: #28a745;
+    margin-bottom: 20px;
+  }
+  
+  .success-message h2 {
+    font-size: 1.5rem;
+    margin: 0 0 20px;
+    color: #1a202c;
+  }
+  
+  .success-message p {
+    font-size: 1.125rem;
+    color: #4a5568;
+    margin: 0 0 30px;
+  }
+  
+  .return-home-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+  }
+  
+  .return-home-btn:hover {
+    background-color: #0069d9;
+  }
+  
+  /* ===== Responsive Styles ===== */
+  @media (max-width: 768px) {
+    .seller-registration-container {
+      padding: 20px;
+    }
+    
+    .registration-title {
+      font-size: 2rem;
+    }
+    
+    .seller-registration-form-container {
+      padding: 20px;
+    }
+    
+    .radio-group {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .nit-container,
+    .name-container {
+      flex-direction: column;
+      gap: 0;
+    }
+    
+    .nit-number,
+    .verification-digit,
+    .first-name,
+    .last-name {
+      flex: 1;
+      width: 100%;
+    }
+    
+    .steps-labels {
+      display: none;
+    }
+  }
+  
+  /* Para pantallas muy pequeñas */
+  @media (max-width: 480px) {
+    .form-navigation {
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .previous-btn,
+    .next-btn {
+      width: 100%;
+    }
+    
+    .previous-btn {
+      order: 2;
+    }
+    
+    .next-btn {
+      order: 1;
+    }
+  }
