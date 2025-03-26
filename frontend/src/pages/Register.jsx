@@ -1,31 +1,31 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/Register.css';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import "../styles/Register.css";
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert('Las contraseñas no coinciden');
+      alert("Las contraseñas no coinciden");
       return;
     }
     // Aquí implementarías la lógica de registro
-    console.log('Datos de registro:', formData);
+    console.log("Datos de registro:", formData);
   };
 
   return (
