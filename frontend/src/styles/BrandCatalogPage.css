@@ -1,0 +1,559 @@
+/* Estilos para la página de catálogo de marca */
+.brand-catalog-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+  }
+  
+  .brand-catalog-content {
+    flex-grow: 1;
+    width: 100%;
+  }
+  
+  /* Banner de marca */
+  .brand-banner {
+    background-color: #fff;
+    padding: 40px 5%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .brand-info {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 30px;
+    align-items: center;
+  }
+  
+  .brand-logo {
+    flex-shrink: 0;
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .brand-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  .brand-logo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e6f2ff;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .brand-details {
+    flex-grow: 1;
+  }
+  
+  .brand-details h1 {
+    font-size: 2.2rem;
+    color: #333;
+    margin: 0 0 15px;
+  }
+  
+  .brand-description {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  
+  .brand-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .meta-item {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .meta-item a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .meta-item a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Breadcrumbs */
+  .brand-breadcrumbs {
+    padding: 10px 5%;
+    background-color: #fff;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .brand-breadcrumbs a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 5px;
+  }
+  
+  .brand-breadcrumbs a:first-child {
+    margin-left: 0;
+  }
+  
+  .brand-breadcrumbs a:hover {
+    text-decoration: underline;
+  }
+  
+  .brand-breadcrumbs span {
+    color: #333;
+    font-weight: 500;
+    margin-left: 5px;
+  }
+  
+  /* Contenido principal y sidebar */
+  .catalog-main {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+    gap: 20px;
+  }
+  
+  .brand-catalog-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+  }
+  
+  .brand-catalog-main {
+    flex-grow: 1;
+  }
+  
+  /* Filtros de categoría */
+  .filter-section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-section h3 {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .category-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .category-list li {
+    margin-bottom: 10px;
+  }
+  
+  .category-list li button {
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .category-list li button:hover {
+    background-color: #f0f7ff;
+    color: #007bff;
+  }
+  
+  .category-list li.active button {
+    background-color: #e6f2ff;
+    color: #007bff;
+    font-weight: 500;
+  }
+  
+  /* Controles del catálogo */
+  .catalog-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .search-bar {
+    flex-grow: 1;
+    margin-right: 20px;
+  }
+  
+  .search-bar input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: border-color 0.3s;
+  }
+  
+  .search-bar input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  .sort-options {
+    display: flex;
+    align-items: center;
+  }
+  
+  .sort-options label {
+    margin-right: 10px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .sort-options select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  
+  .sort-options select:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  /* Resultados */
+  .results-info {
+    margin-bottom: 15px;
+  }
+  
+  .results-info p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+  }
+  
+  .brand-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  /* Estilos para la tarjeta de producto en el catálogo de marca */
+.brand-product-card {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .brand-product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Insignia de descuento */
+  .discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #ff6b6b;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 1;
+  }
+  
+  /* Imagen del producto */
+  .product-image {
+    height: 200px;
+    background-color: #f8f9fa;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .product-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  .image-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e6f2ff;
+    color: #007bff;
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  /* Mensaje añadido al carrito */
+  .added-to-cart-message {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(40, 167, 69, 0.9);
+    color: white;
+    padding: 8px;
+    text-align: center;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Información del producto */
+  .product-info {
+    padding: 15px;
+  }
+  
+  .product-name {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.4;
+    height: 2.8rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+  
+  /* Meta información */
+  .product-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .product-rating {
+    display: flex;
+    margin-right: 5px;
+  }
+  
+  .star {
+    color: #e0e0e0;
+    font-size: 1rem;
+  }
+  
+  .star.filled {
+    color: #ffc107;
+  }
+  
+  .star.half {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .star.half:after {
+    content: '★';
+    color: #ffc107;
+    position: absolute;
+    left: 0;
+    width: 50%;
+    overflow: hidden;
+  }
+  
+  .rating-value {
+    font-size: 0.8rem;
+    color: #666;
+  }
+  
+  /* Precio */
+  .product-price {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 8px;
+  }
+  
+  .current-price {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #28a745;
+  }
+  
+  .original-price {
+    font-size: 0.9rem;
+    color: #999;
+    text-decoration: line-through;
+  }
+  
+  /* Botón añadir al carrito */
+  .add-to-cart-btn {
+    width: 100%;
+    padding: 8px 0;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .add-to-cart-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Responsive */
+  @media (max-width: 576px) {
+    .product-image {
+      height: 180px;
+    }
+    
+    .product-name {
+      font-size: 0.9rem;
+      height: 2.5rem;
+    }
+    
+    .current-price {
+      font-size: 1rem;
+    }
+  }
+  
+  /* Sin productos */
+  .no-products {
+    text-align: center;
+    padding: 50px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .no-products p {
+    color: #666;
+    margin-bottom: 20px;
+  }
+  
+  .no-products button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .no-products button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Estado de carga */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: 50px;
+  }
+  
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 992px) {
+    .brand-info {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .brand-meta {
+      justify-content: center;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .catalog-main {
+      flex-direction: column;
+    }
+    
+    .brand-catalog-sidebar {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    
+    .catalog-controls {
+      flex-direction: column;
+    }
+    
+    .search-bar {
+      margin-right: 0;
+      margin-bottom: 15px;
+    }
+    
+    .brand-products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .brand-banner {
+      padding: 20px 5%;
+    }
+    
+    .brand-logo {
+      width: 120px;
+      height: 120px;
+    }
+    
+    .brand-details h1 {
+      font-size: 1.5rem;
+    }
+    
+    .brand-products-grid {
+      grid-template-columns: 1fr;
+    }
+  }

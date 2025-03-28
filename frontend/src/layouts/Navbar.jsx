@@ -126,6 +126,9 @@ const Navbar = () => {
             <li className={isActive('/catalog') ? 'active' : ''}>
               <Link to="/catalog">Todos los Productos</Link>
             </li>
+            <li className={isActive('/brands') ? 'active' : ''}>
+              <Link to="/brands">Marcas</Link>
+            </li>
             <li className="dropdown">
               <span className="dropdown-trigger">Categorías</span>
               <div className="dropdown-menu">
@@ -139,12 +142,6 @@ const Navbar = () => {
             </li>
             <li className={isActive('/offers') ? 'active' : ''}>
               <Link to="/offers">Ofertas</Link>
-            </li>
-            <li className={isActive('/products') ? 'active' : ''}>
-              <Link to="/products">Gestión de Productos</Link>
-            </li>
-            <li className={isActive('/brands') ? 'active' : ''}>
-              <Link to="/brands">Marcas</Link>
             </li>
             <li className={isActive('/professionals') ? 'active' : ''}>
               <Link to="/professionals">Área Profesional</Link>

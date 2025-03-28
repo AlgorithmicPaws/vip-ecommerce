@@ -5,11 +5,13 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import ProductManagement from "./pages/ProductManagement"; // Importamos la versión componetizada
+import ProductManagement from "./pages/ProductManagement";
 import ProductCatalog from "./pages/ProductCatalog";
 import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
 import SellerRegistration from "./pages/SellerRegistration";
+import BrandsPage from "./pages/Brands/BrandsPage";
+import BrandCatalogPage from "./pages/Brands/BrandCatalogPage";
 import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
@@ -39,6 +41,10 @@ const App = () => {
             
             {/* Ruta para registro de vendedores */}
             <Route path="/sell" element={<SellerRegistration />} />
+            
+            {/* Nuevas rutas para marcas */}
+            <Route path="/brands" element={<BrandsPage />} />
+            <Route path="/brands/:brandId" element={<BrandCatalogPage />} />
             
             {/* Redirección en caso de rutas no encontradas */}
             <Route path="*" element={<Home />} />
