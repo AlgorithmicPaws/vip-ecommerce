@@ -896,3 +896,37 @@
     grid-template-columns: 1fr;
   }
 }
+/* Estilos para enlaces de marcas populares en el sidebar */
+.popular-brands {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.popular-brand-link {
+  color: #555;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 5px 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.popular-brand-link:hover {
+  background-color: #f0f7ff;
+  color: #007bff;
+}
+
+.view-all-brands {
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 5px;
+  padding: 5px 8px;
+  display: inline-block;
+}
+
+.view-all-brands:hover {
+  text-decoration: underline;
+}

@@ -4,7 +4,37 @@ import { useCart } from '../pages/CartContext';
 import Navbar from '../layouts/Navbar';
 import Footer from '../layouts/Footer';
 import '../styles/ProductDetail.css';
-
+import ProductDetailContainer from './ProductDetail/ProductDetailContainer';
+import Breadcrumbs from './ProductDetail/Breadcrumbs';
+import MainImage from './ProductDetail/MainImage';
+import ThumbnailContainer from './ProductDetail/ThumbnailContainer';
+import ProductMeta from './ProductDetail/ProductMeta';
+import ProductPriceContainer from './ProductDetail/ProductPriceContainer';
+import ProductStock from './ProductDetail/ProductStock';
+import ProductShipping from './ProductDetail/ProductShipping';
+import SellerInfo from './ProductDetail/SellerInfo';
+import CartActions from './ProductDetail/CartActions';
+import AddToCart from './ProductDetail/AddToCart';
+import ProductActionsSecondary from './ProductDetail/ProductActionsSecondary';
+import Productguarantees from './ProductDetail/Productguarantees';
+import ProcuctPayment from './ProductDetail/ProcuctPayment';
+import TabsHeader from './ProductDetail/TabsHeader';
+import TabsDescription from './ProductDetail/TabsDescription';
+import TabSpecifications from './ProductDetail/TabSpecifications';
+import ReviewsSummary from './ProductDetail/ReviewsSummary';
+import ReviewsActions from './ProductDetail/ReviewsActions';
+import ReviewFormContainer from './ProductDetail/ReviewFormContainer';
+import ReviewsList from './ProductDetail/ReviewsList';
+import FormGroup from './ProductDetail/FormGroup';
+import FormGroupEmail from './ProductDetail/FormGroupEmail';
+import FormGroupQuestion from './ProductDetail/FormGroupQuestion';
+import FormActionsSubmit from './ProductDetail/FormActionsSubmit';
+import Questioncontent from './ProductDetail/Questioncontent';
+import AnswerContent from './ProductDetail/AnswerContent';
+import NoQuestions from './ProductDetail/NoQuestions';
+import RelatedProductImage from './ProductDetail/RelatedProductImage';
+import RelatedProductInfo from './ProductDetail/RelatedProductInfo';
+import QuestionsActions from './ProductDetail/QuestionsActions';
 const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -351,15 +381,7 @@ const ProductDetail = () => {
     return (
       <>
         <Navbar />
-        <div className="product-detail-container">
-          <div className="error-container">
-            <h2>Ha ocurrido un error</h2>
-            <p>{error || 'No se pudo cargar el producto'}</p>
-            <button onClick={() => navigate('/catalog')} className="primary-btn">
-              Volver al catálogo
-            </button>
-          </div>
-        </div>
+        <ProductDetailContainer navigate={navigate}/>
         <Footer />
       </>
     );
@@ -370,142 +392,35 @@ const ProductDetail = () => {
       <Navbar />
       <div className="product-detail-container">
         {/* Breadcrumbs */}
-        <div className="breadcrumbs">
-          <Link to="/">Inicio</Link> &gt; 
-          <Link to="/catalog">Productos</Link> &gt; 
-          <Link to={`/catalog?category=${encodeURIComponent(product.category)}`}>
-            {product.category}
-          </Link>
-          {product.subcategory && (
-            <>
-              &gt; 
-              <Link to={`/catalog?subcategory=${encodeURIComponent(product.subcategory)}`}>
-                {product.subcategory}
-              </Link>
-            </>
-          )}
-          &gt; <span>{product.name}</span>
-        </div>
+        <Breadcrumbs product={product}/>
         
         {/* Contenido principal */}
         <div className="product-main">
+          
           {/* Galería de imágenes */}
+          
           <div className="product-gallery">
-            <div className="main-image">
-              {product.images[selectedImage] ? (
-                <img 
-                  src={product.images[selectedImage]} 
-                  alt={`${product.name} - Imagen ${selectedImage + 1}`} 
-                  className="product-img"
-                />
-              ) : (
-                <div className="image-placeholder">
-                  <span>{product.name.charAt(0)}</span>
-                </div>
-              )}
-              {product.discount > 0 && (
-                <div className="discount-badge">-{product.discount}%</div>
-              )}
-            </div>
+            {/* -------------lo intente poner y no se pq no deja--------------- */}
+            <MainImage product={product} selectedImage={selectedImage}/>
+
+            {/* -------------lo intente poner y no se pq no deja--------------- */}
             
-            <div className="thumbnail-container">
-              {product.images.map((image, index) => (
-                <div 
-                  key={index}
-                  className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  {image ? (
-                    <img src={image} alt={`Miniatura ${index + 1}`} />
-                  ) : (
-                    <div className="thumbnail-placeholder">
-                      <span>{index + 1}</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <ThumbnailContainer product={product} selectedImage={selectedImage} setSelectedImage={setSelectedImage}/>
           </div>
           
           {/* Información del producto */}
           <div className="product-info">
             <h1 className="product-title">{product.name}</h1>
             
-            <div className="product-meta">
-              <div className="product-rating">
-                {renderRatingStars(product.rating)}
-                <span className="rating-count">
-                  {product.rating} ({product.reviewCount} reseñas)
-                </span>
-              </div>
-              
-              <div className="product-brand">
-                <span className="meta-label">Marca:</span>
-                <Link to={`/catalog?brand=${encodeURIComponent(product.brand)}`} className="meta-value brand-link">
-                  {product.brand}
-                </Link>
-              </div>
-              
-              <div className="product-model">
-                <span className="meta-label">Modelo:</span>
-                <span className="meta-value">{product.model}</span>
-              </div>
-              
-              <div className="product-sku">
-                <span className="meta-label">SKU:</span>
-                <span className="meta-value">{product.sku}</span>
-              </div>
-            </div>
+            <ProductMeta product={product} renderRatingStars={renderRatingStars}/>
             
-            <div className="product-price-container">
-              {product.discount > 0 ? (
-                <>
-                  <div className="price-original">${product.originalPrice.toFixed(2)}</div>
-                  <div className="price-current">${product.price.toFixed(2)}</div>
-                  <div className="price-saving">
-                    Ahorras: ${(product.originalPrice - product.price).toFixed(2)} ({product.discount}%)
-                  </div>
-                </>
-              ) : (
-                <div className="price-current">${product.price.toFixed(2)}</div>
-              )}
-            </div>
+            <ProductPriceContainer product={product}/>
             
-            <div className="product-stock">
-              {product.stock > 10 ? (
-                <div className="in-stock">✓ En stock</div>
-              ) : product.stock > 0 ? (
-                <div className="low-stock">⚠ Pocas unidades disponibles ({product.stock})</div>
-              ) : (
-                <div className="out-of-stock">✗ Agotado</div>
-              )}
-            </div>
+            <ProductStock product={product}/>
             
-            <div className="product-shipping">
-              {product.shippingInfo.free ? (
-                <div className="free-shipping">
-                  <span className="shipping-icon">🚚</span> Envío gratuito
-                </div>
-              ) : (
-                <div className="shipping-cost">
-                  <span className="shipping-icon">🚚</span> Gastos de envío: $X.XX
-                </div>
-              )}
-              <div className="delivery-time">
-                <span className="delivery-icon">📦</span> Entrega estimada: {product.shippingInfo.estimatedDelivery}
-              </div>
-            </div>
+            <ProductShipping product={product}/>
             
-            <div className="seller-info">
-              <span className="seller-label">Vendido por:</span>
-              <Link to={`/seller/${encodeURIComponent(product.seller)}`} className="seller-name">
-                {product.seller}
-              </Link>
-              <div className="seller-rating">
-                {renderRatingStars(product.sellerRating)}
-                <span className="seller-since">Desde {product.sellerSince}</span>
-              </div>
-            </div>
+            <SellerInfo product={product} renderRatingStars={renderRatingStars} />
             
             {product.stock > 0 && (
               <div className="product-actions">
@@ -535,425 +450,69 @@ const ProductDetail = () => {
                 </div>
                 
                 {isInCart(product.id) ? (
-                  <div className="cart-actions">
-                    <div className="in-cart-message">
-                      Ya tienes {getItemQuantity(product.id)} unidad(es) en el carrito
-                    </div>
-                    <button 
-                      className="view-cart-btn"
-                      onClick={() => navigate('/cart')}
-                    >
-                      Ver Carrito
-                    </button>
-                  </div>
+                  <CartActions product={product} navigate={navigate} getItemQuantity={getItemQuantity}/>
                 ) : (
-                  <div className="cart-actions">
-                    <button 
-                      className="add-to-cart-btn"
-                      onClick={handleAddToCart}
-                    >
-                      Añadir al Carrito
-                    </button>
-                    <button 
-                      className="buy-now-btn"
-                      onClick={handleBuyNow}
-                    >
-                      Comprar Ahora
-                    </button>
-                  </div>
+                  <AddToCart handleAddToCart={handleAddToCart} handleBuyNow={handleBuyNow}/>
                 )}
               </div>
             )}
             
-            <div className="product-actions-secondary">
-              <button className="action-btn wishlist-btn">
-                <span className="action-icon">❤️</span> Añadir a Favoritos
-              </button>
-              <button className="action-btn compare-btn">
-                <span className="action-icon">⚖️</span> Comparar
-              </button>
-              <button className="action-btn share-btn">
-                <span className="action-icon">🔗</span> Compartir
-              </button>
-            </div>
+            <ProductActionsSecondary/>
             
-            <div className="product-guarantees">
-              <div className="guarantee-item">
-                <span className="guarantee-icon">✓</span>
-                <div className="guarantee-text">
-                  <strong>Garantía:</strong> {product.warranty}
-                </div>
-              </div>
-              <div className="guarantee-item">
-                <span className="guarantee-icon">↩️</span>
-                <div className="guarantee-text">
-                  <strong>Devoluciones:</strong> {product.shippingInfo.returns}
-                </div>
-              </div>
-              <div className="guarantee-item">
-                <span className="guarantee-icon">🔒</span>
-                <div className="guarantee-text">
-                  <strong>Pago seguro:</strong> Información cifrada
-                </div>
-              </div>
-            </div>
+            <Productguarantees product={product}/>
             
-            <div className="product-payment">
-              <div className="payment-label">Métodos de pago:</div>
-              <div className="payment-methods">
-                {product.paymentOptions.map((method, index) => (
-                  <span key={index} className="payment-method">{method}</span>
-                ))}
-              </div>
-            </div>
+            <ProcuctPayment product={product}/>
           </div>
         </div>
         
         {/* Tabs de información */}
         <div className="product-tabs">
-          <div className="tabs-header">
-            <button 
-              className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
-              onClick={() => setActiveTab('description')}
-            >
-              Descripción
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'specifications' ? 'active' : ''}`}
-              onClick={() => setActiveTab('specifications')}
-            >
-              Especificaciones
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
-              onClick={() => setActiveTab('reviews')}
-            >
-              Reseñas ({reviews.length})
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'questions' ? 'active' : ''}`}
-              onClick={() => setActiveTab('questions')}
-            >
-              Preguntas ({questions.length})
-            </button>
-          </div>
+          <TabsHeader questions={questions} activeTab={activeTab} reviews={reviews} setActiveTab={setActiveTab}/>
           
           <div className="tabs-content">
             {/* Tab Descripción */}
             {activeTab === 'description' && (
-              <div className="tab-description">
-                <div className={`description-content ${showMoreDescription ? 'expanded' : ''}`}>
-                  {product.description.split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
-                  
-                  <div className="features-list">
-                    <h3>Características Destacadas</h3>
-                    <ul>
-                      {product.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                
-                {product.description.length > 500 && (
-                  <button 
-                    className="show-more-btn"
-                    onClick={() => setShowMoreDescription(!showMoreDescription)}
-                  >
-                    {showMoreDescription ? 'Mostrar menos' : 'Mostrar más'}
-                  </button>
-                )}
-              </div>
+              <TabsDescription product={product} showMoreDescription={showMoreDescription} setShowMoreDescription={setShowMoreDescription}/>
             )}
             
             {/* Tab Especificaciones */}
             {activeTab === 'specifications' && (
-              <div className="tab-specifications">
-                <div className={`specifications-content ${showMoreSpecs ? 'expanded' : ''}`}>
-                  <table className="specs-table">
-                    <tbody>
-                      {product.specifications.map((spec, index) => (
-                        <tr key={index}>
-                          <td className="spec-name">{spec.name}</td>
-                          <td className="spec-value">{spec.value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                
-                {product.specifications.length > 6 && (
-                  <button 
-                    className="show-more-btn"
-                    onClick={() => setShowMoreSpecs(!showMoreSpecs)}
-                  >
-                    {showMoreSpecs ? 'Mostrar menos' : 'Mostrar más'}
-                  </button>
-                )}
-                
-                <div className="certifications">
-                  <h3>Certificaciones</h3>
-                  <div className="cert-list">
-                    {product.certification.map((cert, index) => (
-                      <span key={index} className="cert-item">{cert}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <TabSpecifications product={product} showMoreSpecs={showMoreSpecs}/>
             )}
             
             {/* Tab Reseñas */}
             {activeTab === 'reviews' && (
               <div className="tab-reviews">
-                <div className="reviews-summary">
-                  <div className="rating-large">
-                    <div className="rating-number">{product.rating}</div>
-                    <div className="rating-stars-large">
-                      {renderRatingStars(product.rating)}
-                    </div>
-                    <div className="rating-count-total">
-                      Basado en {product.reviewCount} reseñas
-                    </div>
-                  </div>
-                  
-                  <div className="rating-breakdown">
-                    <div className="breakdown-row">
-                      <span className="stars-label">5 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '70%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">70%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">4 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '20%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">20%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">3 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '7%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">7%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">2 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '2%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">2%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">1 estrella</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '1%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">1%</span>
-                    </div>
-                  </div>
-                </div>
+                <ReviewsSummary product={product} renderRatingStars={renderRatingStars}/>
                 
-                <div className="reviews-actions">
-                  <button 
-                    className="write-review-btn"
-                    onClick={() => setShowReviewForm(!showReviewForm)}
-                  >
-                    Escribir una reseña
-                  </button>
-                </div>
+                <ReviewsActions setShowReviewForm={setShowReviewForm}  showReviewForm={showReviewForm}/>
                 
                 {showReviewForm && (
-                  <div className="review-form-container">
-                    <h3>Escribe tu reseña</h3>
-                    <form onSubmit={handleReviewSubmit} className="review-form">
-                      <div className="form-group">
-                        <label>Valoración</label>
-                        <div className="rating-selector">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              type="button"
-                              key={star}
-                              className={`star-btn ${reviewForm.rating >= star ? 'selected' : ''}`}
-                              onClick={() => setReviewForm({...reviewForm, rating: star})}
-                            >
-                              ★
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div className="form-row">
-                        <div className="form-group">
-                          <label>Nombre</label>
-                          <input 
-                            type="text" 
-                            value={reviewForm.name}
-                            onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})}
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Email</label>
-                          <input 
-                            type="email" 
-                            value={reviewForm.email}
-                            onChange={(e) => setReviewForm({...reviewForm, email: e.target.value})}
-                            required
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="form-group">
-                        <label>Comentario</label>
-                        <textarea 
-                          rows="4"
-                          value={reviewForm.comment}
-                          onChange={(e) => setReviewForm({...reviewForm, comment: e.target.value})}
-                          required
-                        ></textarea>
-                      </div>
-                      
-                      <div className="form-actions">
-                        <button 
-                          type="button" 
-                          className="cancel-btn"
-                          onClick={() => setShowReviewForm(false)}
-                        >
-                          Cancelar
-                        </button>
-                        <button type="submit" className="submit-btn">
-                          Enviar Reseña
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                  <ReviewFormContainer reviewForm={reviewForm} setReviewForm={setReviewForm} handleReviewSubmit={handleReviewSubmit} setShowReviewForm={setShowReviewForm}/>
                 )}
                 
-                <div className="reviews-list">
-                  {reviews.length > 0 ? (
-                    reviews.map((review) => (
-                      <div key={review.id} className="review-card">
-                        <div className="review-header">
-                          <div className="review-author-info">
-                            <div className="review-author">{review.author}</div>
-                            {review.verified && (
-                              <div className="verified-badge">Compra verificada</div>
-                            )}
-                          </div>
-                          <div className="review-date">{review.date}</div>
-                        </div>
-                        
-                        <div className="review-rating">
-                          {renderRatingStars(review.rating)}
-                        </div>
-                        
-                        <div className="review-content">
-                          {review.comment}
-                        </div>
-                        
-                        <div className="review-actions">
-                          <button className="helpful-btn">
-                            Útil ({review.helpful})
-                          </button>
-                          <button className="report-btn">
-                            Reportar
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="no-reviews">
-                      <p>Aún no hay reseñas para este producto.</p>
-                      <button 
-                        className="write-review-btn"
-                        onClick={() => setShowReviewForm(true)}
-                      >
-                        Sé el primero en escribir una reseña
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <ReviewsList reviews={reviews} renderRatingStars={renderRatingStars} setShowReviewForm={setShowReviewForm}/>
               </div>
             )}
             
             {/* Tab Preguntas */}
             {activeTab === 'questions' && (
               <div className="tab-questions">
-                <div className="questions-actions">
-                  <button 
-                    className="ask-question-btn"
-                    onClick={() => setShowQuestionForm(!showQuestionForm)}
-                  >
-                    Hacer una pregunta
-                  </button>
-                </div>
+                <QuestionsActions showQuestionForm={showQuestionForm} setShowQuestionForm={setShowQuestionForm}/>
                 
                 {showQuestionForm && (
                   <div className="question-form-container">
                     <h3>Hacer una pregunta sobre este producto</h3>
                     <form onSubmit={handleQuestionSubmit} className="question-form">
                       <div className="form-row">
-                        <div className="form-group">
-                          <label>Nombre</label>
-                          <input 
-                            type="text" 
-                            value={questionForm.name}
-                            onChange={(e) => setQuestionForm({...questionForm, name: e.target.value})}
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Email</label>
-                          <input 
-                            type="email" 
-                            value={questionForm.email}
-                            onChange={(e) => setQuestionForm({...questionForm, email: e.target.value})}
-                            required
-                          />
-                        </div>
+                        {/**Formgroup name */}
+                        <FormGroup questionForm={questionForm} setQuestionForm={setQuestionForm}/>
+                        <FormGroupEmail questionForm={questionForm} setQuestionForm={setQuestionForm}/>
                       </div>
                       
-                      <div className="form-group">
-                        <label>Tu pregunta</label>
-                        <textarea 
-                          rows="4"
-                          value={questionForm.question}
-                          onChange={(e) => setQuestionForm({...questionForm, question: e.target.value})}
-                          required
-                        ></textarea>
-                      </div>
+                      <FormGroupQuestion questionForm={questionForm} setQuestionForm={setQuestionForm}/>
                       
-                      <div className="form-actions">
-                        <button 
-                          type="button" 
-                          className="cancel-btn"
-                          onClick={() => setShowQuestionForm(false)}
-                        >
-                          Cancelar
-                        </button>
-                        <button type="submit" className="submit-btn">
-                          Enviar Pregunta
-                        </button>
-                      </div>
+                      <FormActionsSubmit setShowQuestionForm={setShowQuestionForm}/>
                     </form>
                   </div>
                 )}
@@ -962,39 +521,15 @@ const ProductDetail = () => {
                   {questions.length > 0 ? (
                     questions.map((question) => (
                       <div key={question.id} className="question-card">
-                        <div className="question-content">
-                          <div className="question-header">
-                            <div className="question-icon">P:</div>
-                            <div className="question-text">{question.question}</div>
-                          </div>
-                          <div className="question-meta">
-                            Preguntado por {question.author} - {question.date}
-                          </div>
-                        </div>
+                        <Questioncontent question={question}/>
                         
                         {question.answer && (
-                          <div className="answer-content">
-                            <div className="answer-header">
-                              <div className="answer-icon">R:</div>
-                              <div className="answer-text">{question.answer}</div>
-                            </div>
-                            <div className="answer-meta">
-                              Respondido por {question.answeredBy} - {question.answerDate}
-                            </div>
-                          </div>
+                          <AnswerContent question={question}/>
                         )}
                       </div>
                     ))
                   ) : (
-                    <div className="no-questions">
-                      <p>Aún no hay preguntas sobre este producto.</p>
-                      <button 
-                        className="ask-question-btn"
-                        onClick={() => setShowQuestionForm(true)}
-                      >
-                        Sé el primero en hacer una pregunta
-                      </button>
-                    </div>
+                    <NoQuestions setShowQuestionForm={setShowQuestionForm}/>
                   )}
                 </div>
               </div>
@@ -1012,23 +547,8 @@ const ProductDetail = () => {
                 className="related-product-card"
                 onClick={() => navigate(`/catalog/product/${product.id}`)}
               >
-                <div className="related-product-image">
-                  {product.image ? (
-                    <img src={product.image} alt={product.name} />
-                  ) : (
-                    <div className="image-placeholder small">
-                      <span>{product.name.charAt(0)}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="related-product-info">
-                  <div className="related-product-category">{product.category}</div>
-                  <h3 className="related-product-name">{product.name}</h3>
-                  <div className="related-product-rating">
-                    {renderRatingStars(product.rating)}
-                  </div>
-                  <div className="related-product-price">${product.price.toFixed(2)}</div>
-                </div>
+                <RelatedProductImage product={product}/>
+                <RelatedProductInfo product={product} renderRatingStars={renderRatingStars}/>
               </div>
             ))}
           </div>
