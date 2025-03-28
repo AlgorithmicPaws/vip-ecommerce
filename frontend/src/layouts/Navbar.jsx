@@ -140,6 +140,12 @@ const Navbar = () => {
             <li className={isActive('/offers') ? 'active' : ''}>
               <Link to="/offers">Ofertas</Link>
             </li>
+            <li className={isActive('/products') ? 'active' : ''}>
+              <Link to="/products">Gestión de Productos</Link>
+            </li>
+            <li className={isActive('/brands') ? 'active' : ''}>
+              <Link to="/brands">Marcas</Link>
+            </li>
             <li className={isActive('/professionals') ? 'active' : ''}>
               <Link to="/professionals">Área Profesional</Link>
             </li>

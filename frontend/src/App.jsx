@@ -5,11 +5,11 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import ProductManagement from "./pages/ProductManagement";
+import ProductManagement from "./pages/ProductManagement"; // Importamos la versión componetizada
 import ProductCatalog from "./pages/ProductCatalog";
 import ProductDetail from "./pages/ProductDetail";
 import ShoppingCart from "./pages/ShoppingCart";
-import SellerRegistration from "./pages/SellerRegistration"; // Importamos el componente de registro de vendedores
+import SellerRegistration from "./pages/SellerRegistration";
 import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
