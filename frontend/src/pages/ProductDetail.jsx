@@ -4,7 +4,20 @@ import { useCart } from '../pages/CartContext';
 import Navbar from '../layouts/Navbar';
 import Footer from '../layouts/Footer';
 import '../styles/ProductDetail.css';
-
+import ProductDetailContainer from './ProductDetail/ProductDetailContainer';
+import Breadcrumbs from './ProductDetail/Breadcrumbs';
+import MainImage from './ProductDetail/MainImage';
+import ThumbnailContainer from './ProductDetail/ThumbnailContainer';
+import ProductMeta from './ProductDetail/ProductMeta';
+import ProductPriceContainer from './ProductDetail/ProductPriceContainer';
+import ProductStock from './ProductDetail/ProductStock';
+import ProductShipping from './ProductDetail/ProductShipping';
+import SellerInfo from './ProductDetail/SellerInfo';
+import CartActions from './ProductDetail/CartActions';
+import AddToCart from './ProductDetail/AddToCart';
+import ProductActionsSecondary from './ProductDetail/ProductActionsSecondary';
+import Productguarantees from './ProductDetail/Productguarantees';
+import ProcuctPayment from './ProductDetail/ProcuctPayment';
 const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -351,15 +364,7 @@ const ProductDetail = () => {
     return (
       <>
         <Navbar />
-        <div className="product-detail-container">
-          <div className="error-container">
-            <h2>Ha ocurrido un error</h2>
-            <p>{error || 'No se pudo cargar el producto'}</p>
-            <button onClick={() => navigate('/catalog')} className="primary-btn">
-              Volver al catálogo
-            </button>
-          </div>
-        </div>
+        <ProductDetailContainer navigate={navigate}/>
         <Footer />
       </>
     );
@@ -370,142 +375,35 @@ const ProductDetail = () => {
       <Navbar />
       <div className="product-detail-container">
         {/* Breadcrumbs */}
-        <div className="breadcrumbs">
-          <Link to="/">Inicio</Link> &gt; 
-          <Link to="/catalog">Productos</Link> &gt; 
-          <Link to={`/catalog?category=${encodeURIComponent(product.category)}`}>
-            {product.category}
-          </Link>
-          {product.subcategory && (
-            <>
-              &gt; 
-              <Link to={`/catalog?subcategory=${encodeURIComponent(product.subcategory)}`}>
-                {product.subcategory}
-              </Link>
-            </>
-          )}
-          &gt; <span>{product.name}</span>
-        </div>
+        <Breadcrumbs product={product}/>
         
         {/* Contenido principal */}
         <div className="product-main">
+          
           {/* Galería de imágenes */}
+          
           <div className="product-gallery">
-            <div className="main-image">
-              {product.images[selectedImage] ? (
-                <img 
-                  src={product.images[selectedImage]} 
-                  alt={`${product.name} - Imagen ${selectedImage + 1}`} 
-                  className="product-img"
-                />
-              ) : (
-                <div className="image-placeholder">
-                  <span>{product.name.charAt(0)}</span>
-                </div>
-              )}
-              {product.discount > 0 && (
-                <div className="discount-badge">-{product.discount}%</div>
-              )}
-            </div>
+            {/* -------------lo intente poner y no se pq no deja--------------- */}
+            <MainImage product={product} selectedImage={selectedImage}/>
+
+            {/* -------------lo intente poner y no se pq no deja--------------- */}
             
-            <div className="thumbnail-container">
-              {product.images.map((image, index) => (
-                <div 
-                  key={index}
-                  className={`thumbnail ${selectedImage === index ? 'active' : ''}`}
-                  onClick={() => setSelectedImage(index)}
-                >
-                  {image ? (
-                    <img src={image} alt={`Miniatura ${index + 1}`} />
-                  ) : (
-                    <div className="thumbnail-placeholder">
-                      <span>{index + 1}</span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <ThumbnailContainer product={product} selectedImage={selectedImage} setSelectedImage={setSelectedImage}/>
           </div>
           
           {/* Información del producto */}
           <div className="product-info">
             <h1 className="product-title">{product.name}</h1>
             
-            <div className="product-meta">
-              <div className="product-rating">
-                {renderRatingStars(product.rating)}
-                <span className="rating-count">
-                  {product.rating} ({product.reviewCount} reseñas)
-                </span>
-              </div>
-              
-              <div className="product-brand">
-                <span className="meta-label">Marca:</span>
-                <Link to={`/catalog?brand=${encodeURIComponent(product.brand)}`} className="meta-value brand-link">
-                  {product.brand}
-                </Link>
-              </div>
-              
-              <div className="product-model">
-                <span className="meta-label">Modelo:</span>
-                <span className="meta-value">{product.model}</span>
-              </div>
-              
-              <div className="product-sku">
-                <span className="meta-label">SKU:</span>
-                <span className="meta-value">{product.sku}</span>
-              </div>
-            </div>
+            <ProductMeta product={product} renderRatingStars={renderRatingStars}/>
             
-            <div className="product-price-container">
-              {product.discount > 0 ? (
-                <>
-                  <div className="price-original">${product.originalPrice.toFixed(2)}</div>
-                  <div className="price-current">${product.price.toFixed(2)}</div>
-                  <div className="price-saving">
-                    Ahorras: ${(product.originalPrice - product.price).toFixed(2)} ({product.discount}%)
-                  </div>
-                </>
-              ) : (
-                <div className="price-current">${product.price.toFixed(2)}</div>
-              )}
-            </div>
+            <ProductPriceContainer product={product}/>
             
-            <div className="product-stock">
-              {product.stock > 10 ? (
-                <div className="in-stock">✓ En stock</div>
-              ) : product.stock > 0 ? (
-                <div className="low-stock">⚠ Pocas unidades disponibles ({product.stock})</div>
-              ) : (
-                <div className="out-of-stock">✗ Agotado</div>
-              )}
-            </div>
+            <ProductStock product={product}/>
             
-            <div className="product-shipping">
-              {product.shippingInfo.free ? (
-                <div className="free-shipping">
-                  <span className="shipping-icon">🚚</span> Envío gratuito
-                </div>
-              ) : (
-                <div className="shipping-cost">
-                  <span className="shipping-icon">🚚</span> Gastos de envío: $X.XX
-                </div>
-              )}
-              <div className="delivery-time">
-                <span className="delivery-icon">📦</span> Entrega estimada: {product.shippingInfo.estimatedDelivery}
-              </div>
-            </div>
+            <ProductShipping product={product}/>
             
-            <div className="seller-info">
-              <span className="seller-label">Vendido por:</span>
-              <Link to={`/seller/${encodeURIComponent(product.seller)}`} className="seller-name">
-                {product.seller}
-              </Link>
-              <div className="seller-rating">
-                {renderRatingStars(product.sellerRating)}
-                <span className="seller-since">Desde {product.sellerSince}</span>
-              </div>
-            </div>
+            <SellerInfo product={product} renderRatingStars={renderRatingStars} />
             
             {product.stock > 0 && (
               <div className="product-actions">
@@ -535,77 +433,18 @@ const ProductDetail = () => {
                 </div>
                 
                 {isInCart(product.id) ? (
-                  <div className="cart-actions">
-                    <div className="in-cart-message">
-                      Ya tienes {getItemQuantity(product.id)} unidad(es) en el carrito
-                    </div>
-                    <button 
-                      className="view-cart-btn"
-                      onClick={() => navigate('/cart')}
-                    >
-                      Ver Carrito
-                    </button>
-                  </div>
+                  <CartActions product={product} navigate={navigate} getItemQuantity={getItemQuantity}/>
                 ) : (
-                  <div className="cart-actions">
-                    <button 
-                      className="add-to-cart-btn"
-                      onClick={handleAddToCart}
-                    >
-                      Añadir al Carrito
-                    </button>
-                    <button 
-                      className="buy-now-btn"
-                      onClick={handleBuyNow}
-                    >
-                      Comprar Ahora
-                    </button>
-                  </div>
+                  <AddToCart handleAddToCart={handleAddToCart} handleBuyNow={handleBuyNow}/>
                 )}
               </div>
             )}
             
-            <div className="product-actions-secondary">
-              <button className="action-btn wishlist-btn">
-                <span className="action-icon">❤️</span> Añadir a Favoritos
-              </button>
-              <button className="action-btn compare-btn">
-                <span className="action-icon">⚖️</span> Comparar
-              </button>
-              <button className="action-btn share-btn">
-                <span className="action-icon">🔗</span> Compartir
-              </button>
-            </div>
+            <ProductActionsSecondary/>
             
-            <div className="product-guarantees">
-              <div className="guarantee-item">
-                <span className="guarantee-icon">✓</span>
-                <div className="guarantee-text">
-                  <strong>Garantía:</strong> {product.warranty}
-                </div>
-              </div>
-              <div className="guarantee-item">
-                <span className="guarantee-icon">↩️</span>
-                <div className="guarantee-text">
-                  <strong>Devoluciones:</strong> {product.shippingInfo.returns}
-                </div>
-              </div>
-              <div className="guarantee-item">
-                <span className="guarantee-icon">🔒</span>
-                <div className="guarantee-text">
-                  <strong>Pago seguro:</strong> Información cifrada
-                </div>
-              </div>
-            </div>
+            <Productguarantees product={product}/>
             
-            <div className="product-payment">
-              <div className="payment-label">Métodos de pago:</div>
-              <div className="payment-methods">
-                {product.paymentOptions.map((method, index) => (
-                  <span key={index} className="payment-method">{method}</span>
-                ))}
-              </div>
-            </div>
+            <ProcuctPayment product={product}/>
           </div>
         </div>
         
