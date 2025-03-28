@@ -18,6 +18,23 @@ import AddToCart from './ProductDetail/AddToCart';
 import ProductActionsSecondary from './ProductDetail/ProductActionsSecondary';
 import Productguarantees from './ProductDetail/Productguarantees';
 import ProcuctPayment from './ProductDetail/ProcuctPayment';
+import TabsHeader from './ProductDetail/TabsHeader';
+import TabsDescription from './ProductDetail/TabsDescription';
+import TabSpecifications from './ProductDetail/TabSpecifications';
+import ReviewsSummary from './ProductDetail/ReviewsSummary';
+import ReviewsActions from './ProductDetail/ReviewsActions';
+import ReviewFormContainer from './ProductDetail/ReviewFormContainer';
+import ReviewsList from './ProductDetail/ReviewsList';
+import FormGroup from './ProductDetail/FormGroup';
+import FormGroupEmail from './ProductDetail/FormGroupEmail';
+import FormGroupQuestion from './ProductDetail/FormGroupQuestion';
+import FormActionsSubmit from './ProductDetail/FormActionsSubmit';
+import Questioncontent from './ProductDetail/Questioncontent';
+import AnswerContent from './ProductDetail/AnswerContent';
+import NoQuestions from './ProductDetail/NoQuestions';
+import RelatedProductImage from './ProductDetail/RelatedProductImage';
+import RelatedProductInfo from './ProductDetail/RelatedProductInfo';
+import QuestionsActions from './ProductDetail/QuestionsActions';
 const ProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
@@ -450,349 +467,52 @@ const ProductDetail = () => {
         
         {/* Tabs de información */}
         <div className="product-tabs">
-          <div className="tabs-header">
-            <button 
-              className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
-              onClick={() => setActiveTab('description')}
-            >
-              Descripción
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'specifications' ? 'active' : ''}`}
-              onClick={() => setActiveTab('specifications')}
-            >
-              Especificaciones
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
-              onClick={() => setActiveTab('reviews')}
-            >
-              Reseñas ({reviews.length})
-            </button>
-            <button 
-              className={`tab-btn ${activeTab === 'questions' ? 'active' : ''}`}
-              onClick={() => setActiveTab('questions')}
-            >
-              Preguntas ({questions.length})
-            </button>
-          </div>
+          <TabsHeader questions={questions} activeTab={activeTab} reviews={reviews} setActiveTab={setActiveTab}/>
           
           <div className="tabs-content">
             {/* Tab Descripción */}
             {activeTab === 'description' && (
-              <div className="tab-description">
-                <div className={`description-content ${showMoreDescription ? 'expanded' : ''}`}>
-                  {product.description.split('\n\n').map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
-                  
-                  <div className="features-list">
-                    <h3>Características Destacadas</h3>
-                    <ul>
-                      {product.features.map((feature, index) => (
-                        <li key={index}>{feature}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                
-                {product.description.length > 500 && (
-                  <button 
-                    className="show-more-btn"
-                    onClick={() => setShowMoreDescription(!showMoreDescription)}
-                  >
-                    {showMoreDescription ? 'Mostrar menos' : 'Mostrar más'}
-                  </button>
-                )}
-              </div>
+              <TabsDescription product={product} showMoreDescription={showMoreDescription} setShowMoreDescription={setShowMoreDescription}/>
             )}
             
             {/* Tab Especificaciones */}
             {activeTab === 'specifications' && (
-              <div className="tab-specifications">
-                <div className={`specifications-content ${showMoreSpecs ? 'expanded' : ''}`}>
-                  <table className="specs-table">
-                    <tbody>
-                      {product.specifications.map((spec, index) => (
-                        <tr key={index}>
-                          <td className="spec-name">{spec.name}</td>
-                          <td className="spec-value">{spec.value}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                
-                {product.specifications.length > 6 && (
-                  <button 
-                    className="show-more-btn"
-                    onClick={() => setShowMoreSpecs(!showMoreSpecs)}
-                  >
-                    {showMoreSpecs ? 'Mostrar menos' : 'Mostrar más'}
-                  </button>
-                )}
-                
-                <div className="certifications">
-                  <h3>Certificaciones</h3>
-                  <div className="cert-list">
-                    {product.certification.map((cert, index) => (
-                      <span key={index} className="cert-item">{cert}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <TabSpecifications product={product} showMoreSpecs={showMoreSpecs}/>
             )}
             
             {/* Tab Reseñas */}
             {activeTab === 'reviews' && (
               <div className="tab-reviews">
-                <div className="reviews-summary">
-                  <div className="rating-large">
-                    <div className="rating-number">{product.rating}</div>
-                    <div className="rating-stars-large">
-                      {renderRatingStars(product.rating)}
-                    </div>
-                    <div className="rating-count-total">
-                      Basado en {product.reviewCount} reseñas
-                    </div>
-                  </div>
-                  
-                  <div className="rating-breakdown">
-                    <div className="breakdown-row">
-                      <span className="stars-label">5 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '70%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">70%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">4 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '20%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">20%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">3 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '7%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">7%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">2 estrellas</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '2%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">2%</span>
-                    </div>
-                    <div className="breakdown-row">
-                      <span className="stars-label">1 estrella</span>
-                      <div className="progress-bar">
-                        <div 
-                          className="progress-fill" 
-                          style={{ width: '1%' }}
-                        ></div>
-                      </div>
-                      <span className="percentage">1%</span>
-                    </div>
-                  </div>
-                </div>
+                <ReviewsSummary product={product} renderRatingStars={renderRatingStars}/>
                 
-                <div className="reviews-actions">
-                  <button 
-                    className="write-review-btn"
-                    onClick={() => setShowReviewForm(!showReviewForm)}
-                  >
-                    Escribir una reseña
-                  </button>
-                </div>
+                <ReviewsActions setShowReviewForm={setShowReviewForm}  showReviewForm={showReviewForm}/>
                 
                 {showReviewForm && (
-                  <div className="review-form-container">
-                    <h3>Escribe tu reseña</h3>
-                    <form onSubmit={handleReviewSubmit} className="review-form">
-                      <div className="form-group">
-                        <label>Valoración</label>
-                        <div className="rating-selector">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <button
-                              type="button"
-                              key={star}
-                              className={`star-btn ${reviewForm.rating >= star ? 'selected' : ''}`}
-                              onClick={() => setReviewForm({...reviewForm, rating: star})}
-                            >
-                              ★
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                      
-                      <div className="form-row">
-                        <div className="form-group">
-                          <label>Nombre</label>
-                          <input 
-                            type="text" 
-                            value={reviewForm.name}
-                            onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})}
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Email</label>
-                          <input 
-                            type="email" 
-                            value={reviewForm.email}
-                            onChange={(e) => setReviewForm({...reviewForm, email: e.target.value})}
-                            required
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="form-group">
-                        <label>Comentario</label>
-                        <textarea 
-                          rows="4"
-                          value={reviewForm.comment}
-                          onChange={(e) => setReviewForm({...reviewForm, comment: e.target.value})}
-                          required
-                        ></textarea>
-                      </div>
-                      
-                      <div className="form-actions">
-                        <button 
-                          type="button" 
-                          className="cancel-btn"
-                          onClick={() => setShowReviewForm(false)}
-                        >
-                          Cancelar
-                        </button>
-                        <button type="submit" className="submit-btn">
-                          Enviar Reseña
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                  <ReviewFormContainer reviewForm={reviewForm} setReviewForm={setReviewForm} handleReviewSubmit={handleReviewSubmit} setShowReviewForm={setShowReviewForm}/>
                 )}
                 
-                <div className="reviews-list">
-                  {reviews.length > 0 ? (
-                    reviews.map((review) => (
-                      <div key={review.id} className="review-card">
-                        <div className="review-header">
-                          <div className="review-author-info">
-                            <div className="review-author">{review.author}</div>
-                            {review.verified && (
-                              <div className="verified-badge">Compra verificada</div>
-                            )}
-                          </div>
-                          <div className="review-date">{review.date}</div>
-                        </div>
-                        
-                        <div className="review-rating">
-                          {renderRatingStars(review.rating)}
-                        </div>
-                        
-                        <div className="review-content">
-                          {review.comment}
-                        </div>
-                        
-                        <div className="review-actions">
-                          <button className="helpful-btn">
-                            Útil ({review.helpful})
-                          </button>
-                          <button className="report-btn">
-                            Reportar
-                          </button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="no-reviews">
-                      <p>Aún no hay reseñas para este producto.</p>
-                      <button 
-                        className="write-review-btn"
-                        onClick={() => setShowReviewForm(true)}
-                      >
-                        Sé el primero en escribir una reseña
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <ReviewsList reviews={reviews} renderRatingStars={renderRatingStars} setShowReviewForm={setShowReviewForm}/>
               </div>
             )}
             
             {/* Tab Preguntas */}
             {activeTab === 'questions' && (
               <div className="tab-questions">
-                <div className="questions-actions">
-                  <button 
-                    className="ask-question-btn"
-                    onClick={() => setShowQuestionForm(!showQuestionForm)}
-                  >
-                    Hacer una pregunta
-                  </button>
-                </div>
+                <QuestionsActions showQuestionForm={showQuestionForm} setShowQuestionForm={setShowQuestionForm}/>
                 
                 {showQuestionForm && (
                   <div className="question-form-container">
                     <h3>Hacer una pregunta sobre este producto</h3>
                     <form onSubmit={handleQuestionSubmit} className="question-form">
                       <div className="form-row">
-                        <div className="form-group">
-                          <label>Nombre</label>
-                          <input 
-                            type="text" 
-                            value={questionForm.name}
-                            onChange={(e) => setQuestionForm({...questionForm, name: e.target.value})}
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>Email</label>
-                          <input 
-                            type="email" 
-                            value={questionForm.email}
-                            onChange={(e) => setQuestionForm({...questionForm, email: e.target.value})}
-                            required
-                          />
-                        </div>
+                        {/**Formgroup name */}
+                        <FormGroup questionForm={questionForm} setQuestionForm={setQuestionForm}/>
+                        <FormGroupEmail questionForm={questionForm} setQuestionForm={setQuestionForm}/>
                       </div>
                       
-                      <div className="form-group">
-                        <label>Tu pregunta</label>
-                        <textarea 
-                          rows="4"
-                          value={questionForm.question}
-                          onChange={(e) => setQuestionForm({...questionForm, question: e.target.value})}
-                          required
-                        ></textarea>
-                      </div>
+                      <FormGroupQuestion questionForm={questionForm} setQuestionForm={setQuestionForm}/>
                       
-                      <div className="form-actions">
-                        <button 
-                          type="button" 
-                          className="cancel-btn"
-                          onClick={() => setShowQuestionForm(false)}
-                        >
-                          Cancelar
-                        </button>
-                        <button type="submit" className="submit-btn">
-                          Enviar Pregunta
-                        </button>
-                      </div>
+                      <FormActionsSubmit setShowQuestionForm={setShowQuestionForm}/>
                     </form>
                   </div>
                 )}
@@ -801,39 +521,15 @@ const ProductDetail = () => {
                   {questions.length > 0 ? (
                     questions.map((question) => (
                       <div key={question.id} className="question-card">
-                        <div className="question-content">
-                          <div className="question-header">
-                            <div className="question-icon">P:</div>
-                            <div className="question-text">{question.question}</div>
-                          </div>
-                          <div className="question-meta">
-                            Preguntado por {question.author} - {question.date}
-                          </div>
-                        </div>
+                        <Questioncontent question={question}/>
                         
                         {question.answer && (
-                          <div className="answer-content">
-                            <div className="answer-header">
-                              <div className="answer-icon">R:</div>
-                              <div className="answer-text">{question.answer}</div>
-                            </div>
-                            <div className="answer-meta">
-                              Respondido por {question.answeredBy} - {question.answerDate}
-                            </div>
-                          </div>
+                          <AnswerContent question={question}/>
                         )}
                       </div>
                     ))
                   ) : (
-                    <div className="no-questions">
-                      <p>Aún no hay preguntas sobre este producto.</p>
-                      <button 
-                        className="ask-question-btn"
-                        onClick={() => setShowQuestionForm(true)}
-                      >
-                        Sé el primero en hacer una pregunta
-                      </button>
-                    </div>
+                    <NoQuestions setShowQuestionForm={setShowQuestionForm}/>
                   )}
                 </div>
               </div>
@@ -851,23 +547,8 @@ const ProductDetail = () => {
                 className="related-product-card"
                 onClick={() => navigate(`/catalog/product/${product.id}`)}
               >
-                <div className="related-product-image">
-                  {product.image ? (
-                    <img src={product.image} alt={product.name} />
-                  ) : (
-                    <div className="image-placeholder small">
-                      <span>{product.name.charAt(0)}</span>
-                    </div>
-                  )}
-                </div>
-                <div className="related-product-info">
-                  <div className="related-product-category">{product.category}</div>
-                  <h3 className="related-product-name">{product.name}</h3>
-                  <div className="related-product-rating">
-                    {renderRatingStars(product.rating)}
-                  </div>
-                  <div className="related-product-price">${product.price.toFixed(2)}</div>
-                </div>
+                <RelatedProductImage product={product}/>
+                <RelatedProductInfo product={product} renderRatingStars={renderRatingStars}/>
               </div>
             ))}
           </div>
