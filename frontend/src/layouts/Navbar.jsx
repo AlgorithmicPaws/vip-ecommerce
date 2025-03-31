@@ -155,6 +155,9 @@ const Navbar = () => {
             <li className={isActive('/contact') ? 'active' : ''}>
               <Link to="/contact">Contacto</Link>
             </li>
+            <li className={isActive('/products') ? 'active' : ''}>
+              <Link to="/products">Gestión de Productos</Link>
+            </li>
           </ul>
         </nav>
       </header>
