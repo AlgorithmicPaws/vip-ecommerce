@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from datetime import timedelta
-from typing import Optional
+from typing import Optional, Dict, Any
 
-from models import User
+from models import User, Seller
 from core.security import verify_password, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
 from .schemas import Token, LoginRequest
 
@@ -36,19 +36,55 @@ class AuthService:
         return user
     
     @staticmethod
-    def create_token(user: User) -> str:
+    def get_token_data(db: Session, user: User) -> Dict[str, Any]:
         """
-        Create an access token for a user
+        Get token data including user roles
         
         Args:
+            db: Database session
+            user: User object
+            
+        Returns:
+            Dictionary with token claims including roles
+        """
+        # Basic token data
+        token_data = {"sub": user.email}
+        
+        # Check if user is a seller
+        seller = db.query(Seller).filter(Seller.user_id == user.user_id).first()
+        
+        # Add roles to token data
+        roles = ["user"]
+        if seller:
+            roles.append("seller")
+            
+        # Add is_admin if we implement it later
+        # if user.is_admin:
+        #     roles.append("admin")
+            
+        token_data["roles"] = roles
+        
+        return token_data
+    
+    @staticmethod
+    def create_token(db: Session, user: User) -> str:
+        """
+        Create an access token for a user with role information
+        
+        Args:
+            db: Database session
             user: User object
             
         Returns:
             JWT access token
         """
+        # Get token data with roles
+        token_data = AuthService.get_token_data(db, user)
+        
+        # Create token with expiration
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         return create_access_token(
-            data={"sub": user.email},
+            data=token_data,
             expires_delta=access_token_expires
         )
     
@@ -77,12 +113,19 @@ class AuthService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
         
-        # Create access token
-        access_token = AuthService.create_token(user)
+        # Create access token with role information
+        access_token = AuthService.create_token(db, user)
         
-        # Return token with user info
+        # Get role information
+        token_data = AuthService.get_token_data(db, user)
+        roles = token_data.get("roles", ["user"])
+        is_seller = "seller" in roles
+        
+        # Return token with user info and roles
         return Token(
             access_token=access_token,
             token_type="bearer",
-            user=user
+            user=user,
+            roles=roles,
+            is_seller=is_seller
         )
