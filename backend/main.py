@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.database import engine
 from models import Base
 from services.user_service.router import router as user_router
+from services.auth_service.router import router as auth_router
+
 # Create the FastAPI app
 app = FastAPI(
     title="E-Commerce API",
@@ -29,6 +31,7 @@ Base.metadata.create_all(bind=engine)
 
 # Include service routers   
 app.include_router(user_router)
+app.include_router(auth_router)
 
 # Root endpoint
 @app.get("/")
