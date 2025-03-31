@@ -92,8 +92,8 @@ def get_admin_user(
     Raises:
         HTTPException: If user is not an admin
     """
-    # Implement based on your User model's role/admin field
-    # Example:
+    # We need to implement this when the is_admin field is added to User model
+    # For now, it's just a placeholder
     # if not current_user.is_admin:
     #     raise HTTPException(
     #         status_code=status.HTTP_403_FORBIDDEN,

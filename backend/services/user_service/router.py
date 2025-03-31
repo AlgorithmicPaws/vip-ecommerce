@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 from core.database import get_db
 from models import User
 from .schemas import UserCreate, UserResponse, UserUpdate
@@ -44,13 +45,38 @@ async def update_current_user(
     """
     Update the currently authenticated user's details.
     Requires a valid JWT token in the Authorization header.
+    Note: Email address cannot be changed.
     """
+    # Check if trying to change email
+    if user_data.email is not None and user_data.email != current_user.email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email address cannot be changed"
+        )
+    
     result = UserService.update_user(db=db, user_id=current_user.user_id, user_data=user_data)
     
     if result is False:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered by another user"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
         )
     
     return result
+
+@router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_current_user(
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Delete the currently authenticated user's account.
+    Requires a valid JWT token in the Authorization header.
+    """
+    result = UserService.delete_user(db=db, user_id=current_user.user_id)
+    
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error deleting user account"
+        )
