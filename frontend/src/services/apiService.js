@@ -1,37 +1,127 @@
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+// src/services/apiService.js
+
+import { authHeader } from './authService';
 
 /**
- * ProtectedRoute component that redirects to login page if user is not authenticated
- * Can also check for specific roles
+ * Service for handling API requests with authentication
  */
-const ProtectedRoute = ({ requiredRole = null }) => {
-  const { isAuthenticated, user, loading } = useAuth();
 
-  // If authentication status is still loading, show loading indicator
-  if (loading) {
-    return (
-      <div className="protected-route-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading...</p>
-      </div>
-    );
+// Base API URL - In a real application, this would come from environment variables
+const API_URL = 'http://localhost:8000';
+
+/**
+ * Generic HTTP GET request with authentication
+ * @param {string} endpoint - API endpoint
+ * @returns {Promise} - Response from the API
+ */
+export const get = async (endpoint) => {
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader(),
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching from ${endpoint}:`, error);
+    throw error;
   }
-
-  // If not authenticated, redirect to login
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // If a required role is specified, check if the user has it
-  if (requiredRole && (!user.roles || !user.roles.includes(requiredRole))) {
-    // Redirect to home or unauthorized page
-    return <Navigate to="/" replace />;
-  }
-
-  // If authenticated and has required role (if any), render the child routes
-  return <Outlet />;
 };
 
-export default ProtectedRoute;
+/**
+ * Generic HTTP POST request with authentication
+ * @param {string} endpoint - API endpoint
+ * @param {Object} data - Data to be sent in the request body
+ * @returns {Promise} - Response from the API
+ */
+export const post = async (endpoint, data) => {
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader(),
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error posting to ${endpoint}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Generic HTTP PUT request with authentication
+ * @param {string} endpoint - API endpoint
+ * @param {Object} data - Data to be sent in the request body
+ * @returns {Promise} - Response from the API
+ */
+export const put = async (endpoint, data) => {
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader(),
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error updating ${endpoint}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Generic HTTP DELETE request with authentication
+ * @param {string} endpoint - API endpoint
+ * @returns {Promise} - Response from the API
+ */
+export const del = async (endpoint) => {
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeader(),
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    }
+
+    // For DELETE operations that return 204 No Content
+    if (response.status === 204) {
+      return true;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error deleting from ${endpoint}:`, error);
+    throw error;
+  }
+};
