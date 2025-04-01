@@ -12,6 +12,10 @@ import ShoppingCart from "./pages/ShoppingCart";
 import SellerRegistration from "./pages/SellerRegistration";
 import BrandsPage from "./pages/Brands/BrandsPage";
 import BrandCatalogPage from "./pages/Brands/BrandCatalogPage";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import ProductsManagement from "./pages/Admin/ProductsManagement";
+import OrdersManagement from "./pages/Admin/OrdersManagement";
+import OrderDetails from "./pages/Admin/OrderDetails";
 import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
@@ -45,6 +49,12 @@ const App = () => {
             {/* Nuevas rutas para marcas */}
             <Route path="/brands" element={<BrandsPage />} />
             <Route path="/brands/:brandId" element={<BrandCatalogPage />} />
+
+            {/* Rutas de administración */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/products" element={<ProductsManagement />} />
+            <Route path="/admin/orders" element={<OrdersManagement />} />
+            <Route path="/admin/orders/:orderId" element={<OrderDetails />} />
             
             {/* Redirección en caso de rutas no encontradas */}
             <Route path="*" element={<Home />} />
