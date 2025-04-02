@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./pages/CartContext";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,42 +18,40 @@ import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
   return (
-    <CartProvider>
-      <Router>
+    <Router>
       <ScrollToTop />
-        <div className="app">
-          <Routes>
-            {/* Página de inicio */}
-            <Route path="/" element={<Home />} />
-            
-            {/* Rutas para autenticación */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            
-            {/* Ruta para el perfil de usuario */}
-            <Route path="/profile" element={<Profile />} />
-            
-            {/* Rutas para productos */}
-            <Route path="/products" element={<ProductManagement />} />
-            <Route path="/catalog" element={<ProductCatalog />} />
-            <Route path="/catalog/product/:productId" element={<ProductDetail />} />
-            
-            {/* Ruta para el carrito */}
-            <Route path="/cart" element={<ShoppingCart />} />
-            
-            {/* Ruta para registro de vendedores */}
-            <Route path="/sell" element={<SellerRegistration />} />
-            
-            {/* Nuevas rutas para marcas */}
-            <Route path="/brands" element={<BrandsPage />} />
-            <Route path="/brands/:brandId" element={<BrandCatalogPage />} />
-            
-            {/* Redirección en caso de rutas no encontradas */}
-            <Route path="*" element={<Home />} />
-          </Routes>
-        </div>
-      </Router>
-    </CartProvider>
+      <CartProvider>
+        <AuthProvider>
+          <div className="app">
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/catalog" element={<ProductCatalog />} />
+              <Route path="/catalog/product/:productId" element={<ProductDetail />} />
+              <Route path="/cart" element={<ShoppingCart />} />
+              <Route path="/brands" element={<BrandsPage />} />
+              <Route path="/brands/:brandId" element={<BrandCatalogPage />} />
+              
+              {/* Protected routes - require authentication */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/sell" element={<SellerRegistration />} />
+              </Route>
+              
+              {/* Protected routes - require seller role */}
+              <Route element={<ProtectedRoute requiredRole="seller" />}>
+                <Route path="/products" element={<ProductManagement />} />
+              </Route>
+              
+              {/* Fallback route */}
+              <Route path="*" element={<Home />} />
+            </Routes>
+          </div>
+        </AuthProvider>
+      </CartProvider>
+    </Router>
   );
 };
 

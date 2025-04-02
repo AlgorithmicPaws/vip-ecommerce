@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Login.css';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { login, isAuthenticated, error: authError } = useAuth();
+  
+  // Redirect if user came from another page
+  const from = location.state?.from?.pathname || '/';
+  
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  // If user is already authenticated, redirect to home page
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,27 +31,47 @@ const Login = () => {
       ...prevState,
       [name]: value
     }));
+    
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
     
-    // Simulamos una petición al servidor
-    setTimeout(() => {
-      // Aquí implementarías la lógica real de autenticación
-      console.log('Datos de login:', formData);
+    try {
+      // Convert form data to the expected format
+      const credentials = {
+        email: formData.email,
+        password: formData.password
+      };
       
-      // Simulamos una respuesta exitosa y redirigimos al perfil
+      // Call login function from auth context
+      await login(credentials);
+      
+      // If login is successful, navigate to the page user came from or home
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err.message || 'Failed to login. Please check your credentials.');
+    } finally {
       setIsLoading(false);
-      navigate('/profile');
-    }, 1500); // Simulamos un retraso de 1.5 segundos para mostrar el estado de carga
+    }
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
         <h1>Iniciar Sesión</h1>
+        
+        {/* Display error message if login fails */}
+        {(error || authError) && (
+          <div className="error-message">
+            {error || authError}
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <input
@@ -46,6 +81,7 @@ const Login = () => {
               value={formData.email}
               onChange={handleChange}
               required
+              disabled={isLoading}
             />
           </div>
           <div className="form-group">
@@ -56,6 +92,7 @@ const Login = () => {
               value={formData.password}
               onChange={handleChange}
               required
+              disabled={isLoading}
             />
           </div>
           <button 
