@@ -158,8 +158,11 @@ const Navbar = () => {
             <li className={isActive('/products') ? 'active' : ''}>
               <Link to="/products">Gestión de Productos</Link>
             </li>
-            <li className={isActive('/admin') ? 'active' : ''}>
-              <Link to="/admin">Administrador</Link>
+            <li className={isActive('/admin/dashboard') ? 'active' : ''}>
+              <Link to="/admin/dashboard" className="admin-nav-link">
+                <span className="nav-icon">⚙️</span>
+                <span className="nav-text">Administración</span>
+              </Link>
             </li>
             
             
