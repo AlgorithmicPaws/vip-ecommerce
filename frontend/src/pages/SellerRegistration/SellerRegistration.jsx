@@ -3,15 +3,19 @@ import { Link } from 'react-router-dom';
 import SellerRegistrationForm from './components/SellerRegistrationForm';
 import ProgressSteps from './components/ProgressSteps';
 import '../../styles/SellerRegistration.css';
+import { post } from '../../services/apiService';
 
 const SellerRegistration = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const totalSteps = 3;
 
   // Estado para almacenar todos los datos del formulario
   const [formData, setFormData] = useState({
     storeName: '',
+    storeDescription: '',
     storePhone: '',
     storeLogo: null,
     personType: 'business', // 'business' = Persona Jurídica, 'personal' = Persona Natural
@@ -44,19 +48,33 @@ const SellerRegistration = () => {
     }
   };
 
-  const handleSubmit = (data) => {
-    // Actualizar datos del formulario
+  const handleSubmit = async (data) => {
     setFormData({...formData, ...data});
-    
+  
     if (currentStep < totalSteps) {
       handleNext();
     } else {
-      // Procesamiento final del formulario
-      console.log('Formulario enviado:', formData);
-      setFormSubmitted(true);
-      
-      // Aquí se enviarían los datos a la API
-      // ...
+      try {
+        setIsSubmitting(true);
+        setError(null);
+  
+        const postData = {
+          business_name: formData.storeName,
+          business_description: formData.storeDescription, // Evita enviar vacío
+          id_type: formData.documentType,
+          number_id: formData.documentNumber
+        };
+  
+        console.log("Datos a enviar:", postData); // 👈 Verifica esto en la consola
+  
+        const response = await post('/sellers/', postData);
+        setFormSubmitted(true);
+      } catch (error) {
+        console.error("Error detallado:", error.response?.data || error.message); // 👈 Más detalles
+        setError("Error al registrar. Verifica los datos e intenta nuevamente.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -77,6 +95,9 @@ const SellerRegistration = () => {
         totalSteps={totalSteps} 
         steps={['Información de la tienda', 'Documentación legal', 'Confirmación']}
       />
+
+      {error && <div className="error-message">{error}</div>}
+      {isSubmitting && <div className="loading-indicator">Enviando...</div>}
 
       {!formSubmitted ? (
         <SellerRegistrationForm 

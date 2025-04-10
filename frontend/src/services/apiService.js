@@ -55,12 +55,17 @@ export const post = async (endpoint, data) => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+      console.error("Error del backend:", errorData); // 👈 Muestra detalles
+      throw new Error(
+        errorData.detail || 
+        errorData.message || 
+        JSON.stringify(errorData.errors) || // 👈 Para validaciones de campos
+        `Error ${response.status}: ${response.statusText}`
+      );
     }
-
     return await response.json();
   } catch (error) {
-    console.error(`Error posting to ${endpoint}:`, error);
+    console.error("Error en la petición:", error);
     throw error;
   }
 };
