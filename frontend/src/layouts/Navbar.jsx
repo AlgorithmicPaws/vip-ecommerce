@@ -162,12 +162,6 @@ const Navbar = () => {
                 <Link to="/catalog" className="view-all">Ver todas</Link>
               </div>
             </li>
-            <li className={isActive('/offers') ? 'active' : ''}>
-              <Link to="/offers">Ofertas</Link>
-            </li>
-            <li className={isActive('/professionals') ? 'active' : ''}>
-              <Link to="/professionals">Área Profesional</Link>
-            </li>
             <li className={isActive('/sell') ? 'active' : ''}>
               <Link to="/sell" className="sell-with-us-nav">Vende con Nosotros</Link>
             </li>
@@ -176,12 +170,6 @@ const Navbar = () => {
                 <Link to="/products">Gestión de Productos</Link>
               </li>
             )}
-            <li className={isActive('/blog') ? 'active' : ''}>
-              <Link to="/blog">Blog</Link>
-            </li>
-            <li className={isActive('/contact') ? 'active' : ''}>
-              <Link to="/contact">Contacto</Link>
-            </li>
           </ul>
         </nav>
       </header>
