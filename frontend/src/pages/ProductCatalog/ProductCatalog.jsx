@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import '../../styles/ProductCatalog.css';
+import * as productService from '../../services/productService';
 
-// Importamos los componentes 
+// Import components
 import CatalogHeader from './components/CatalogHeader';
 import CatalogSidebar from './components/CatalogSidebar';
 import CatalogContent from './components/CatalogContent';
@@ -12,73 +13,89 @@ import ProductDetailModal from './components/ProductDetailModal';
 
 const ProductCatalog = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { addToCart } = useCart();
   
-  // Estado para almacenar los productos
+  // State to store products
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
-  // Estado para filtros
+  // State for filters
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [categories, setCategories] = useState([]);
   
-  // Estado para modal de detalles
+  // State for product detail modal
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [productQuantity, setProductQuantity] = useState(1);
   
-  // Estado para mensaje de añadido al carrito
+  // State for "added to cart" message
   const [addedToCartMessage, setAddedToCartMessage] = useState({ show: false, productId: null });
 
-  // Categorías de ejemplo
-  const categories = ['Electrónica', 'Ropa', 'Hogar', 'Deportes', 'Juguetes', 'Construcción'];
-
-  // Simular carga de productos
+  // Parse query parameters
   useEffect(() => {
-    // En una app real, esto sería una llamada a la API
-    setTimeout(() => {
-      const mockProducts = [
-        { 
-          id: 1, 
-          name: 'Smartphone XYZ', 
-          price: 499.99, 
-          stock: 25, 
-          category: 'Electrónica',
-          description: 'Smartphone de última generación con cámara de alta resolución',
-          image: null,
-          seller: 'TechStore',
-          rating: 4.5
-        },
-        // ... otros productos (puedes mantener el mismo array que tenías)
-      ];
-
-      setProducts(mockProducts);
-      setFilteredProducts(mockProducts);
-      setLoading(false);
-    }, 1000);
-  }, []);
-
-  // Filtrar productos
-  useEffect(() => {
-    let result = [...products];
+    const params = new URLSearchParams(location.search);
+    const category = params.get('category');
+    const search = params.get('search');
     
-    // Filtrar por término de búsqueda
-    if (searchTerm) {
-      result = result.filter(
-        product => product.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    if (category) setCategoryFilter(category);
+    if (search) setSearchTerm(search);
+  }, [location.search]);
+
+  // Load products from API
+  useEffect(() => {
+    const loadProducts = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // First load categories
+        const categoriesResponse = await productService.getCategories();
+        const transformedCategories = productService.transformApiCategories(categoriesResponse);
+        setCategories(transformedCategories.map(cat => cat.name));
+        
+        // Then load products with any applied filters
+        const options = {};
+        if (categoryFilter) {
+          const categoryId = transformedCategories.find(
+            cat => cat.name === categoryFilter
+          )?.id;
+          if (categoryId) options.categoryId = categoryId;
+        }
+        
+        const productsData = await productService.getAllProducts(options);
+        setProducts(productsData);
+        setFilteredProducts(productsData);
+      } catch (err) {
+        console.error('Error loading products:', err);
+        setError('Failed to load products. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadProducts();
+  }, [categoryFilter]); // Reload when category filter changes
+
+  // Filter products based on search term
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredProducts(products);
+      return;
     }
     
-    // Filtrar por categoría
-    if (categoryFilter) {
-      result = result.filter(product => product.category === categoryFilter);
-    }
+    const filtered = products.filter(product => 
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     
-    setFilteredProducts(result);
-  }, [searchTerm, categoryFilter, products]);
+    setFilteredProducts(filtered);
+  }, [searchTerm, products]);
 
-  // Auto-ocultar mensaje de "añadido al carrito" después de 3 segundos
+  // Auto-hide "added to cart" message after 3 seconds
   useEffect(() => {
     if (addedToCartMessage.show) {
       const timer = setTimeout(() => {
@@ -89,36 +106,36 @@ const ProductCatalog = () => {
     }
   }, [addedToCartMessage]);
 
-  // Manejar cambio en el input de búsqueda
+  // Handle search change
   const handleSearchChange = (term) => {
     setSearchTerm(term);
   };
 
-  // Manejar cambio en el filtro de categoría
+  // Handle category change
   const handleCategoryChange = (category) => {
     setCategoryFilter(category);
   };
 
-  // Abrir modal de detalles del producto
+  // Open product detail modal
   const handleProductClick = (product) => {
     setSelectedProduct(product);
     setProductQuantity(1);
     setShowDetailModal(true);
   };
 
-  // Añadir producto al carrito desde la tarjeta
+  // Add product to cart from card
   const handleAddToCart = (e, product) => {
-    e.stopPropagation(); // Evitar abrir el modal
+    e.stopPropagation(); // Prevent opening the modal
     addToCart(product, 1);
     setAddedToCartMessage({ show: true, productId: product.id });
   };
 
-  // Ir al carrito
+  // Go to cart
   const handleGoToCart = () => {
     navigate('/cart');
   };
 
-  // Manejar cambios en la cantidad de producto en el modal
+  // Handle quantity change in modal
   const handleQuantityChange = (operation) => {
     if (operation === 'increase' && productQuantity < selectedProduct.stock) {
       setProductQuantity(prev => prev + 1);
@@ -127,21 +144,21 @@ const ProductCatalog = () => {
     }
   };
 
-  // Añadir producto al carrito desde el modal
+  // Add product to cart from modal
   const handleAddToCartFromModal = () => {
     addToCart(selectedProduct, productQuantity);
     setShowDetailModal(false);
     setAddedToCartMessage({ show: true, productId: selectedProduct.id });
   };
 
-  // Comprar ahora (va directamente al carrito)
+  // Buy now (goes directly to cart)
   const handleBuyNow = () => {
     addToCart(selectedProduct, productQuantity);
     setShowDetailModal(false);
     navigate('/cart');
   };
 
-  // Cerrar modal
+  // Close modal
   const handleCloseModal = () => {
     setShowDetailModal(false);
   };
@@ -166,6 +183,7 @@ const ProductCatalog = () => {
           onProductClick={handleProductClick}
           onAddToCart={handleAddToCart}
           addedToCartMessage={addedToCartMessage}
+          error={error}
         />
       </div>
       
