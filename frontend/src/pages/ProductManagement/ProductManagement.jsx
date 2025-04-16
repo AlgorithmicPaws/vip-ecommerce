@@ -1,15 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import ManagementSidebar from './components/ManagementSidebar';
 import ProductsTable from './components/ProductsTable';
 import ProductForm from './components/ProductForm';
 import ConfirmationModal from './subcomponents/ConfirmationModal';
+import * as productService from '../../services/productService';
+import { getImageUrl } from '../../services/fileService';
 import '../../styles/ProductManagement.css';
 
 const ProductManagement = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated, isSeller, user } = useAuth();
+  
   // Estado para almacenar los productos
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   // Estado para búsqueda y filtros
   const [searchTerm, setSearchTerm] = useState('');
@@ -24,66 +32,63 @@ const ProductManagement = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
 
-  // Categorías de ejemplo
-  const categories = ['Electrónica', 'Ropa', 'Hogar', 'Deportes', 'Juguetes', 'Construcción'];
+  // Categorías recibidas de la API
+  const [categories, setCategories] = useState([]);
+  const [categoryNames, setCategoryNames] = useState([]);
 
-  // Cargar productos iniciales
+  // Verificar autenticación y rol
   useEffect(() => {
-    // Simulación de carga desde API
-    setLoading(true);
-    setTimeout(() => {
-      const mockProducts = [
-        { 
-          id: 1, 
-          name: 'Smartphone XYZ', 
-          price: 499.99, 
-          stock: 25, 
-          category: 'Electrónica',
-          description: 'Smartphone de última generación con cámara de alta resolución',
-          image: null
-        },
-        { 
-          id: 2, 
-          name: 'Laptop Pro', 
-          price: 1299.99, 
-          stock: 10, 
-          category: 'Electrónica',
-          description: 'Laptop potente para trabajo profesional y gaming',
-          image: null
-        },
-        { 
-          id: 3, 
-          name: 'Zapatillas Runner', 
-          price: 89.99, 
-          stock: 50, 
-          category: 'Deportes',
-          description: 'Zapatillas cómodas para correr largas distancias',
-          image: null
-        },
-        { 
-          id: 4, 
-          name: 'Camiseta Casual', 
-          price: 24.99, 
-          stock: 100, 
-          category: 'Ropa',
-          description: 'Camiseta de algodón 100%, disponible en varios colores',
-          image: null
-        },
-        { 
-          id: 5, 
-          name: 'Juego de Sartenes', 
-          price: 79.99, 
-          stock: 15, 
-          category: 'Hogar',
-          description: 'Set de 3 sartenes antiadherentes de alta calidad',
-          image: null
-        }
-      ];
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: { pathname: '/products' } } });
+    } else if (!isSeller) {
+      navigate('/');
+    }
+  }, [isAuthenticated, isSeller, navigate]);
 
-      setProducts(mockProducts);
-      setFilteredProducts(mockProducts);
-      setLoading(false);
-    }, 1000);
+  // Procesar productos para asegurar que las imágenes tengan URLs completas
+  const processProductImages = (products) => {
+    return products.map(product => ({
+      ...product,
+      // Asegurar que la imagen tenga la URL completa para acceder desde el backend
+      image: product.image ? getImageUrl(product.image) : null
+    }));
+  };
+
+  // Cargar productos y categorías
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Cargar categorías
+        const categoriesData = await productService.getCategories();
+        const transformedCategories = productService.transformApiCategories(categoriesData);
+        setCategories(transformedCategories);
+        setCategoryNames(transformedCategories.map(cat => cat.name));
+        
+        // Cargar productos del vendedor
+        const productsData = await productService.getSellerProducts();
+        
+        // Transformar datos de la API al formato del componente
+        let transformedProducts = productsData.map(product => 
+          productService.transformApiProduct(product)
+        );
+        
+        // Procesar las imágenes para asegurar que tengan URLs completas
+        transformedProducts = processProductImages(transformedProducts);
+        
+        setProducts(transformedProducts);
+        setFilteredProducts(transformedProducts);
+      } catch (err) {
+        console.error('Error al cargar datos:', err);
+        setError('Error al cargar los productos. Por favor, intente de nuevo más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
   }, []);
 
   // Filtrar productos cuando cambian los filtros
@@ -133,35 +138,93 @@ const ProductManagement = () => {
   };
 
   // Eliminar producto
-  const handleDeleteProduct = () => {
-    setProducts(products.filter(product => product.id !== productToDelete.id));
-    setShowDeleteConfirmation(false);
-    setProductToDelete(null);
+  const handleDeleteProduct = async () => {
+    setLoading(true);
+    try {
+      await productService.deleteProduct(productToDelete.id);
+      
+      // Actualizar estado local tras eliminar con éxito
+      setProducts(products.filter(product => product.id !== productToDelete.id));
+      setShowDeleteConfirmation(false);
+      setProductToDelete(null);
+    } catch (err) {
+      console.error('Error al eliminar producto:', err);
+      setError('Error al eliminar el producto. Por favor, intente de nuevo más tarde.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Guardar nuevo producto
-  const handleSaveNewProduct = (productData) => {
-    const newId = Math.max(...products.map(p => p.id), 0) + 1;
-    const newProduct = {
-      ...productData,
-      id: newId,
-      price: parseFloat(productData.price),
-      stock: parseInt(productData.stock)
-    };
-    
-    setProducts([...products, newProduct]);
-    setShowAddModal(false);
+  const handleSaveNewProduct = async (productData) => {
+    setLoading(true);
+    try {
+      // Obtener IDs de categorías seleccionadas
+      const categoryId = categories.find(cat => cat.name === productData.category)?.id;
+      const dataWithCategoryIds = {
+        ...productData,
+        categoryIds: categoryId ? [categoryId] : []
+      };
+      
+      const response = await productService.createProduct(dataWithCategoryIds);
+      
+      // Transformar respuesta de la API al formato del componente
+      let newProduct = productService.transformApiProduct(response);
+      
+      // Asegurar URL completa para la imagen
+      newProduct = {
+        ...newProduct,
+        image: newProduct.image ? getImageUrl(newProduct.image) : null
+      };
+      
+      // Actualizar estado local
+      setProducts([...products, newProduct]);
+      setShowAddModal(false);
+    } catch (err) {
+      console.error('Error al crear producto:', err);
+      setError('Error al crear el producto. Por favor, intente de nuevo más tarde.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Actualizar producto existente
-  const handleUpdateProduct = (productData) => {
-    const updatedProducts = products.map(product => 
-      product.id === productData.id ? productData : product
-    );
-    
-    setProducts(updatedProducts);
-    setShowEditModal(false);
-    setCurrentProduct(null);
+  const handleUpdateProduct = async (productData) => {
+    setLoading(true);
+    try {
+      // Obtener IDs de categorías seleccionadas
+      const categoryId = categories.find(cat => cat.name === productData.category)?.id;
+      const dataWithCategoryIds = {
+        ...productData,
+        categoryIds: categoryId ? [categoryId] : []
+      };
+      
+      await productService.updateProduct(productData.id, dataWithCategoryIds);
+      
+      // Si hay una nueva imagen, la añadimos
+      if (productData.image && productData.image !== currentProduct.image) {
+        await productService.addProductImage(productData.id, productData.image);
+      }
+      
+      // Actualizar estado local
+      const updatedProduct = {
+        ...productData,
+        image: productData.image ? getImageUrl(productData.image) : null
+      };
+      
+      const updatedProducts = products.map(product => 
+        product.id === productData.id ? updatedProduct : product
+      );
+      
+      setProducts(updatedProducts);
+      setShowEditModal(false);
+      setCurrentProduct(null);
+    } catch (err) {
+      console.error('Error al actualizar producto:', err);
+      setError('Error al actualizar el producto. Por favor, intente de nuevo más tarde.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Cerrar modales
@@ -179,10 +242,18 @@ const ProductManagement = () => {
         <header className="content-header">
           <h1>Administración de Productos</h1>
           <div className="user-info">
-            <span>Juan Pérez</span>
-            <div className="user-avatar">JP</div>
+            <span>{user?.first_name} {user?.last_name}</span>
+            <div className="user-avatar">
+              {user?.first_name?.[0]}{user?.last_name?.[0]}
+            </div>
           </div>
         </header>
+        
+        {error && (
+          <div className="error-message" style={{ padding: '10px', backgroundColor: '#f8d7da', color: '#721c24', borderRadius: '5px', margin: '0 0 20px' }}>
+            {error}
+          </div>
+        )}
         
         <ProductsTable 
           products={filteredProducts}
@@ -192,7 +263,7 @@ const ProductManagement = () => {
           onDeleteProduct={handleDeleteConfirm}
           onSearchChange={handleSearchChange}
           onCategoryChange={handleCategoryChange}
-          categories={categories}
+          categories={categoryNames}
           searchTerm={searchTerm}
           categoryFilter={categoryFilter}
         />
@@ -202,7 +273,7 @@ const ProductManagement = () => {
           <ProductForm 
             onSave={handleSaveNewProduct}
             onCancel={handleCloseModal}
-            categories={categories}
+            categories={categoryNames}
             title="Añadir Nuevo Producto"
           />
         )}
@@ -213,7 +284,7 @@ const ProductManagement = () => {
             product={currentProduct}
             onSave={handleUpdateProduct}
             onCancel={handleCloseModal}
-            categories={categories}
+            categories={categoryNames}
             title="Editar Producto"
           />
         )}

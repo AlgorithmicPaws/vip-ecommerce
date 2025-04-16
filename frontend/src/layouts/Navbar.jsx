@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../pages/CartContext';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { totalItems } = useCart();
+  const { isAuthenticated, user, logout, isSeller } = useAuth();
   
   // Estado para control de menú móvil
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -61,6 +63,11 @@ const Navbar = () => {
     }
     return location.pathname.startsWith(path);
   };
+
+  // Handle logout
+  const handleLogout = () => {
+    logout();
+  };
   
   return (
     <>
@@ -85,15 +92,24 @@ const Navbar = () => {
           </form>
           
           <div className="navbar-actions">
-            <Link to="/sell" className="sell-btn">
-              <span className="sell-icon">🏪</span>
-              <span className="sell-text">Vende con nosotros</span>
-            </Link>
+            {isSeller && (
+              <Link to="/products" className="sell-btn">
+                <span className="sell-icon">🏪</span>
+                <span className="sell-text">Mis Productos</span>
+              </Link>
+            )}
+            
+            {!isSeller && (
+              <Link to="/sell" className="sell-btn">
+                <span className="sell-icon">🏪</span>
+                <span className="sell-text">Vende con nosotros</span>
+              </Link>
+            )}
             
             <div className="action-links">
-              <Link to="/profile" className="action-link">
+              <Link to={isAuthenticated ? "/profile" : "/login"} className="action-link">
                 <span className="action-icon">👤</span>
-                <span className="action-text">Mi Cuenta</span>
+                <span className="action-text">{isAuthenticated ? (user?.first_name || 'Mi Cuenta') : 'Iniciar Sesión'}</span>
               </Link>
               
               <Link to="/cart" className="action-link cart-link">
@@ -103,10 +119,16 @@ const Navbar = () => {
               </Link>
             </div>
             
-            <div className="auth-buttons">
-              <Link to="/login" className="login-btn">Iniciar Sesión</Link>
-              <Link to="/register" className="register-btn">Registro</Link>
-            </div>
+            {!isAuthenticated ? (
+              <div className="auth-buttons">
+                <Link to="/login" className="login-btn">Iniciar Sesión</Link>
+                <Link to="/register" className="register-btn">Registro</Link>
+              </div>
+            ) : (
+              <div className="auth-buttons">
+                <button onClick={handleLogout} className="login-btn logout-btn">Cerrar Sesión</button>
+              </div>
+            )}
             
             <button 
               className="mobile-menu-toggle"
@@ -149,6 +171,11 @@ const Navbar = () => {
             <li className={isActive('/sell') ? 'active' : ''}>
               <Link to="/sell" className="sell-with-us-nav">Vende con Nosotros</Link>
             </li>
+            {isSeller && (
+              <li className={isActive('/products') ? 'active' : ''}>
+                <Link to="/products">Gestión de Productos</Link>
+              </li>
+            )}
             <li className={isActive('/blog') ? 'active' : ''}>
               <Link to="/blog">Blog</Link>
             </li>

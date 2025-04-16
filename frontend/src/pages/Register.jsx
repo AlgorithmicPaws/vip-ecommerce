@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { registerUser } from '../services/userService';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Register.css';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { register, isAuthenticated, error: authError } = useAuth();
   
   // Form state
   const [formData, setFormData] = useState({
+
     firstName: '',
     lastName: '',
     email: '',
@@ -22,17 +24,23 @@ const Register = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // If user is already authenticated, redirect to home page
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
     
     // Clear error when user starts typing again
     if (error) setError('');
   };
-
   const validateForm = () => {
     // Basic validation
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
@@ -80,8 +88,8 @@ const Register = () => {
     setError('');
     
     try {
-      // Call the registration API
-      const response = await registerUser(userData);
+      // Call register function from auth context
+      await register(userData);
       
       // Show success message
       setSuccessMessage('¡Registro exitoso! Redirigiendo al inicio de sesión...');
@@ -102,9 +110,9 @@ const Register = () => {
         navigate('/login');
       }, 2000);
       
-    } catch (error) {
+    } catch (err) {
       // Show error message
-      setError(error.message || 'Hubo un error durante el registro. Por favor, inténtelo de nuevo.');
+      setError(err.message || 'Hubo un error durante el registro. Por favor, inténtelo de nuevo.');
     } finally {
       setIsLoading(false);
     }
@@ -123,9 +131,9 @@ const Register = () => {
         )}
         
         {/* Error message */}
-        {error && (
+        {(error || authError) && (
           <div className="error-message">
-            {error}
+            {error || authError}
           </div>
         )}
         

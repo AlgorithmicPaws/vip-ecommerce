@@ -14,6 +14,11 @@ const ProductDetailModal = ({
   const navigate = useNavigate();
   const { isInCart, getItemQuantity } = useCart();
 
+  // Format price with 2 decimal places
+  const formatPrice = (price) => {
+    return typeof price === 'number' ? price.toFixed(2) : '0.00';
+  };
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content product-detail-modal" onClick={e => e.stopPropagation()}>
@@ -40,14 +45,14 @@ const ProductDetailModal = ({
               <div className="detail-rating">
                 <ProductRating rating={product.rating} showNumber />
               </div>
-              <p className="detail-price">${product.price.toFixed(2)}</p>
+              <p className="detail-price">${formatPrice(product.price)}</p>
               <p className="detail-stock">
                 Stock: {product.stock} unidades
                 {product.stock < 10 && (
                   <span className="stock-warning"> - ¡Pocas unidades disponibles!</span>
                 )}
               </p>
-              <p className="detail-description">{product.description}</p>
+              <p className="detail-description">{product.description || "No hay descripción disponible para este producto."}</p>
               
               <div className="product-quantity">
                 <label htmlFor="quantity">Cantidad:</label>

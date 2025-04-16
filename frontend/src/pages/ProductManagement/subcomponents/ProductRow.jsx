@@ -1,6 +1,15 @@
 import React from 'react';
 
 const ProductRow = ({ product, onEdit, onDelete }) => {
+  // Ensure price is a number before using toFixed
+  const formatPrice = (price) => {
+    // Convert to number if it's a string
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    
+    // Check if it's a valid number before using toFixed
+    return !isNaN(numPrice) ? numPrice.toFixed(2) : '0.00';
+  };
+
   return (
     <tr>
       <td>{product.id}</td>
@@ -16,7 +25,7 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
         </div>
       </td>
       <td>{product.name}</td>
-      <td>${product.price.toFixed(2)}</td>
+      <td>${formatPrice(product.price)}</td>
       <td>{product.stock}</td>
       <td>{product.category}</td>
       <td>

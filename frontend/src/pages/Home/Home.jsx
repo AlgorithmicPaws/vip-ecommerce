@@ -15,25 +15,12 @@ import Blog from "./Blog";
 import Marcas from "./Marcas";
 import Beneficios from "./Beneficios";
 import PreguntasFrecuentes from "./PreguntasFrecuentes";
+import NewsLetter from "./NewsLetter";
 import SellWithUs from "./SellWithUs"; // Importamos el nuevo componente
 
 const Home = () => {
   const navigate = useNavigate();
   const { totalItems } = useCart();
-  
-  // Suscripción al newsletter
-  const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    // Aquí iría la lógica de suscripción real
-    if (email && email.includes('@')) {
-      setIsSubscribed(true);
-      setEmail('');
-      setTimeout(() => setIsSubscribed(false), 5000);
-    }
-  };
 
   return (
     <div className="home-container">
@@ -78,28 +65,7 @@ const Home = () => {
       <Marcas/>
       
       {/* Newsletter */}
-      <section className="newsletter-section">
-        <div className="newsletter-content">
-          <h2>Suscríbete a nuestro boletín</h2>
-          <p>Recibe las últimas ofertas, novedades y consejos para tus proyectos</p>
-          {isSubscribed ? (
-            <div className="subscribe-success">
-              ¡Gracias por suscribirte! Pronto recibirás nuestras novedades.
-            </div>
-          ) : (
-            <form onSubmit={handleSubscribe} className="subscribe-form">
-              <input 
-                type="email" 
-                placeholder="Tu correo electrónico" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required 
-              />
-              <button type="submit" className="subscribe-btn">Suscribirse</button>
-            </form>
-          )}
-        </div>
-      </section>
+      <NewsLetter/>
       
       {/* Preguntas Frecuentes */}
       <PreguntasFrecuentes/>

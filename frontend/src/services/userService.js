@@ -1,11 +1,9 @@
 // src/services/userService.js
+import * as api from './apiService';
 
 /**
  * Service for handling user-related API operations
  */
-
-// Base API URL - In a real application, this would come from environment variables
-const API_URL = 'http://localhost:8000';
 
 /**
  * Register a new user
@@ -13,47 +11,56 @@ const API_URL = 'http://localhost:8000';
  * @returns {Promise} - Response from the API
  */
 export const registerUser = async (userData) => {
-  try {
-    const response = await fetch(`${API_URL}/users/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
-
-    // Check if the request was successful
-    if (!response.ok) {
-      // Parse error response if available
-      try {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Registration failed');
-      } catch (e) {
-        throw new Error(`Registration failed: ${response.status}`);
-      }
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error during registration:', error);
-    throw error;
-  }
-};
-
-/**
- * Login user
- * @param {Object} credentials - User login credentials
- * @returns {Promise} - Response from the API
- */
-export const loginUser = async (credentials) => {
-  // Implementation for future use
+  return api.post('/users/', userData);
 };
 
 /**
  * Get user profile
- * @param {string} token - Authentication token
+ * @returns {Promise} - Response from the API with user profile
+ */
+export const getUserProfile = async () => {
+  return api.get('/users/me');
+};
+
+/**
+ * Update user profile
+ * @param {Object} userData - Updated user data
  * @returns {Promise} - Response from the API
  */
-export const getUserProfile = async (token) => {
-  // Implementation for future use
+export const updateUserProfile = async (userData) => {
+  return api.put('/users/me', userData);
+};
+
+/**
+ * Delete user account
+ * @returns {Promise} - Response from the API
+ */
+export const deleteUserAccount = async () => {
+  return api.del('/users/me');
+};
+
+/**
+ * Register as a seller
+ * @param {Object} sellerData - Seller registration data
+ * @returns {Promise} - Response from the API
+ */
+export const registerAsSeller = async (sellerData) => {
+  return api.post('/sellers/', sellerData);
+};
+
+/**
+ * Get seller profile
+ * @returns {Promise} - Response from the API with seller profile
+ */
+export const getSellerProfile = async () => {
+  return api.get('/sellers/me');
+};
+
+/**
+ * Update seller profile
+ * @param {Object} sellerData - Updated seller data
+ * @returns {Promise} - Response from the API
+ */
+export const updateSellerProfile = async (sellerData) => {
+  return api.put('/sellers/me', sellerData);
 };

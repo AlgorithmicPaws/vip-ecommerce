@@ -8,7 +8,7 @@ const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage })
   const { isInCart, getItemQuantity } = useCart();
 
   const handleCardClick = (e) => {
-    // Evitar abrir modal si se hizo clic en un botón
+    // Avoid opening modal if clicked on a button
     if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
       return;
     }
@@ -17,13 +17,18 @@ const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage })
   };
 
   const handleAddToCart = (e) => {
-    e.stopPropagation(); // Evitar abrir el modal
+    e.stopPropagation(); // Prevent opening the modal
     onAddToCart(e, product);
   };
 
   const handleViewCart = (e) => {
     e.stopPropagation();
     navigate('/cart');
+  };
+
+  // Format price with 2 decimal places
+  const formatPrice = (price) => {
+    return typeof price === 'number' ? price.toFixed(2) : '0.00';
   };
 
   return (
@@ -50,7 +55,7 @@ const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage })
         <h3 className="product-name">{product.name}</h3>
         <p className="product-seller">Vendido por: {product.seller}</p>
         <ProductRating rating={product.rating} showNumber />
-        <p className="product-price">${product.price.toFixed(2)}</p>
+        <p className="product-price">${formatPrice(product.price)}</p>
         <div className="product-actions">
           {isInCart(product.id) ? (
             <div className="in-cart-info">
