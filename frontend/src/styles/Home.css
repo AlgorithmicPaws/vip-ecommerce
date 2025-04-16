@@ -628,225 +628,32 @@ section {
 }
 
 /* Sección de Marcas */
-/* Estilos adicionales para la sección de marcas mejorada */
-/* Añade estos estilos a tu archivo Home.css existente */
-
 .brands-section {
-  background-color: #ffffff;
-  padding: 70px 5%;
+  background-color: white;
   text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.brands-subtitle {
-  color: #666;
-  font-size: 1.1rem;
-  max-width: 700px;
-  margin: 0 auto 40px;
-}
-
-.brands-container {
-  position: relative;
-  max-width: 1200px;
-  margin: 0 auto;
-  overflow: hidden;
-  padding: 20px 0;
 }
 
 .brands-slider {
   display: flex;
-  gap: 30px;
-  transition: transform 0.6s ease-in-out;
-  padding: 20px 0;
-}
-
-.brand-card {
-  min-width: 220px;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-  padding: 25px 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.brand-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.brand-logo {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 20px;
-  border: 2px solid transparent;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.3s ease;
-}
-
-.brand-card:hover .brand-logo {
-  transform: scale(1.1);
-}
-
-.brand-logo img {
-  max-width: 70%;
-  max-height: 70%;
-  object-fit: contain;
-}
-
-.brand-letter {
-  font-size: 2.5rem;
-  font-weight: 700;
-}
-
-.brand-info h3 {
-  margin: 0 0 10px;
-  font-size: 1.3rem;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.brand-info p {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0;
-  line-height: 1.5;
-  max-width: 200px;
-}
-
-.brands-navigation {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
+  align-items: center;
+  gap: 40px;
   margin-top: 30px;
 }
 
-.nav-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #ddd;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+.brand-item {
+  padding: 20px;
+  opacity: 0.7;
+  transition: opacity 0.3s, transform 0.3s;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #555;
 }
 
-.nav-dot.active {
-  background-color: #007bff;
-  transform: scale(1.3);
-}
-
-.brands-footer {
-  margin-top: 40px;
-  color: #666;
-  font-size: 1rem;
-}
-
-.brands-footer a {
-  color: #007bff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.brands-footer a:hover {
-  color: #0056b3;
-  text-decoration: underline;
-}
-
-/* Añadir un fondo sutil para mejorar contraste */
-.brands-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 200px;
-  background: linear-gradient(180deg, rgba(240,247,255,0.5) 0%, rgba(255,255,255,0) 100%);
-  z-index: 0;
-}
-
-/* Efecto de brillo en hover */
-.brand-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.6s ease;
-  transform: scale(0.5);
-  z-index: -1;
-  pointer-events: none;
-}
-
-.brand-card:hover::after {
+.brand-item:hover {
   opacity: 1;
-  transform: scale(1);
-}
-
-/* Responsive */
-@media (max-width: 992px) {
-  .brands-container {
-    padding: 10px 0;
-  }
-  
-  .brand-card {
-    min-width: 180px;
-  }
-}
-
-@media (max-width: 768px) {
-  .brands-slider {
-    gap: 20px;
-  }
-  
-  .brand-card {
-    min-width: 160px;
-    padding: 20px 10px;
-  }
-  
-  .brand-logo {
-    width: 70px;
-    height: 70px;
-  }
-  
-  .brand-info h3 {
-    font-size: 1.1rem;
-  }
-  
-  .brand-info p {
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .brands-slider {
-    gap: 15px;
-  }
-  
-  .brand-card {
-    min-width: 140px;
-  }
-  
-  .brand-logo {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .brand-letter {
-    font-size: 2rem;
-  }
+  transform: scale(1.1);
 }
 
 /* Sección Newsletter */

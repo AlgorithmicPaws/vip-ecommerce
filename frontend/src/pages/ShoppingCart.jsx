@@ -43,9 +43,9 @@ const ShoppingCart = () => {
 
   // Navegar a checkout (simulado)
   const handleCheckout = () => {
-    
+    alert('Procesando pedido...');
     // Aquí iría la lógica para dirigir a la página de pago
-     navigate('/checkout');
+    // navigate('/checkout');
   };
 
   return (
@@ -102,7 +102,7 @@ const ShoppingCart = () => {
                 onClick={handleCheckout}
                 disabled={isEmpty}
               >
-                Proceder a la cotización
+                Proceder al Pago
               </button>
               
               <div className="payment-methods">

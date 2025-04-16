@@ -55,9 +55,17 @@ const Home = () => {
       {/* Sección Vende con Nosotros */}
       <SellWithUs navigate={navigate} />
       
+      {/* Herramientas Rápidas */}
+      <HerramientasRapidas navigate={navigate}/>
+      
+      {/* Blog/Artículos */}
+      <Blog navigate={navigate}/>
+      
       {/* Marcas */}
       <Marcas/>
       
+      {/* Newsletter */}
+      <NewsLetter/>
       
       {/* Preguntas Frecuentes */}
       <PreguntasFrecuentes/>

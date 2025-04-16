@@ -15,7 +15,6 @@ import SellerRegistration from "./pages/SellerRegistration";
 import BrandsPage from "./pages/Brands/BrandsPage";
 import BrandCatalogPage from "./pages/Brands/BrandCatalogPage";
 import ScrollToTop from "./ScrollToTop";
-import Checkout from "./pages/ShoppingCart/Checkout";
 
 const App = () => {
   return (
@@ -45,9 +44,6 @@ const App = () => {
               <Route element={<ProtectedRoute requiredRole="seller" />}>
                 <Route path="/products" element={<ProductManagement />} />
               </Route>
-
-              <Route path="/cart" element={<ShoppingCart />} />
-              <Route path="/checkout" element={<Checkout />} />
               
               {/* Fallback route */}
               <Route path="*" element={<Home />} />
