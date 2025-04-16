@@ -25,5 +25,5 @@ dist-ssr
 .qodo
 venv/
 __pycache__/
-**/static/`
+**/static/
 .vite
