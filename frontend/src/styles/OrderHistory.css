@@ -1,0 +1,453 @@
+/* Order History Page Styles */
+.order-history-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .order-history-content {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .order-history-content h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+  
+  /* Orders List */
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Order Card */
+  .order-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .order-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .order-header-left h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .order-date {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .order-header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+  
+  .order-status, .payment-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  /* Status Colors */
+  .status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .status-processing {
+    background-color: #cff4fc;
+    color: #055160;
+  }
+  
+  .status-shipped {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+  
+  .status-delivered {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #0f5132;
+  }
+  
+  .status-cancelled {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+  
+  /* Payment Status Colors */
+  .payment-pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .payment-paid {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+  
+  .payment-refunded {
+    background-color: #cff4fc;
+    color: #055160;
+  }
+  
+  .payment-cancelled {
+    background-color: #f8d7da;
+    color: #842029;
+  }
+  
+  .order-summary {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .items-count {
+    color: #666;
+  }
+  
+  .order-total {
+    font-weight: bold;
+  }
+  
+  /* Order Items List */
+  .order-items-list h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    color: #333;
+  }
+  
+  .items-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    gap: 1rem;
+  }
+  
+  .item-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  
+  .item-name {
+    color: #3f81ce;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .item-name:hover {
+    text-decoration: underline;
+  }
+  
+  .item-details {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .item-subtotal {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .more-items-note {
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+  
+  /* Order Details */
+  .order-details {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .details-section {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+  }
+  
+  .details-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    color: #333;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+  }
+  
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  
+  .detail-label {
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  .detail-value {
+    font-weight: 500;
+  }
+  
+  .address-box {
+    padding: 0.8rem;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #eee;
+  }
+  
+  .address-box p {
+    margin: 0.3rem 0;
+  }
+  
+  .cost-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .cost-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #ddd;
+  }
+  
+  .cost-row.total {
+    font-weight: bold;
+    border-top: 1px solid #ddd;
+    border-bottom: none;
+    padding-top: 0.8rem;
+    margin-top: 0.3rem;
+  }
+  
+  .notes-box {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #eee;
+    padding: 0.8rem;
+  }
+  
+  .bank-info-box {
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 1rem;
+  }
+  
+  .bank-details {
+    background-color: #f0f8ff;
+    border-left: 3px solid #3f81ce;
+    padding: 1rem;
+  }
+  
+  /* Order Actions */
+  .order-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+  }
+  
+  .order-actions button, 
+  .order-actions a {
+    padding: 0.6rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .details-toggle-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .details-toggle-btn:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .track-order-btn {
+    background-color: #e8f4fd;
+    color: #0077cc;
+    border: 1px solid #b3d7ff;
+  }
+  
+  .track-order-btn:hover {
+    background-color: #d1e9ff;
+  }
+  
+  .cancel-order-btn {
+    background-color: #fff5f5;
+    color: #e53e3e;
+    border: 1px solid #fed7d7;
+  }
+  
+  .cancel-order-btn:hover {
+    background-color: #fee2e2;
+  }
+  
+  .confirm-payment-btn {
+    background-color: #f0fff4;
+    color: #38a169;
+    border: 1px solid #c6f6d5;
+  }
+  
+  .confirm-payment-btn:hover {
+    background-color: #dcfce7;
+  }
+  
+  .view-order-btn {
+    background-color: #3f81ce;
+    color: white;
+    border: none;
+  }
+  
+  .view-order-btn:hover {
+    background-color: #3670b9;
+  }
+  
+  /* Error and Empty States */
+  .error-message {
+    padding: 2rem;
+    text-align: center;
+    background-color: #fff5f5;
+    border-radius: 8px;
+    border: 1px solid #fed7d7;
+    margin: 2rem 0;
+  }
+  
+  .error-message p {
+    color: #e53e3e;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .retry-btn {
+    padding: 0.6rem 1.5rem;
+    background-color: #3f81ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .retry-btn:hover {
+    background-color: #3670b9;
+  }
+  
+  .no-orders {
+    padding: 3rem;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 2rem 0;
+  }
+  
+  .no-orders h2 {
+    color: #333;
+    margin-bottom: 1rem;
+  }
+  
+  .no-orders p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .shop-now-btn {
+    padding: 0.8rem 2rem;
+    background-color: #3f81ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .shop-now-btn:hover {
+    background-color: #3670b9;
+  }
+  
+  .order-history-actions {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .continue-shopping-btn {
+    padding: 0.8rem 2rem;
+    background-color: #3f81ce;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+  }
+  
+  .continue-shopping-btn:hover {
+    background-color: #3670b9;
+  }

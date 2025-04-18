@@ -14,6 +14,9 @@ import ShoppingCart from "./pages/ShoppingCart";
 import SellerRegistration from "./pages/SellerRegistration";
 import BrandsPage from "./pages/Brands/BrandsPage";
 import BrandCatalogPage from "./pages/Brands/BrandCatalogPage";
+import OrderHistory from "./pages/OrderHistory/OrderHistory";
+import OrderDetail from "./pages/OrderDetail/OrderDetail";
+import PaymentConfirmation from "./pages/PaymentConfirmation/PaymentConfirmation";
 import ScrollToTop from "./ScrollToTop";
 
 const App = () => {
@@ -38,6 +41,10 @@ const App = () => {
               <Route element={<ProtectedRoute />}>
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/sell" element={<SellerRegistration />} />
+                {/* Order management routes */}
+                <Route path="/orders" element={<OrderHistory />} />
+                <Route path="/orders/:orderId" element={<OrderDetail />} />
+                <Route path="/payment-confirmation/:orderId" element={<PaymentConfirmation />} />
               </Route>
               
               {/* Protected routes - require seller role */}

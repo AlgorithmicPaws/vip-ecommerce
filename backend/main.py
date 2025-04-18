@@ -11,7 +11,7 @@ from services.seller_service.router import router as seller_router
 from services.product_service.router import router as product_router
 from services.product_service.category_router import router as category_router
 from services.file_service.router import router as file_router
-
+from services.order_service.router import router as order_router 
 # Create the FastAPI app
 app = FastAPI(
     title="E-Commerce API",
@@ -49,7 +49,8 @@ app.include_router(user_info_router)
 app.include_router(seller_router)
 app.include_router(product_router)
 app.include_router(category_router)
-app.include_router(file_router)  # Add the file service router
+app.include_router(file_router)
+app.include_router(order_router)  # Add the order service router
 
 # Root endpoint
 @app.get("/")

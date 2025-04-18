@@ -6,6 +6,9 @@ import * as pdfService from './pdfService';
  * Service for handling email-related operations
  */
 
+// Test sender email for development purposes
+const DEV_SENDER_EMAIL = 'sergiojauregui0701@gmail.com';
+
 /**
  * Send an email with order confirmation and PDF invoice
  * @param {Object} orderData - Order data
@@ -20,6 +23,7 @@ export const sendOrderConfirmationEmail = async (orderData, email, pdfBlob) => {
     
     // Prepare email data
     const emailData = {
+      from: DEV_SENDER_EMAIL, // Set sender email for testing
       to: email,
       subject: `Confirmación de pedido #${orderData.order_id || orderData.id}`,
       html_content: generateOrderConfirmationHtml(orderData),
@@ -187,6 +191,7 @@ const generateOrderConfirmationHtml = (orderData) => {
 export const sendEmail = async (to, subject, htmlContent, attachments = []) => {
   try {
     const emailData = {
+      from: DEV_SENDER_EMAIL, // Set sender email for testing
       to,
       subject,
       html_content: htmlContent,

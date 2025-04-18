@@ -1,6 +1,5 @@
 // src/services/pdfService.js
 import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
 import * as authService from './authService';
 
 /**
@@ -40,52 +39,125 @@ export const generateOrderInvoice = async (orderData) => {
     
     // Customer information
     doc.text('Datos del cliente:', 20, 65);
-    doc.text(`Nombre: ${orderData.customer?.first_name || user?.first_name} ${orderData.customer?.last_name || user?.last_name}`, 20, 72);
-    doc.text(`Email: ${orderData.customer?.email || user?.email}`, 20, 79);
+    doc.text(`Nombre: ${orderData.customer?.first_name || user?.first_name || ''} ${orderData.customer?.last_name || user?.last_name || ''}`, 20, 72);
+    doc.text(`Email: ${orderData.customer?.email || user?.email || ''}`, 20, 79);
     
     // Shipping address
-    const shipAddress = orderData.shipping_address;
+    const shipAddress = orderData.shipping_address || {};
     doc.text('Dirección de envío:', 20, 92);
-    doc.text(`${shipAddress.street}`, 20, 99);
-    doc.text(`${shipAddress.city}, ${shipAddress.state} ${shipAddress.zip_code}`, 20, 106);
-    doc.text(`${shipAddress.country}`, 20, 113);
+    doc.text(`${shipAddress.street || ""}`, 20, 99);
+    doc.text(`${shipAddress.city || ""}, ${shipAddress.state || ""} ${shipAddress.zip_code || ""}`, 20, 106);
+    doc.text(`${shipAddress.country || ""}`, 20, 113);
     
-    // Order items table
-    doc.autoTable({
-      startY: 125,
-      head: [['Producto', 'Cantidad', 'Precio unidad', 'Total']],
-      body: orderData.items.map(item => [
-        item.name || `Producto #${item.product_id}`,
-        item.quantity,
-        `$${formatPrice(item.price_per_unit)}`,
-        `$${formatPrice(item.total_price)}`
-      ]),
-      foot: [
-        ['Subtotal', '', '', `$${formatPrice(orderData.subtotal)}`],
-        [orderData.discount > 0 ? 'Descuento' : '', '', '', orderData.discount > 0 ? `$${formatPrice(orderData.discount)}` : ''],
-        ['Gastos de envío', '', '', `$${formatPrice(orderData.shipping_cost)}`],
-        ['TOTAL', '', '', `$${formatPrice(orderData.total_amount)}`]
-      ],
-      footStyles: { fillColor: [240, 240, 240], fontSize: 12, fontStyle: 'bold' },
-      theme: 'grid'
-    });
+    // Order items table - using basic text instead of autoTable
+    let yPos = 130;
+    
+    // Table headers
+    doc.setFont("helvetica", "bold");
+    doc.text("Producto", 20, yPos);
+    doc.text("Cantidad", 100, yPos);
+    doc.text("Precio", 130, yPos);
+    doc.text("Total", 170, yPos);
+    yPos += 10;
+    
+    doc.setFont("helvetica", "normal");
+    
+    // Draw a line below the headers
+    doc.setLineWidth(0.5);
+    doc.line(20, yPos - 5, 190, yPos - 5);
+    
+    // Make sure we have items before adding them to the table
+    if (orderData.items && orderData.items.length > 0) {
+      // Table rows
+      orderData.items.forEach(item => {
+        // Check if we're about to overflow the page
+        if (yPos > 270) {
+          doc.addPage();
+          yPos = 20;
+        }
+        
+        const productName = item.name || `Producto #${item.product_id}`;
+        // Truncate long product names
+        const displayName = productName.length > 30 ? productName.substring(0, 27) + '...' : productName;
+        
+        doc.text(displayName, 20, yPos);
+        doc.text(String(item.quantity), 105, yPos);
+        doc.text(`$${formatPrice(item.price_per_unit)}`, 130, yPos);
+        doc.text(`$${formatPrice(item.total_price)}`, 170, yPos);
+        
+        yPos += 10;
+      });
+      
+      // Draw a line below the items
+      doc.line(20, yPos - 5, 190, yPos - 5);
+      
+      // Totals
+      yPos += 5;
+      doc.text("Subtotal:", 130, yPos);
+      doc.text(`$${formatPrice(orderData.subtotal)}`, 170, yPos);
+      
+      if (orderData.discount && orderData.discount > 0) {
+        yPos += 10;
+        doc.text("Descuento:", 130, yPos);
+        doc.text(`-$${formatPrice(orderData.discount)}`, 170, yPos);
+      }
+      
+      yPos += 10;
+      doc.text("Gastos de envío:", 130, yPos);
+      doc.text(`$${formatPrice(orderData.shipping_cost)}`, 170, yPos);
+      
+      yPos += 10;
+      doc.setFont("helvetica", "bold");
+      doc.text("TOTAL:", 130, yPos);
+      doc.text(`$${formatPrice(orderData.total_amount)}`, 170, yPos);
+      doc.setFont("helvetica", "normal");
+    } else {
+      // If there are no items, just add a simple message
+      doc.text('No hay productos en el pedido', 20, yPos);
+      yPos += 10;
+      
+      // Add totals manually
+      yPos += 10;
+      doc.text(`Subtotal: $${formatPrice(orderData.subtotal || 0)}`, 20, yPos);
+      yPos += 10;
+      
+      if (orderData.discount) {
+        doc.text(`Descuento: $${formatPrice(orderData.discount)}`, 20, yPos);
+        yPos += 10;
+      }
+      
+      doc.text(`Gastos de envío: $${formatPrice(orderData.shipping_cost || 0)}`, 20, yPos);
+      yPos += 10;
+      
+      doc.setFont("helvetica", "bold");
+      doc.text(`TOTAL: $${formatPrice(orderData.total_amount || 0)}`, 20, yPos);
+      doc.setFont("helvetica", "normal");
+    }
     
     // Add payment method information
-    const finalY = doc.lastAutoTable.finalY + 10;
-    doc.text('Método de pago: Transferencia bancaria', 20, finalY);
+    yPos += 20;
+    doc.text('Método de pago: Transferencia bancaria', 20, yPos);
     
     // Add bank transfer instructions
-    doc.text('Instrucciones de pago:', 20, finalY + 10);
-    doc.text('Banco: Bancolombia', 25, finalY + 20);
-    doc.text('Titular: ConstructMarket Colombia S.A.S', 25, finalY + 27);
-    doc.text('Cuenta Corriente Nº: 69812345678', 25, finalY + 34);
-    doc.text(`Concepto: Pedido ${orderData.order_id || orderData.id}`, 25, finalY + 41);
-    doc.text(`Importe: $${formatPrice(orderData.total_amount)}`, 25, finalY + 48);
+    yPos += 10;
+    doc.text('Instrucciones de pago:', 20, yPos);
+    yPos += 10;
+    doc.text('Banco: Bancolombia', 25, yPos);
+    yPos += 7;
+    doc.text('Titular: ConstructMarket Colombia S.A.S', 25, yPos);
+    yPos += 7;
+    doc.text('Cuenta Corriente Nº: 69812345678', 25, yPos);
+    yPos += 7;
+    doc.text(`Concepto: Pedido ${orderData.order_id || orderData.id}`, 25, yPos);
+    yPos += 7;
+    doc.text(`Importe: $${formatPrice(orderData.total_amount)}`, 25, yPos);
     
     // Add notes section if present
     if (orderData.notes) {
-      doc.text('Notas:', 20, finalY + 58);
-      doc.text(orderData.notes, 20, finalY + 65);
+      yPos += 15;
+      doc.text('Notas:', 20, yPos);
+      yPos += 7;
+      doc.text(orderData.notes, 20, yPos);
     }
     
     // Add footer with company information

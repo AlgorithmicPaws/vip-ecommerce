@@ -13,6 +13,7 @@ import CheckoutForm from './ShoppingCart/CheckoutForm';
 // Services
 import * as orderService from '../services/orderService';
 import * as pdfService from '../services/pdfService';
+// We'll try to send emails but handle failure gracefully
 import * as emailService from '../services/emailService';
 
 const ShoppingCart = () => {
@@ -31,6 +32,8 @@ const ShoppingCart = () => {
   const [orderError, setOrderError] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [orderData, setOrderData] = useState(null);
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
   // Helper function to format prices safely
   const formatPrice = (price) => {
@@ -91,6 +94,7 @@ const ShoppingCart = () => {
     
     setIsSubmitting(true);
     setOrderError(null);
+    setEmailError(false);
     
     try {
       // Prepare order data from cart and form inputs
@@ -160,19 +164,28 @@ const ShoppingCart = () => {
       setOrderId(order.order_id);
       
       // Generate invoice PDF
+      let pdfBlob = null;
       try {
-        const pdfBlob = await pdfService.generateOrderInvoice(order);
+        pdfBlob = await pdfService.generateOrderInvoice(order);
         
         // Save PDF URL for downloading
         const pdfObjectUrl = URL.createObjectURL(pdfBlob);
         setPdfUrl(pdfObjectUrl);
-        
-        // Send invoice via email
-        await emailService.sendOrderConfirmationEmail(order, formData.email, pdfBlob);
-        
       } catch (pdfError) {
         console.error('Error generating PDF:', pdfError);
         // Continue with order completion even if PDF fails
+      }
+      
+      // Try to send email but don't block checkout if it fails
+      if (pdfBlob) {
+        try {
+          await emailService.sendOrderConfirmationEmail(order, formData.email, pdfBlob);
+          setEmailSent(true);
+        } catch (emailError) {
+          console.error('Error sending email:', emailError);
+          setEmailError(true);
+          // Continue with order completion even if email fails
+        }
       }
       
       // Clear cart and complete order
@@ -210,7 +223,18 @@ const ShoppingCart = () => {
             <div className="order-confirmation-icon">✅</div>
             <h2>¡Tu pedido ha sido confirmado!</h2>
             <p>Gracias por tu compra en ConstructMarket.</p>
-            <p>Hemos enviado una confirmación del pedido y la factura a <strong>{orderData.customer.email}</strong></p>
+            
+            {emailSent ? (
+              <p>Hemos enviado una confirmación del pedido y la factura a <strong>{orderData.customer.email}</strong></p>
+            ) : (
+              <div className="email-notification" style={{ backgroundColor: '#FFF3CD', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>
+                <p>
+                  <strong>Nota:</strong> No se pudo enviar el correo electrónico de confirmación en este momento. 
+                  Puedes descargar tu factura abajo y te contactaremos pronto.
+                </p>
+              </div>
+            )}
+            
             <p>Número de pedido: <span className="order-number">{orderId}</span></p>
             
             <div className="order-summary">

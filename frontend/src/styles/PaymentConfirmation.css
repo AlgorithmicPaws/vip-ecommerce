@@ -1,0 +1,329 @@
+/* Payment Confirmation Page Styles */
+.payment-confirmation-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .payment-confirmation-content {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .payment-confirmation-breadcrumbs {
+    margin-bottom: 1.5rem;
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .payment-confirmation-breadcrumbs a {
+    color: #3f81ce;
+    text-decoration: none;
+    margin: 0 0.3rem;
+  }
+  
+  .payment-confirmation-breadcrumbs a:first-child {
+    margin-left: 0;
+  }
+  
+  .payment-confirmation-breadcrumbs a:hover {
+    text-decoration: underline;
+  }
+  
+  .payment-confirmation-content h1 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+  }
+  
+  /* Payment Confirmation Form Container */
+  .payment-confirmation-form-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .payment-confirmation-form-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Bank Details Section */
+  .bank-details-section {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .bank-details-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .bank-details-section p {
+    color: #666;
+    margin-bottom: 1rem;
+  }
+  
+  .bank-details {
+    background-color: #f0f8ff;
+    border-radius: 6px;
+    padding: 1.2rem;
+    border-left: 4px solid #3f81ce;
+    margin-top: 1.5rem;
+  }
+  
+  .bank-detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #d1e3ff;
+  }
+  
+  .bank-detail-item:last-child {
+    border-bottom: none;
+  }
+  
+  .detail-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .detail-value {
+    color: #3f81ce;
+  }
+  
+  .detail-value.highlight {
+    font-weight: 700;
+    color: #2c5282;
+    font-size: 1.1rem;
+  }
+  
+  /* Confirmation Form Section */
+  .confirmation-form-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .confirmation-form-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  .confirmation-form-section p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form-group input, .form-group textarea {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  
+  .form-group input:focus, .form-group textarea:focus {
+    border-color: #3f81ce;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(63, 129, 206, 0.2);
+  }
+  
+  .form-group input.error, .form-group textarea.error {
+    border-color: #e53e3e;
+  }
+  
+  .error-text {
+    color: #e53e3e;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .cancel-btn, .submit-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  
+  .cancel-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .cancel-btn:hover:not([disabled]) {
+    background-color: #e0e0e0;
+  }
+  
+  .submit-btn {
+    background-color: #3f81ce;
+    color: white;
+    border: none;
+  }
+  
+  .submit-btn:hover:not([disabled]) {
+    background-color: #3670b9;
+  }
+  
+  .cancel-btn[disabled], .submit-btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Error Message */
+  .error-message {
+    padding: 2rem;
+    text-align: center;
+    background-color: #fff5f5;
+    border-radius: 8px;
+    border: 1px solid #fed7d7;
+    margin: 2rem 0;
+  }
+  
+  .error-message p {
+    color: #e53e3e;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .error-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .retry-btn, .back-to-order-btn {
+    padding: 0.7rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .retry-btn {
+    background-color: #3f81ce;
+    color: white;
+    border: none;
+  }
+  
+  .retry-btn:hover {
+    background-color: #3670b9;
+  }
+  
+  .back-to-order-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .back-to-order-btn:hover {
+    background-color: #e0e0e0;
+  }
+  
+  /* Success Message */
+  .success-message {
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: #f0fff4;
+    border-radius: 8px;
+    border: 1px solid #c6f6d5;
+    margin: 2rem 0;
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background-color: #38a169;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+  }
+  
+  .success-message h2 {
+    color: #38a169;
+    margin-bottom: 1rem;
+    font-size: 1.6rem;
+  }
+  
+  .success-message p {
+    color: #2f855a;
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+  }
+  
+  .success-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .view-order-btn, .back-to-orders-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .view-order-btn {
+    background-color: #38a169;
+    color: white;
+    border: none;
+  }
+  
+  .view-order-btn:hover {
+    background-color: #2f855a;
+  }
+  
+  .back-to-orders-btn {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ddd;
+  }
+  
+  .back-to-orders-btn:hover {
+    background-color: #e0e0e0;
+  }
