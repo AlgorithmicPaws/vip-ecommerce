@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Float, Boolean, ForeignKey, Enum, DateTime, DECIMAL, Table, JSON
+from sqlalchemy import Column, Integer, String, Text, Float, Boolean, ForeignKey, Enum, DateTime, DECIMAL, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
@@ -89,8 +89,8 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey('users.user_id'), nullable=False)
     order_date = Column(DateTime, server_default=func.now())
     total_amount = Column(DECIMAL(10, 2), nullable=False)
-    shipping_address = Column(JSON, nullable=False)  # Store as JSON
-    payment_method = Column(Enum('credit_card', 'bank_transfer', 'cash_on_delivery', 'paypal', name='payment_method_enum'), default='bank_transfer')
+    shipping_address = Column(Text, nullable=False)
+    payment_method = Column(String(50))
     order_status = Column(Enum('pending', 'processing', 'shipped', 'delivered', 'cancelled', name='order_status_enum'), default='pending')
     tracking_number = Column(String(100))
     notes = Column(Text)
@@ -100,6 +100,7 @@ class Order(Base):
     # Relationships
     user = relationship("User", back_populates="orders")
     order_items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
+
 class OrderItem(Base):
     __tablename__ = 'order_items'
 
@@ -112,4 +113,4 @@ class OrderItem(Base):
 
     # Relationships
     order = relationship("Order", back_populates="order_items")
-    product = relationship("Product", back_populates="order_items")
+    product = relationship("Product", back_populates="order_items") 
