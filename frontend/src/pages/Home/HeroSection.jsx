@@ -1,12 +1,13 @@
-import React from "react";
-import { useEffect, useRef, useState } from "react"
-import { ChevronRight, Search, ArrowRight } from "lucide-react"
+"use client"
+
+import React, { useEffect, useRef, useState } from "react";
+import { ChevronRight, Search, ArrowRight } from "lucide-react";
 
 const HeroSection = ({ navigate }) => {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [isHovering, setIsHovering] = useState(false)
-  const heroRef = useRef(null)
-  const parallaxRef = useRef(null)
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const heroRef = useRef(null);
+  const parallaxRef = useRef(null);
 
   // Ofertas especiales con iconos personalizados
   const specialOffers = [
@@ -34,42 +35,42 @@ const HeroSection = ({ navigate }) => {
       bgImage: "linear-gradient(135deg, #000000 0%, #333333 100%)",
       icon: <UserIcon />,
     },
-  ]
+  ];
 
   // Cambiar automáticamente la tarjeta activa cada 4 segundos
   useEffect(() => {
-    if (isHovering) return
+    if (isHovering) return;
 
     const interval = setInterval(() => {
-      setActiveIndex((prevIndex) => (prevIndex + 1) % specialOffers.length)
-    }, 4000)
+      setActiveIndex((prevIndex) => (prevIndex + 1) % specialOffers.length);
+    }, 4000);
 
-    return () => clearInterval(interval)
-  }, [isHovering, specialOffers.length])
+    return () => clearInterval(interval);
+  }, [isHovering, specialOffers.length]);
 
   // Efecto parallax
   useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!parallaxRef.current || !heroRef.current) return
+      if (!parallaxRef.current || !heroRef.current) return;
 
-      const rect = heroRef.current.getBoundingClientRect()
-      const x = (e.clientX - rect.left) / rect.width - 0.5
-      const y = (e.clientY - rect.top) / rect.height - 0.5
+      const rect = heroRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-      parallaxRef.current.style.transform = `translate(${x * -20}px, ${y * -20}px)`
-    }
+      parallaxRef.current.style.transform = `translate(${x * -20}px, ${y * -20}px)`;
+    };
 
-    const heroElement = heroRef.current
+    const heroElement = heroRef.current;
     if (heroElement) {
-      heroElement.addEventListener("mousemove", handleMouseMove)
+      heroElement.addEventListener("mousemove", handleMouseMove);
     }
 
     return () => {
       if (heroElement) {
-        heroElement.removeEventListener("mousemove", handleMouseMove)
+        heroElement.removeEventListener("mousemove", handleMouseMove);
       }
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <section className="hero-section" ref={heroRef}>
@@ -185,8 +186,8 @@ const HeroSection = ({ navigate }) => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
 // Componentes de iconos personalizados
 const ToolIcon = () => (
@@ -202,7 +203,7 @@ const ToolIcon = () => (
   >
     <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
   </svg>
-)
+);
 
 const TruckIcon = () => (
   <svg
@@ -220,7 +221,7 @@ const TruckIcon = () => (
     <circle cx="5.5" cy="18.5" r="2.5"></circle>
     <circle cx="18.5" cy="18.5" r="2.5"></circle>
   </svg>
-)
+);
 
 const UserIcon = () => (
   <svg
@@ -238,6 +239,6 @@ const UserIcon = () => (
     <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
     <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
   </svg>
-)
+);
 
-export default HeroSection
+export default HeroSection;

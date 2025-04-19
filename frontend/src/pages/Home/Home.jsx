@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../CartContext";
 import "../../styles/Home.css";
+import "../../styles/HeroSection.css"; // Importamos los nuevos estilos
 
 // Componentes
 import Navbar from "../../layouts/Navbar";

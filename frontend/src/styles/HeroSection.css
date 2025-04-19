@@ -1,0 +1,564 @@
+/* Sección Hero - Diseño completamente nuevo */
+.hero-section {
+    position: relative;
+    min-height: 90vh;
+    background-color: #f5f5f7;
+    overflow: hidden;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 0;
+  }
+  
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 90vh;
+  }
+  
+  /* Lado izquierdo - Contenido */
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 40px 60px 60px;
+    position: relative;
+    z-index: 10;
+  }
+  
+  .hero-text {
+    max-width: 540px;
+  }
+  
+  .hero-text h1 {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    color: #1a1a1a;
+    letter-spacing: -0.02em;
+    position: relative;
+  }
+  
+  .hero-text h1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -12px;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #f2a900, #f8b008);
+    border-radius: 2px;
+  }
+  
+  .hero-text p {
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 32px;
+    max-width: 90%;
+  }
+  
+  .search-container {
+    position: relative;
+    margin-bottom: 32px;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 16px 60px 16px 50px;
+    border-radius: 12px;
+    border: none;
+    background-color: white;
+    font-size: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+  
+  .search-input:focus {
+    outline: none;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.12);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+  }
+  
+  .search-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(90deg, #f2a900, #f8b008);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .search-button:hover {
+    transform: translateY(-50%) scale(1.05);
+  }
+  
+  .hero-buttons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  
+  .primary-btn,
+  .secondary-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .primary-btn {
+    background: linear-gradient(90deg, #000000, #333333);
+    color: white;
+    border: none;
+  }
+  
+  .primary-btn:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+  }
+  
+  .secondary-btn {
+    background: white;
+    color: #1a1a1a;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .secondary-btn:hover {
+    background: #f8f8f8;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-3px);
+  }
+  
+  .stats-container {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+  }
+  
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1;
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 4px;
+  }
+  
+  /* Lado derecho - Visual */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .visual-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 60px 60px 20px;
+  }
+  
+  .background-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  .shape {
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+  }
+  
+  .shape-1 {
+    top: 10%;
+    right: 10%;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, rgba(242, 169, 0, 0.1), rgba(248, 176, 8, 0.1));
+    animation: float 15s ease-in-out infinite;
+  }
+  
+  .shape-2 {
+    bottom: 15%;
+    left: 5%;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, rgba(51, 51, 51, 0.1), rgba(85, 85, 85, 0.1));
+    animation: float 18s ease-in-out infinite reverse;
+  }
+  
+  .shape-3 {
+    top: 40%;
+    left: 15%;
+    width: 100px;
+    height: 100px;
+    background: rgba(26, 26, 26, 0.05);
+    animation: float 12s ease-in-out infinite 2s;
+  }
+  
+  .shape-4 {
+    bottom: 30%;
+    right: 15%;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, rgba(242, 169, 0, 0.05), rgba(248, 176, 8, 0.05));
+    animation: float 20s ease-in-out infinite 1s;
+  }
+  
+  .shape-5 {
+    top: 20%;
+    left: 30%;
+    width: 80px;
+    height: 80px;
+    background: rgba(51, 51, 51, 0.08);
+    animation: float 25s ease-in-out infinite;
+  }
+  
+  /* Slider de ofertas */
+  .offers-slider {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    height: 320px;
+    margin: 0 auto 40px;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+  }
+  
+  .offers-track {
+    display: flex;
+    width: 300%;
+    height: 100%;
+    transition: transform 0.5s ease-out;
+  }
+  
+  .offer-card {
+    position: relative;
+    flex: 1;
+    min-width: 100%;
+    height: 100%;
+    padding: 30px;
+    color: white;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .offer-content {
+    position: relative;
+    z-index: 2;
+    max-width: 80%;
+  }
+  
+  .offer-icon-container {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .offer-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .offer-card h3 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  
+  .offer-card p {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  
+  .offer-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .offer-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+  
+  .card-decoration {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  .decoration-circle {
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .decoration-line {
+    position: absolute;
+    bottom: 40px;
+    right: -20px;
+    width: 150px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(-45deg);
+  }
+  
+  .slider-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    z-index: 20;
+  }
+  
+  .slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .slider-dot.active {
+    background: white;
+    transform: scale(1.2);
+  }
+  
+  /* Categorías destacadas */
+  .featured-categories {
+    margin-top: 40px;
+    z-index: 10;
+    position: relative;
+  }
+  
+  .featured-categories h4 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 16px;
+  }
+  
+  .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .category-pill {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .category-pill:hover {
+    background: #f0f0f0;
+    color: #1a1a1a;
+  }
+  
+  @keyframes float {
+    0% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(3deg);
+    }
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+  }
+  
+  /* Media queries para responsividad */
+  @media (max-width: 1100px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+    }
+  
+    .hero-content,
+    .visual-container {
+      padding: 40px;
+    }
+  
+    .hero-text {
+      max-width: 100%;
+      text-align: center;
+      margin: 0 auto;
+    }
+  
+    .hero-text h1::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  
+    .search-container {
+      margin: 0 auto 32px;
+    }
+  
+    .hero-buttons {
+      justify-content: center;
+    }
+  
+    .stats-container {
+      justify-content: center;
+    }
+  
+    .offers-slider {
+      margin: 20px auto 30px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .hero-content,
+    .visual-container {
+      padding: 30px 20px;
+    }
+  
+    .hero-text h1 {
+      font-size: 2.2rem;
+    }
+  
+    .hero-text p {
+      font-size: 1rem;
+    }
+  
+    .hero-buttons {
+      flex-direction: column;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 30px;
+    }
+  
+    .primary-btn,
+    .secondary-btn {
+      width: 100%;
+    }
+  
+    .offers-slider {
+      height: 280px;
+    }
+  
+    .offer-card h3 {
+      font-size: 1.5rem;
+    }
+  
+    .stats-container {
+      gap: 20px;
+    }
+  
+    .stat-number {
+      font-size: 1.6rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .hero-section {
+      min-height: auto;
+    }
+  
+    .hero-grid {
+      min-height: auto;
+    }
+  
+    .hero-text h1 {
+      font-size: 1.8rem;
+    }
+  
+    .offers-slider {
+      height: 250px;
+    }
+  
+    .offer-content {
+      max-width: 100%;
+    }
+  
+    .category-pills {
+      justify-content: center;
+    }
+  }
