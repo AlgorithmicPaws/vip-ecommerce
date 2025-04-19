@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../CartContext";
 import "../../styles/Home.css";
 
-// Componentes de layout
+// Componentes
 import Navbar from "../../layouts/Navbar";
 import Footer from "../../layouts/Footer";
 import HeroSection from "./HeroSection";
 import CategoriasSection from "./CategoriasSection";
 import ProductosDestacados from "./ProductosDestacados/ProductosDestacados";
 import Testimonios from "./Testimonios";
-import HerramientasRapidas from "./HerramientasRapidas";
-import Blog from "./Blog";
 import Marcas from "./Marcas";
-import Beneficios from "./Beneficios";
 import PreguntasFrecuentes from "./PreguntasFrecuentes";
-import NewsLetter from "./NewsLetter";
-import SellWithUs from "./SellWithUs"; // Importamos el nuevo componente
+import SellWithUs from "./SellWithUs";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -26,41 +22,43 @@ const Home = () => {
     <div className="home-container">
       {/* Navbar */}
       <Navbar />
-      {/* Hero Section, Sección de promociones */}
-      <HeroSection navigate={navigate}/>
+      
+      {/* Hero Section */}
+      <HeroSection navigate={navigate} />
       
       {/* Categorías Section */}
-      <CategoriasSection navigate={navigate}/>
+      <CategoriasSection navigate={navigate} />
       
       {/* Productos Destacados */}
-      <ProductosDestacados navigate={navigate}/>
+      <section className="featured-products-section">
+        <div className="section-container">
+          <ProductosDestacados navigate={navigate} />
+        </div>
+      </section>
       
-      {/* Beneficios Section */}
-      <Beneficios/>
-      
-      {/* Banner Promocional */}
-      <section className="promo-banner">
-        <div className="promo-content">
-          <h2>¿Eres un profesional de la construcción?</h2>
-          <p>Regístrate como profesional y obtén descuentos exclusivos, facturación simplificada y entrega prioritaria</p>
-          <button onClick={() => navigate("/register")} className="primary-btn">
-            Crear Cuenta Profesional
-          </button>
+      {/* Marcas */}
+      <section className="brands-section">
+        <div className="section-container">
+          <Marcas />
         </div>
       </section>
       
       {/* Testimonios */}
-      <Testimonios/>
+      <section className="testimonials-section">
+        <div className="section-container">
+          <Testimonios />
+        </div>
+      </section>
       
       {/* Sección Vende con Nosotros */}
       <SellWithUs navigate={navigate} />
       
-      {/* Marcas */}
-      <Marcas/>
-      
-      
       {/* Preguntas Frecuentes */}
-      <PreguntasFrecuentes/>
+      <section className="faq-section">
+        <div className="section-container">
+          <PreguntasFrecuentes />
+        </div>
+      </section>
       
       {/* Footer */}
       <Footer />
