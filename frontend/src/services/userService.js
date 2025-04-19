@@ -32,6 +32,15 @@ export const updateUserProfile = async (userData) => {
 };
 
 /**
+ * Update user password
+ * @param {Object} passwordData - Password data with current_password and new_password
+ * @returns {Promise} - Response from the API
+ */
+export const updatePassword = async (passwordData) => {
+  return api.put('/users/me/password', passwordData);
+};
+
+/**
  * Delete user account
  * @returns {Promise} - Response from the API
  */

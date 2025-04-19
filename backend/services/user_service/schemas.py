@@ -45,9 +45,26 @@ class UserUpdate(BaseModel):
     class Config:
         from_attributes = True
 
+class PasswordChangeRequest(BaseModel):
+    current_password: str = Field(..., min_length=1)
+    new_password: str = Field(..., min_length=8)
+    
+    @field_validator('new_password')
+    @classmethod
+    def password_strength(cls, v):
+        """Validate new password strength"""
+        if not any(char.isdigit() for char in v):
+            raise ValueError('New password must contain at least one digit')
+        if not any(char.isalpha() for char in v):
+            raise ValueError('New password must contain at least one letter')
+        return v
+    
+    class Config:
+        from_attributes = True
+
 class UserResponse(UserBase):
     user_id: int
     created_at: datetime
     
     class Config:
-        from_attributes = True  
+        from_attributes = True

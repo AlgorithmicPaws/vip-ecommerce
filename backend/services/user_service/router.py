@@ -3,9 +3,10 @@ from sqlalchemy.orm import Session
 
 from core.database import get_db
 from models import User
-from .schemas import UserCreate, UserResponse, UserUpdate
+from .schemas import UserCreate, UserResponse, UserUpdate, PasswordChangeRequest
 from .service import UserService
 from services.auth_service.middleware import get_current_user, get_current_active_user
+from core.security import verify_password
 
 router = APIRouter(
     prefix="/users",
@@ -63,6 +64,36 @@ async def update_current_user(
         )
     
     return result
+
+@router.put("/me/password", status_code=status.HTTP_200_OK)
+async def change_password(
+    password_data: PasswordChangeRequest,
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Change the currently authenticated user's password.
+    Requires a valid JWT token in the Authorization header and current password.
+    """
+    # Verify current password
+    if not verify_password(password_data.current_password, current_user.password_hash):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect"
+        )
+    
+    # Update password
+    user_data = UserUpdate(password=password_data.new_password)
+    
+    result = UserService.update_user(db=db, user_id=current_user.user_id, user_data=user_data)
+    
+    if result is False:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    return {"message": "Password updated successfully"}
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_current_user(

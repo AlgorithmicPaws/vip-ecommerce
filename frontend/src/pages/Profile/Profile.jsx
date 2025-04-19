@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import * as api from '../../services/apiService';
 import * as userService from '../../services/userService';
+import * as orderService from '../../services/orderService';
 import '../../styles/Profile.css';
+import '../../styles/OrderHistoryStyles.css';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -26,6 +28,27 @@ const Profile = () => {
     phone: '',
     address: ''
   });
+
+  // State for orders
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersError, setOrdersError] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  
+  // State for password change form
+  const [passwordForm, setPasswordForm] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: ''
+  });
+  
+  // State for security section loading and errors
+  const [securityLoading, setSecurityLoading] = useState(false);
+  const [securityError, setSecurityError] = useState(null);
+  const [securitySuccess, setSecuritySuccess] = useState(null);
+  
+  // State for delete account confirmation
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Fetch user data from API
   useEffect(() => {
@@ -55,9 +78,37 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
+  // Fetch orders when orders tab is active
+  useEffect(() => {
+    if (activeTab === 'orders') {
+      fetchOrders();
+    }
+  }, [activeTab]);
+
+  // Function to fetch orders
+  const fetchOrders = async () => {
+    setOrdersLoading(true);
+    setOrdersError(null);
+    
+    try {
+      const response = await orderService.getOrderHistory();
+      setOrders(response);
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+      setOrdersError('No se pudieron cargar tus pedidos. Por favor, inténtalo de nuevo más tarde.');
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
   // Handle tab change
   const handleTabChange = (tabId) => {
     setActiveTab(tabId);
+    // Reset any success/error messages when changing tabs
+    if (tabId === 'security') {
+      setSecurityError(null);
+      setSecuritySuccess(null);
+    }
   };
 
   // Handle logout
@@ -90,6 +141,15 @@ const Profile = () => {
     }));
   };
 
+  // Handle password form input change
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,6 +176,163 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Handle password update submission
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+    setSecurityLoading(true);
+    setSecurityError(null);
+    setSecuritySuccess(null);
+    
+    // Validate passwords match
+    if (passwordForm.new_password !== passwordForm.confirm_password) {
+      setSecurityError('Las contraseñas nuevas no coinciden');
+      setSecurityLoading(false);
+      return;
+    }
+    
+    // Validate password length
+    if (passwordForm.new_password.length < 8) {
+      setSecurityError('La contraseña debe tener al menos 8 caracteres');
+      setSecurityLoading(false);
+      return;
+    }
+    
+    try {
+      // Call API to update password
+      await userService.updatePassword({
+        current_password: passwordForm.current_password,
+        new_password: passwordForm.new_password
+      });
+      
+      // Reset form and show success message
+      setPasswordForm({
+        current_password: '',
+        new_password: '',
+        confirm_password: ''
+      });
+      
+      setSecuritySuccess('Contraseña actualizada correctamente');
+    } catch (err) {
+      console.error('Failed to update password:', err);
+      setSecurityError(err.message || 'Error al actualizar la contraseña');
+    } finally {
+      setSecurityLoading(false);
+    }
+  };
+  
+  // Handle account deletion
+  const handleDeleteAccount = async () => {
+    try {
+      setSecurityLoading(true);
+      
+      // Call API to delete account
+      await userService.deleteUserAccount();
+      
+      // Logout and redirect to home
+      alert('Tu cuenta ha sido eliminada correctamente');
+      logout();
+      navigate('/');
+    } catch (err) {
+      console.error('Failed to delete account:', err);
+      setSecurityError(err.message || 'Error al eliminar la cuenta');
+      setSecurityLoading(false);
+    }
+  };
+
+  // View order details
+  const handleViewOrder = (orderId) => {
+    const order = orders.find(order => order.order_id === orderId);
+    setSelectedOrder(order);
+  };
+  
+  // Close order details
+  const handleCloseOrderDetails = () => {
+    setSelectedOrder(null);
+  };
+  
+  // Handle order cancellation
+  const handleCancelOrder = async (orderId) => {
+    if (window.confirm('¿Estás seguro de que deseas cancelar este pedido?')) {
+      try {
+        const reason = prompt('Por favor, indica el motivo de la cancelación:');
+        
+        if (reason === null) return; // User clicked cancel on prompt
+        
+        if (reason.trim() === '') {
+          alert('Debes proporcionar un motivo para cancelar el pedido.');
+          return;
+        }
+        
+        await orderService.cancelOrder(orderId, reason);
+        
+        // Update order in state
+        setOrders(prevOrders => 
+          prevOrders.map(order => 
+            order.order_id === orderId 
+              ? { ...order, order_status: 'cancelled' } 
+              : order
+          )
+        );
+        
+        // Update selected order if it's the one being cancelled
+        if (selectedOrder && selectedOrder.order_id === orderId) {
+          setSelectedOrder(prev => ({ ...prev, order_status: 'cancelled' }));
+        }
+        
+        alert('Pedido cancelado correctamente.');
+      } catch (err) {
+        console.error('Error cancelling order:', err);
+        alert('No se pudo cancelar el pedido. Por favor, inténtalo de nuevo más tarde.');
+      }
+    }
+  };
+
+  // Helper function to format dates
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('es-ES', options);
+  };
+  
+  // Helper function to format price
+  const formatPrice = (price) => {
+    return typeof price === 'number' ? price.toFixed(2) : price;
+  };
+  
+  // Get order status text in Spanish
+  const getOrderStatusText = (status) => {
+    const statusMap = {
+      'pending': 'Pendiente',
+      'processing': 'En proceso',
+      'shipped': 'Enviado',
+      'delivered': 'Entregado',
+      'cancelled': 'Cancelado'
+    };
+    return statusMap[status] || status;
+  };
+  
+  // Get payment status text in Spanish
+  const getPaymentStatusText = (status) => {
+    const statusMap = {
+      'pending': 'Pendiente',
+      'paid': 'Pagado',
+      'refunded': 'Reembolsado',
+      'cancelled': 'Cancelado'
+    };
+    return statusMap[status] || status;
+  };
+
+  // Helper function to get status color class
+  const getStatusColorClass = (status) => {
+    const statusColorMap = {
+      'pending': 'status-pending',
+      'processing': 'status-processing',
+      'shipped': 'status-shipped',
+      'delivered': 'status-delivered',
+      'cancelled': 'status-cancelled'
+    };
+    return statusColorMap[status] || 'status-default';
   };
 
   // Show loading state
@@ -350,11 +567,234 @@ const Profile = () => {
 
           {/* Orders Tab */}
           {activeTab === 'orders' && (
-            <div className="empty-state">
-              <div className="empty-icon">📦</div>
-              <h3>No hay pedidos aún</h3>
-              <p>Todavía no has realizado ningún pedido.</p>
-              <a href="/catalog" className="action-btn">Explorar Productos</a>
+            <div className="orders-tab">
+              <div className="section-header">
+                <h2>Historial de Pedidos</h2>
+              </div>
+              
+              {ordersLoading ? (
+                <div className="loading-state">
+                  <div className="spinner"></div>
+                  <p>Cargando tus pedidos...</p>
+                </div>
+              ) : ordersError ? (
+                <div className="error-state">
+                  <p>{ordersError}</p>
+                  <button onClick={fetchOrders} className="retry-btn">
+                    Reintentar
+                  </button>
+                </div>
+              ) : orders.length > 0 ? (
+                <div className="orders-list">
+                  <div className="order-header-row">
+                    <div className="order-id">Pedido No.</div>
+                    <div className="order-date">Fecha</div>
+                    <div className="order-status">Estado</div>
+                    <div className="order-total">Total</div>
+                    <div className="order-actions">Acciones</div>
+                  </div>
+                  
+                  {orders.map(order => (
+                    <div 
+                      key={order.order_id} 
+                      className={`order-item ${selectedOrder && selectedOrder.order_id === order.order_id ? 'selected' : ''}`}
+                    >
+                      <div className="order-id">#{order.order_id}</div>
+                      <div className="order-date">{formatDate(order.order_date)}</div>
+                      <div className={`order-status ${getStatusColorClass(order.order_status)}`}>
+                        {getOrderStatusText(order.order_status)}
+                        <span className="payment-badge">
+                          {getPaymentStatusText(order.payment_status)}
+                        </span>
+                      </div>
+                      <div className="order-total">${formatPrice(order.total_amount)}</div>
+                      <div className="order-actions">
+                        <button 
+                          className="view-btn"
+                          onClick={() => handleViewOrder(order.order_id)}
+                        >
+                          Ver Detalles
+                        </button>
+                        
+                        {order.order_status === 'pending' && (
+                          <button 
+                            className="cancel-btn"
+                            onClick={() => handleCancelOrder(order.order_id)}
+                          >
+                            Cancelar
+                          </button>
+                        )}
+                        
+                        {order.tracking_number && (
+                          <a 
+                            href={`https://track.com/${order.tracking_number}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="track-btn"
+                          >
+                            Seguir Envío
+                          </a>
+                        )}
+                        
+                        {order.payment_status === 'pending' && order.payment_method === 'bank_transfer' && (
+                          <Link 
+                            to={`/payment-confirmation/${order.order_id}`} 
+                            className="payment-btn"
+                          >
+                            Confirmar Pago
+                          </Link>
+                        )}
+                        
+                        <Link 
+                          to={`/orders/${order.order_id}`} 
+                          className="detail-link"
+                        >
+                          Ver Completo
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="empty-state">
+                  <div className="empty-icon">📦</div>
+                  <h3>No hay pedidos aún</h3>
+                  <p>Todavía no has realizado ningún pedido.</p>
+                  <a href="/catalog" className="action-btn">Explorar Productos</a>
+                </div>
+              )}
+              
+              {/* Order Details Modal */}
+              {selectedOrder && (
+                <div className="order-details-modal">
+                  <div className="modal-header">
+                    <h3>Detalles del Pedido #{selectedOrder.order_id}</h3>
+                    <button 
+                      className="close-btn"
+                      onClick={handleCloseOrderDetails}
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  
+                  <div className="modal-body">
+                    <div className="order-info-grid">
+                      <div className="order-info-section">
+                        <h4>Información del Pedido</h4>
+                        <div className="info-row">
+                          <span className="info-label">Fecha:</span>
+                          <span className="info-value">{formatDate(selectedOrder.order_date)}</span>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label">Estado:</span>
+                          <span className="info-value status-badge">{getOrderStatusText(selectedOrder.order_status)}</span>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label">Pago:</span>
+                          <span className="info-value">{getPaymentStatusText(selectedOrder.payment_status)}</span>
+                        </div>
+                        {selectedOrder.tracking_number && (
+                          <div className="info-row">
+                            <span className="info-label">Seguimiento:</span>
+                            <span className="info-value">{selectedOrder.tracking_number}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="order-info-section">
+                        <h4>Dirección de Envío</h4>
+                        <div className="address-box">
+                          <p>{selectedOrder.shipping_address.street}</p>
+                          <p>{selectedOrder.shipping_address.city}, {selectedOrder.shipping_address.state} {selectedOrder.shipping_address.zip_code}</p>
+                          <p>{selectedOrder.shipping_address.country}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="order-items-section">
+                      <h4>Productos</h4>
+                      <div className="items-table">
+                        <div className="items-header">
+                          <span className="item-name-col">Producto</span>
+                          <span className="item-price-col">Precio</span>
+                          <span className="item-qty-col">Cantidad</span>
+                          <span className="item-total-col">Total</span>
+                        </div>
+                        
+                        <div className="items-list">
+                          {selectedOrder.order_items.map(item => (
+                            <div key={item.order_item_id} className="item-row">
+                              <div className="item-name">
+                                <Link to={`/catalog/product/${item.product_id}`}>
+                                  {item.name || `Producto #${item.product_id}`}
+                                </Link>
+                              </div>
+                              <div className="item-price">${formatPrice(item.price_per_unit)}</div>
+                              <div className="item-qty">{item.quantity}</div>
+                              <div className="item-total">${formatPrice(item.subtotal || (item.price_per_unit * item.quantity))}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="order-totals-section">
+                      <div className="totals-row">
+                        <span>Subtotal:</span>
+                        <span>${formatPrice(calculateSubtotal(selectedOrder.order_items))}</span>
+                      </div>
+                      
+                      <div className="totals-row">
+                        <span>Envío:</span>
+                        <span>${formatPrice(calculateShippingCost(selectedOrder))}</span>
+                      </div>
+                      
+                      <div className="totals-row total">
+                        <span>Total:</span>
+                        <span>${formatPrice(selectedOrder.total_amount)}</span>
+                      </div>
+                    </div>
+                    
+                    {selectedOrder.payment_method === 'bank_transfer' && (
+                      <div className="payment-info-section">
+                        <h4>Información de Pago</h4>
+                        <div className="payment-method">
+                          <strong>Método de pago:</strong> Transferencia bancaria
+                        </div>
+                        
+                        {selectedOrder.payment_status === 'pending' && (
+                          <div className="bank-details">
+                            <p><strong>Banco:</strong> Bancolombia</p>
+                            <p><strong>Titular:</strong> ConstructMarket Colombia S.A.S</p>
+                            <p><strong>Cuenta Corriente:</strong> 69812345678</p>
+                            <p><strong>Concepto:</strong> Pedido {selectedOrder.order_id}</p>
+                            <p><strong>Importe:</strong> ${formatPrice(selectedOrder.total_amount)}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {selectedOrder.notes && (
+                      <div className="notes-section">
+                        <h4>Notas</h4>
+                        <p>{selectedOrder.notes}</p>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="modal-footer">
+                    <div className="action-buttons">
+                      <button onClick={handleCloseOrderDetails} className="close-detail-btn">
+                        Cerrar
+                      </button>
+                      
+                      <Link to={`/orders/${selectedOrder.order_id}`} className="full-detail-btn">
+                        Ver Página Completa
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -392,42 +832,102 @@ const Profile = () => {
                 <h2>Seguridad de la Cuenta</h2>
               </div>
               
+              {securitySuccess && (
+                <div className="success-message">
+                  <p>{securitySuccess}</p>
+                </div>
+              )}
+              
+              {securityError && (
+                <div className="error-message">
+                  <p>{securityError}</p>
+                </div>
+              )}
+              
               <div className="security-section">
                 <h3>Cambiar Contraseña</h3>
-                <div className="security-form">
+                <form onSubmit={handleUpdatePassword} className="security-form">
                   <div className="form-group">
                     <label htmlFor="current_password">Contraseña Actual</label>
-                    <input type="password" id="current_password" />
+                    <input 
+                      type="password" 
+                      id="current_password" 
+                      name="current_password"
+                      value={passwordForm.current_password}
+                      onChange={handlePasswordChange}
+                      required
+                    />
                   </div>
                   <div className="form-group">
                     <label htmlFor="new_password">Nueva Contraseña</label>
-                    <input type="password" id="new_password" />
+                    <input 
+                      type="password" 
+                      id="new_password" 
+                      name="new_password"
+                      value={passwordForm.new_password}
+                      onChange={handlePasswordChange}
+                      required
+                      minLength={8}
+                    />
+                    <small className="form-hint">Mínimo 8 caracteres, debe incluir al menos una letra y un número</small>
                   </div>
                   <div className="form-group">
                     <label htmlFor="confirm_password">Confirmar Contraseña</label>
-                    <input type="password" id="confirm_password" />
+                    <input 
+                      type="password" 
+                      id="confirm_password" 
+                      name="confirm_password"
+                      value={passwordForm.confirm_password}
+                      onChange={handlePasswordChange}
+                      required
+                    />
                   </div>
-                  <button className="save-btn">Actualizar Contraseña</button>
-                </div>
+                  <button 
+                    type="submit" 
+                    className="save-btn"
+                    disabled={securityLoading}
+                  >
+                    {securityLoading ? 'Actualizando...' : 'Actualizar Contraseña'}
+                  </button>
+                </form>
               </div>
               
               <div className="security-section">
-                <h3>Danger Zone</h3>
+                <h3>Zona de Peligro</h3>
                 <div className="danger-zone">
                   <div className="danger-actions">
-                    <div className="danger-action">
-                      <div>
-                        <h4>Descargar Mis Datos</h4>
-                        <p>Descarga toda la información de tu cuenta en formato JSON.</p>
-                      </div>
-                      <button className="download-btn">Descargar</button>
-                    </div>
                     <div className="danger-action">
                       <div>
                         <h4>Eliminar Mi Cuenta</h4>
                         <p>Esta acción eliminará permanentemente tu cuenta y todos los datos asociados.</p>
                       </div>
-                      <button className="delete-account-btn">Eliminar Cuenta</button>
+                      {!showDeleteConfirm ? (
+                        <button 
+                          className="delete-account-btn" 
+                          onClick={() => setShowDeleteConfirm(true)}
+                        >
+                          Eliminar Cuenta
+                        </button>
+                      ) : (
+                        <div className="delete-confirmation">
+                          <p className="confirmation-text">¿Estás seguro? Esta acción no se puede deshacer.</p>
+                          <div className="confirmation-buttons">
+                            <button 
+                              className="cancel-btn" 
+                              onClick={() => setShowDeleteConfirm(false)}
+                            >
+                              Cancelar
+                            </button>
+                            <button 
+                              className="confirm-delete-btn" 
+                              onClick={handleDeleteAccount}
+                              disabled={securityLoading}
+                            >
+                              {securityLoading ? 'Eliminando...' : 'Sí, eliminar mi cuenta'}
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -438,5 +938,23 @@ const Profile = () => {
       </div>
     </div>
   );
-}
+};
+
+// Helper function to calculate subtotal from items
+const calculateSubtotal = (items) => {
+  return items.reduce((total, item) => {
+    const subtotal = typeof item.subtotal === 'number' ? item.subtotal : 
+                    (item.price_per_unit * item.quantity);
+    return total + subtotal;
+  }, 0);
+};
+
+// Helper function to calculate shipping cost
+const calculateShippingCost = (orderData) => {
+  if (!orderData || !orderData.order_items) return 0;
+  
+  const subtotal = calculateSubtotal(orderData.order_items);
+  return orderData.total_amount - subtotal;
+};
+
 export default Profile;
