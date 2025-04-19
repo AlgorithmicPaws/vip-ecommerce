@@ -12,9 +12,6 @@ import CheckoutForm from './ShoppingCart/CheckoutForm';
 
 // Services
 import * as orderService from '../services/orderService';
-import * as pdfService from '../services/pdfService';
-// We'll try to send emails but handle failure gracefully
-import * as emailService from '../services/emailService';
 
 const ShoppingCart = () => {
   const navigate = useNavigate();
@@ -30,10 +27,7 @@ const ShoppingCart = () => {
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderId, setOrderId] = useState(null);
   const [orderError, setOrderError] = useState(null);
-  const [pdfUrl, setPdfUrl] = useState(null);
   const [orderData, setOrderData] = useState(null);
-  const [emailSent, setEmailSent] = useState(false);
-  const [emailError, setEmailError] = useState(false);
 
   // Helper function to format prices safely
   const formatPrice = (price) => {
@@ -88,35 +82,24 @@ const ShoppingCart = () => {
     setIsCheckingOut(true);
   };
 
-  // Handle checkout form submission
+  // Handle checkout form submission - SIMPLIFIED VERSION WITHOUT PDF/EMAIL
   const handleCheckoutSubmit = async (formData) => {
     if (isEmpty) return;
     
     setIsSubmitting(true);
     setOrderError(null);
-    setEmailError(false);
     
     try {
-      // Prepare order data from cart and form inputs
-      const items = cartItems.map(item => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        price_per_unit: item.price,
-        total_price: item.price * item.quantity,
-        name: item.name,
-        category: item.category,
-        seller: item.seller
-      }));
-      
-      const order = {
-        order_id: `ORD-${Date.now()}`, // Temporary ID until backend assigns one
-        customer: {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone
-        },
-        items: items,
+      // Prepare order data
+      const apiData = {
+        // Format the items with correct data types
+        items: cartItems.map(item => ({
+          product_id: parseInt(item.id, 10),
+          quantity: parseInt(item.quantity, 10),
+          price_per_unit: parseFloat(item.price)
+        })),
+        
+        // Format shipping address
         shipping_address: {
           street: formData.street,
           city: formData.city,
@@ -124,69 +107,34 @@ const ShoppingCart = () => {
           zip_code: formData.zipCode,
           country: formData.country
         },
-        billing_address: formData.sameAsShipping ? {
-          street: formData.street,
-          city: formData.city,
-          state: formData.state,
-          zip_code: formData.zipCode,
-          country: formData.country
-        } : {
+        
+        // Add billing address if different
+        billing_address: !formData.sameAsShipping ? {
           street: formData.billingStreet,
           city: formData.billingCity,
           state: formData.billingState,
           zip_code: formData.billingZipCode,
           country: formData.billingCountry
-        },
-        payment_method: 'bank_transfer',
-        subtotal: subtotal,
-        discount: discount,
-        shipping_cost: shippingCost,
-        total_amount: totalWithDiscount,
-        notes: formData.orderNotes || '',
-        status: 'pending'
+        } : null,
+        
+        // Ensure payment_method matches the enum value exactly
+        payment_method: "bank_transfer",
+        
+        // Add notes
+        notes: formData.orderNotes || ''
       };
       
-      // Save order data for later use
-      setOrderData(order);
+      // Log what we're sending for debugging
+      console.log('Sending order data:', JSON.stringify(apiData, null, 2));
       
       // Send to backend API
-      const apiData = orderService.prepareOrderData(
-        { items: cartItems, subtotal, discount, shippingCost, total: totalWithDiscount },
-        formData
-      );
+      const response = await orderService.createOrder(apiData);
       
-      // In a real application, this would create the order in the database
-      // For now, we're simulating a successful order
-      // const response = await orderService.createOrder(apiData);
-      // setOrderId(response.order_id);
+      console.log('Order created successfully:', response);
       
-      // Simulate API response
-      setOrderId(order.order_id);
-      
-      // Generate invoice PDF
-      let pdfBlob = null;
-      try {
-        pdfBlob = await pdfService.generateOrderInvoice(order);
-        
-        // Save PDF URL for downloading
-        const pdfObjectUrl = URL.createObjectURL(pdfBlob);
-        setPdfUrl(pdfObjectUrl);
-      } catch (pdfError) {
-        console.error('Error generating PDF:', pdfError);
-        // Continue with order completion even if PDF fails
-      }
-      
-      // Try to send email but don't block checkout if it fails
-      if (pdfBlob) {
-        try {
-          await emailService.sendOrderConfirmationEmail(order, formData.email, pdfBlob);
-          setEmailSent(true);
-        } catch (emailError) {
-          console.error('Error sending email:', emailError);
-          setEmailError(true);
-          // Continue with order completion even if email fails
-        }
-      }
+      // Set order data
+      setOrderId(response.order_id);
+      setOrderData(response);
       
       // Clear cart and complete order
       clearCart();
@@ -194,25 +142,23 @@ const ShoppingCart = () => {
       
     } catch (error) {
       console.error('Error processing order:', error);
-      setOrderError('Ha ocurrido un error al procesar el pedido. Por favor, inténtalo de nuevo.');
+      
+      // Provide specific error message if available
+      let errorMessage = 'Ha ocurrido un error al procesar el pedido. Por favor, inténtalo de nuevo.';
+      
+      if (error.response?.data?.detail) {
+        errorMessage = `Error: ${error.response.data.detail}`;
+      } else if (error.message) {
+        errorMessage = `Error: ${error.message}`;
+      }
+      
+      setOrderError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Download invoice PDF
-  const handleDownloadInvoice = () => {
-    if (pdfUrl) {
-      const link = document.createElement('a');
-      link.href = pdfUrl;
-      link.download = `factura-${orderId}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  };
-
-  // Render order confirmation
+  // Render order confirmation - SIMPLIFIED VERSION WITHOUT PDF/EMAIL
   if (orderComplete) {
     return (
       <div className="cart-container">
@@ -223,17 +169,6 @@ const ShoppingCart = () => {
             <div className="order-confirmation-icon">✅</div>
             <h2>¡Tu pedido ha sido confirmado!</h2>
             <p>Gracias por tu compra en ConstructMarket.</p>
-            
-            {emailSent ? (
-              <p>Hemos enviado una confirmación del pedido y la factura a <strong>{orderData.customer.email}</strong></p>
-            ) : (
-              <div className="email-notification" style={{ backgroundColor: '#FFF3CD', padding: '10px', borderRadius: '5px', marginBottom: '15px' }}>
-                <p>
-                  <strong>Nota:</strong> No se pudo enviar el correo electrónico de confirmación en este momento. 
-                  Puedes descargar tu factura abajo y te contactaremos pronto.
-                </p>
-              </div>
-            )}
             
             <p>Número de pedido: <span className="order-number">{orderId}</span></p>
             
@@ -258,11 +193,9 @@ const ShoppingCart = () => {
             </div>
             
             <div className="order-actions">
-              {pdfUrl && (
-                <button onClick={handleDownloadInvoice} className="download-pdf-btn">
-                  Descargar Factura PDF
-                </button>
-              )}
+              <Link to="/orders" className="view-orders-btn">
+                Ver Mis Pedidos
+              </Link>
               <Link to="/catalog" className="continue-shopping-btn">
                 Seguir Comprando
               </Link>
@@ -339,7 +272,7 @@ const ShoppingCart = () => {
                   
                   <div className="payment-notice">
                     <p><strong>Forma de pago:</strong> Transferencia bancaria</p>
-                    <p>Recibirás los datos bancarios por email al confirmar el pedido.</p>
+                    <p>Recibirás los datos bancarios al confirmar el pedido.</p>
                   </div>
                   
                   <div className="back-to-cart">
@@ -486,7 +419,7 @@ const ShoppingCart = () => {
                   
                   <div className="payment-info-box">
                     <p><strong>Forma de pago:</strong> Transferencia bancaria</p>
-                    <p>Al realizar el pedido recibirás los datos bancarios por email.</p>
+                    <p>Al realizar el pedido recibirás los datos bancarios.</p>
                   </div>
                   
                   <button 

@@ -34,6 +34,8 @@ async def create_order(
             order_data=order_data,
             user_id=current_user.user_id
         )
+        
+        # The response is already prepared in the service layer
         return order
     except HTTPException as e:
         raise e
@@ -111,36 +113,7 @@ async def update_order(
             detail="Order not found"
         )
         
-    return updated_order
-
-@router.put("/{order_id}/items/{item_id}", response_model=OrderResponse)
-async def update_order_item(
-    order_id: int,
-    item_id: int,
-    item_data: OrderItemUpdate,
-    current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Update an order item quantity.
-    Requires authentication and order ownership.
-    Note: Only pending orders can have their items updated.
-    """
-    updated_item = OrderService.update_order_item(
-        db=db,
-        order_id=order_id,
-        order_item_id=item_id,
-        item_data=item_data,
-        user_id=current_user.user_id
-    )
-    
-    if not updated_item:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Order or order item not found"
-        )
-        
-    # Return the full order with updated items
+    # Get the order with all the response fields
     return OrderService.get_order_by_id(db=db, order_id=order_id, user_id=current_user.user_id)
 
 @router.put("/{order_id}/cancel", response_model=OrderResponse)
@@ -168,83 +141,5 @@ async def cancel_order(
             detail="Order not found"
         )
         
-    return cancelled_order
-
-@router.put("/{order_id}/payment-status", response_model=OrderResponse)
-async def update_payment_status(
-    order_id: int,
-    status_data: dict,
-    current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Update the payment status of an order.
-    Requires authentication and order ownership.
-    """
-    # Extract payment status and payment details from request
-    try:
-        payment_status = PaymentStatus(status_data.get("status"))
-    except ValueError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid payment status. Valid values: {[s.value for s in PaymentStatus]}"
-        )
-        
-    payment_details = status_data.get("payment_details")
-    
-    updated_order = OrderService.update_payment_status(
-        db=db,
-        order_id=order_id,
-        payment_status=payment_status,
-        payment_details=payment_details,
-        user_id=current_user.user_id
-    )
-    
-    if not updated_order:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Order not found"
-        )
-        
-    return updated_order
-
-@router.post("/{order_id}/payment-receipt", response_model=OrderResponse)
-async def upload_payment_receipt(
-    order_id: int,
-    receipt_info: PaymentReceiptInfo,
-    current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db)
-):
-    """
-    Upload payment receipt information for an order.
-    Requires authentication and order ownership.
-    """
-    # Get the order first to verify ownership
-    order = OrderService.get_order_by_id(
-        db=db,
-        order_id=order_id,
-        user_id=current_user.user_id
-    )
-    
-    if not order:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Order not found"
-        )
-    
-    # Convert receipt info to dict for storage
-    payment_details = receipt_info.dict(exclude_unset=True)
-    
-    # Update payment status
-    updated_order = OrderService.update_payment_status(
-        db=db,
-        order_id=order_id,
-        payment_status=PaymentStatus.pending,  # Still pending until verified
-        payment_details=payment_details,
-        user_id=current_user.user_id
-    )
-    
-    return updated_order
-
-# Admin endpoints (require admin authentication)
-# These would be added in a future update
+    # Get the order with all the response fields
+    return OrderService.get_order_by_id(db=db, order_id=order_id, user_id=current_user.user_id)

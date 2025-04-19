@@ -1,12 +1,11 @@
 // src/services/apiService.js
-
 import { authHeader } from './authService';
 
 /**
  * Service for handling API requests with authentication
  */
 
-// Base API URL - In a real application, this would come from environment variables
+// Base API URL
 const API_URL = 'http://localhost:8000';
 
 /**
@@ -16,6 +15,8 @@ const API_URL = 'http://localhost:8000';
  */
 export const get = async (endpoint) => {
   try {
+    console.log(`Making GET request to ${endpoint}`);
+    
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'GET',
       headers: {
@@ -24,14 +25,35 @@ export const get = async (endpoint) => {
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    // Check content type for better error handling
+    const contentType = response.headers.get("content-type");
+    let responseData;
+    
+    if (contentType && contentType.includes("application/json")) {
+      responseData = await response.json();
+    } else {
+      responseData = await response.text();
     }
 
-    return await response.json();
+    if (!response.ok) {
+      console.error(`API Error (${response.status}):`, responseData);
+      
+      const errorMessage = 
+        typeof responseData === 'object' && responseData.detail
+          ? responseData.detail
+          : typeof responseData === 'string' && responseData
+          ? responseData
+          : `Error ${response.status}: ${response.statusText}`;
+      
+      const error = new Error(errorMessage);
+      error.status = response.status;
+      error.response = { data: responseData, status: response.status };
+      throw error;
+    }
+    
+    return responseData;
   } catch (error) {
-    console.error(`Error fetching from ${endpoint}:`, error);
+    console.error(`Error in GET request to ${endpoint}:`, error);
     throw error;
   }
 };
@@ -44,6 +66,9 @@ export const get = async (endpoint) => {
  */
 export const post = async (endpoint, data) => {
   try {
+    console.log(`Making POST request to ${endpoint}`);
+    
+    // Create the fetch request
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'POST',
       headers: {
@@ -53,19 +78,36 @@ export const post = async (endpoint, data) => {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Error del backend:", errorData); // 👈 Muestra detalles
-      throw new Error(
-        errorData.detail || 
-        errorData.message || 
-        JSON.stringify(errorData.errors) || // 👈 Para validaciones de campos
-        `Error ${response.status}: ${response.statusText}`
-      );
+    // Check content type for better error handling
+    const contentType = response.headers.get("content-type");
+    let responseData;
+    
+    if (contentType && contentType.includes("application/json")) {
+      responseData = await response.json();
+    } else {
+      responseData = await response.text();
+      console.log('Response as text:', responseData);
     }
-    return await response.json();
+
+    if (!response.ok) {
+      console.error(`API Error (${response.status}):`, responseData);
+      
+      const errorMessage = 
+        typeof responseData === 'object' && responseData.detail
+          ? responseData.detail
+          : typeof responseData === 'string' && responseData
+          ? responseData
+          : `Error ${response.status}: ${response.statusText}`;
+      
+      const error = new Error(errorMessage);
+      error.status = response.status;
+      error.response = { data: responseData, status: response.status };
+      throw error;
+    }
+    
+    return responseData;
   } catch (error) {
-    console.error("Error en la petición:", error);
+    console.error(`Error in POST request to ${endpoint}:`, error);
     throw error;
   }
 };
@@ -78,6 +120,8 @@ export const post = async (endpoint, data) => {
  */
 export const put = async (endpoint, data) => {
   try {
+    console.log(`Making PUT request to ${endpoint}`);
+    
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'PUT',
       headers: {
@@ -87,14 +131,35 @@ export const put = async (endpoint, data) => {
       body: JSON.stringify(data),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
+    // Check content type for better error handling
+    const contentType = response.headers.get("content-type");
+    let responseData;
+    
+    if (contentType && contentType.includes("application/json")) {
+      responseData = await response.json();
+    } else {
+      responseData = await response.text();
     }
 
-    return await response.json();
+    if (!response.ok) {
+      console.error(`API Error (${response.status}):`, responseData);
+      
+      const errorMessage = 
+        typeof responseData === 'object' && responseData.detail
+          ? responseData.detail
+          : typeof responseData === 'string' && responseData
+          ? responseData
+          : `Error ${response.status}: ${response.statusText}`;
+      
+      const error = new Error(errorMessage);
+      error.status = response.status;
+      error.response = { data: responseData, status: response.status };
+      throw error;
+    }
+    
+    return responseData;
   } catch (error) {
-    console.error(`Error updating ${endpoint}:`, error);
+    console.error(`Error in PUT request to ${endpoint}:`, error);
     throw error;
   }
 };
@@ -106,6 +171,8 @@ export const put = async (endpoint, data) => {
  */
 export const del = async (endpoint) => {
   try {
+    console.log(`Making DELETE request to ${endpoint}`);
+    
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'DELETE',
       headers: {
@@ -114,19 +181,40 @@ export const del = async (endpoint) => {
       },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || `Request failed with status ${response.status}`);
-    }
-
     // For DELETE operations that return 204 No Content
     if (response.status === 204) {
       return true;
     }
 
-    return await response.json();
+    // Check content type for better error handling
+    const contentType = response.headers.get("content-type");
+    let responseData;
+    
+    if (contentType && contentType.includes("application/json")) {
+      responseData = await response.json();
+    } else {
+      responseData = await response.text();
+    }
+
+    if (!response.ok) {
+      console.error(`API Error (${response.status}):`, responseData);
+      
+      const errorMessage = 
+        typeof responseData === 'object' && responseData.detail
+          ? responseData.detail
+          : typeof responseData === 'string' && responseData
+          ? responseData
+          : `Error ${response.status}: ${response.statusText}`;
+      
+      const error = new Error(errorMessage);
+      error.status = response.status;
+      error.response = { data: responseData, status: response.status };
+      throw error;
+    }
+    
+    return responseData;
   } catch (error) {
-    console.error(`Error deleting from ${endpoint}:`, error);
+    console.error(`Error in DELETE request to ${endpoint}:`, error);
     throw error;
   }
 };

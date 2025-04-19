@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator, validator
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
@@ -86,16 +86,17 @@ class OrderUpdate(BaseModel):
     class Config:
         from_attributes = True
 
+# Modified to match actual database structure
 class OrderResponse(BaseModel):
     order_id: int
     user_id: int
     order_date: datetime
     total_amount: Decimal
-    shipping_address: Dict[str, str]
-    billing_address: Optional[Dict[str, str]] = None
+    shipping_address: Union[Dict[str, str], str]  # Can be dict or string
+    billing_address: Optional[Dict[str, str]] = None  # Optional since we don't have it in DB
     payment_method: str
     order_status: str
-    payment_status: str
+    payment_status: str = "pending"  # Default value since not in DB
     tracking_number: Optional[str] = None
     notes: Optional[str] = None
     order_items: List[OrderItemResponse]
