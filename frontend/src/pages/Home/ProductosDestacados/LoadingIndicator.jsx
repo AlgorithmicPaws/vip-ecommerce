@@ -1,6 +1,10 @@
 const LoadingIndicator = () => {
-    return <div className="loading-indicator">Cargando productos destacados...</div>;
-  };
+  return (
+    <div className="loading-indicator">
+      <div className="spinner"></div>
+      <p>Cargando productos destacados...</p>
+    </div>
+  );
+};
   
-  export default LoadingIndicator;
-  
+export default LoadingIndicator;
