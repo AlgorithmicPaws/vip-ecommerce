@@ -75,8 +75,8 @@ const Navbar = () => {
         <div className="navbar-top">
           <div className="logo-container">
             <Link to="/" className="logo">
-              <span className="construct-text">Construct</span>
-              <span className="market-text">Market</span>
+              <img src="/logo.svg" className="icon" alt="VIP logo" />
+              <span className="market-text">VIP Market</span>
             </Link>
           </div>
           

@@ -1,13 +1,14 @@
 import React from 'react';
 import ProfileImage from '../subcomponents/ProfileImage';
 
-const ProfileSidebar = ({ userData, activeTab, onTabChange, onLogout }) => {
+const ProfileSidebar = ({ userData, activeTab, onTabChange, onLogout, isSeller }) => {
+  // Define tabs that should be visible
+  // We're showing only implemented tabs
   const tabs = [
     { id: 'personal', icon: '👤', label: 'Datos Personales' },
     { id: 'orders', icon: '📦', label: 'Mis Pedidos' },
-    { id: 'addresses', icon: '📍', label: 'Direcciones' },
-    { id: 'payments', icon: '💳', label: 'Métodos de Pago' },
-    { id: 'reviews', icon: '⭐', label: 'Mis Reseñas' },
+    // Only show seller tab for sellers
+    ...(isSeller ? [{ id: 'seller', icon: '🏪', label: 'Perfil de Vendedor' }] : []),
     { id: 'security', icon: '🔒', label: 'Seguridad' },
   ];
 
@@ -16,10 +17,10 @@ const ProfileSidebar = ({ userData, activeTab, onTabChange, onLogout }) => {
       <div className="sidebar-header">
         <ProfileImage 
           profileImage={userData.profileImage} 
-          fullName={userData.fullName} 
+          fullName={`${userData.first_name || ''} ${userData.last_name || ''}`}
           size="medium"
         />
-        <h2 className="user-name">{userData.fullName}</h2>
+        <h2 className="user-name">{userData.first_name} {userData.last_name}</h2>
         <p className="user-email">{userData.email}</p>
       </div>
       

@@ -38,15 +38,22 @@
 .logo-container {
   display: flex;
   align-items: center;
+  justify-items: center;
 }
 
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
   text-decoration: none;
   transition: color 0.3s;
 }
-
+.logo .icon{ 
+  width: 5.5rem;
+  height: 5.5rem;
+  margin-right: 5px;
+}
 .construct-text {
   color: #000000;
 }
