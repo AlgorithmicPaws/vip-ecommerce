@@ -27,20 +27,17 @@ const SellerFilter = ({ onSellerChange }) => {
   };
 
   return (
-    <div className="filter-section">
-      <h3>Vendedores</h3>
-      <div className="seller-filter">
-        {sellers.map((seller, index) => (
-          <label key={index} className="checkbox-label">
-            <input 
-              type="checkbox" 
-              checked={selectedSellers.includes(seller)}
-              onChange={() => handleSellerChange(seller)}
-            /> 
-            {seller}
-          </label>
-        ))}
-      </div>
+    <div className="seller-filter">
+      {sellers.map((seller, index) => (
+        <label key={index} className="checkbox-label">
+          <input 
+            type="checkbox" 
+            checked={selectedSellers.includes(seller)}
+            onChange={() => handleSellerChange(seller)}
+          /> 
+          {seller}
+        </label>
+      ))}
     </div>
   );
 };
