@@ -2,11 +2,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../CartContext";
 import "../../styles/Home.css";
-import "../../styles/HeroSection.css"; // Importamos los nuevos estilos
+import "../../styles/HeroSection.css";
 
 // Componentes
-import Navbar from "../../layouts/Navbar";
-import Footer from "../../layouts/Footer";
 import HeroSection from "./HeroSection";
 import CategoriasSection from "./CategoriasSection";
 import ProductosDestacados from "./ProductosDestacados/ProductosDestacados";
@@ -21,9 +19,6 @@ const Home = () => {
 
   return (
     <div className="home-container">
-      {/* Navbar */}
-      <Navbar />
-      
       {/* Hero Section */}
       <HeroSection navigate={navigate} />
       
@@ -60,9 +55,6 @@ const Home = () => {
           <PreguntasFrecuentes />
         </div>
       </section>
-      
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };

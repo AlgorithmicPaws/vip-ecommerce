@@ -5,10 +5,8 @@ import '../../styles/ProductCatalog.css';
 import * as productService from '../../services/productService';
 
 // Import components
-import CatalogHeader from './components/CatalogHeader';
 import CatalogSidebar from './components/CatalogSidebar';
 import CatalogContent from './components/CatalogContent';
-import CatalogFooter from './components/CatalogFooter';
 import ProductDetailModal from './components/ProductDetailModal';
 
 const ProductCatalog = () => {
@@ -165,11 +163,6 @@ const ProductCatalog = () => {
 
   return (
     <div className="catalog-container">
-      <CatalogHeader 
-        onSearch={handleSearchChange} 
-        onGoToCart={handleGoToCart} 
-      />
-      
       <div className="catalog-main">
         <CatalogSidebar 
           categories={categories}
@@ -184,10 +177,9 @@ const ProductCatalog = () => {
           onAddToCart={handleAddToCart}
           addedToCartMessage={addedToCartMessage}
           error={error}
+          onSearch={handleSearchChange}
         />
       </div>
-      
-      <CatalogFooter />
       
       {showDetailModal && selectedProduct && (
         <ProductDetailModal 

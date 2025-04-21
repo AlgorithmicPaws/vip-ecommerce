@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import Navbar from '../../layouts/Navbar';
-import Footer from '../../layouts/Footer';
 import ProductCard from '../ProductCatalog/subcomponents/ProductCard';
 import CategoryFilter from '../ProductCatalog/subcomponents/CategoryFilter';
 import PriceFilter from '../ProductCatalog/subcomponents/PriceFilter';
@@ -212,8 +210,6 @@ const BrandCatalogPage = () => {
 
   return (
     <div className="brand-catalog-container">
-      <Navbar />
-      
       {loading ? (
         <div className="loading-container">
           <div className="loading-spinner"></div>
@@ -337,8 +333,6 @@ const BrandCatalogPage = () => {
           </div>
         </div>
       )}
-      
-      <Footer />
     </div>
   );
 };

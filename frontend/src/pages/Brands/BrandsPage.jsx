@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Navbar from '../../layouts/Navbar';
-import Footer from '../../layouts/Footer';
 import '../../styles/BrandsPage.css';
 
 // Componente para la tarjeta de marca
@@ -157,15 +155,11 @@ const BrandsPage = () => {
     setSearchTerm(e.target.value);
   };
   
-  // Este código ya está implementado correctamente arriba
-
   // Obtener marcas destacadas
   const featuredBrands = brands.filter(brand => brand.featured);
   
   return (
     <div className="brands-page-container">
-      <Navbar />
-      
       <div className="brands-page-content">
         <div className="brands-header">
           <h1>Marcas Disponibles</h1>
@@ -228,8 +222,6 @@ const BrandsPage = () => {
           </>
         )}
       </div>
-      
-      <Footer />
     </div>
   );
 };

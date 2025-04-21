@@ -2,7 +2,7 @@ import React from 'react';
 import ProductCard from '../subcomponents/ProductCard';
 import LoadingIndicator from '../subcomponents/LoadingIndicator';
 
-const CatalogContent = ({ products, loading, error, onProductClick, onAddToCart, addedToCartMessage }) => {
+const CatalogContent = ({ products, loading, error, onProductClick, onAddToCart, addedToCartMessage, onSearch }) => {
   return (
     <main className="catalog-content">
       <div className="catalog-heading">

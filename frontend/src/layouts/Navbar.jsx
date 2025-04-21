@@ -153,9 +153,6 @@ const Navbar = () => {
                 <Link to="/catalog" className="view-all">Ver todas</Link>
               </div>
             </li>
-            <li className={isActive('/offers') ? 'active' : ''}>
-              <Link to="/offers">Ofertas</Link>
-            </li>
             <li className={isActive('/brands') ? 'active' : ''}>
               <Link to="/brands">Marcas</Link>
             </li>
