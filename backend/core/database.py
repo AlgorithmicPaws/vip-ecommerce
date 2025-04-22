@@ -2,11 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import declarative_base
 # Database connection details
-DB_USER = "admin"
-DB_PASSWORD = "VswQ5DnttjzU38nMeFyiE42b91kcp5Qw"
-DB_HOST = "dpg-d03h49juibrs73a933c0-a"
-DB_PORT = "5432"
-DB_NAME = "vipecommercedb"
+DB_USER = "sergio"
+DB_PASSWORD = "mondongo"
+DB_HOST = "localhost"
+DB_PORT = "5433"
+DB_NAME = "ecommercedb"
 
 # Create the SQLAlchemy database URL
 SQLALCHEMY_DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
