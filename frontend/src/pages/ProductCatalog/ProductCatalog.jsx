@@ -1,74 +1,76 @@
+// src/pages/ProductCatalog/ProductCatalog.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import '../../styles/ProductCatalog.css';
 import * as productService from '../../services/productService';
 
-// Import components
-import CatalogHeader from './components/CatalogHeader';
+// Import main layout components
+import Navbar from '../../layouts/Navbar'; // <--- Import Navbar
+import Footer from '../../layouts/Footer'; // <--- Import Footer
+
+// Import existing catalog components
+// import CatalogHeader from './components/CatalogHeader'; // <-- Decide if needed
 import CatalogSidebar from './components/CatalogSidebar';
 import CatalogContent from './components/CatalogContent';
-import CatalogFooter from './components/CatalogFooter';
+// import CatalogFooter from './components/CatalogFooter'; // <-- Decide if needed
 import ProductDetailModal from './components/ProductDetailModal';
+import Pagination from './components/Pagination';
 
 const ProductCatalog = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addToCart } = useCart();
-  
-  // State to store products
+
+  // ... (keep existing states and effects) ...
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
-  // State for filters
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
+  const [sellerFilter, setSellerFilter] = useState([]);
   const [categories, setCategories] = useState([]);
-  
-  // State for product detail modal
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [productQuantity, setProductQuantity] = useState(1);
-  
-  // State for "added to cart" message
   const [addedToCartMessage, setAddedToCartMessage] = useState({ show: false, productId: null });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(30);
+  const [totalPages, setTotalPages] = useState(1);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
 
-  // Parse query parameters
+  // ... (keep existing effects and handlers) ...
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const category = params.get('category');
     const search = params.get('search');
-    
+    const page = params.get('page');
+
     if (category) setCategoryFilter(category);
     if (search) setSearchTerm(search);
+    if (page) setCurrentPage(parseInt(page) || 1);
   }, [location.search]);
 
-  // Load products from API
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
       setError(null);
-      
       try {
-        // First load categories
         const categoriesResponse = await productService.getCategories();
         const transformedCategories = productService.transformApiCategories(categoriesResponse);
         setCategories(transformedCategories.map(cat => cat.name));
-        
-        // Then load products with any applied filters
+
         const options = {};
         if (categoryFilter) {
-          const categoryId = transformedCategories.find(
-            cat => cat.name === categoryFilter
-          )?.id;
+          const categoryId = transformedCategories.find(cat => cat.name === categoryFilter)?.id;
           if (categoryId) options.categoryId = categoryId;
         }
-        
+
         const productsData = await productService.getAllProducts(options);
         setProducts(productsData);
-        setFilteredProducts(productsData);
+        applyFilters(productsData);
       } catch (err) {
         console.error('Error loading products:', err);
         setError('Failed to load products. Please try again later.');
@@ -76,121 +78,173 @@ const ProductCatalog = () => {
         setLoading(false);
       }
     };
-    
     loadProducts();
-  }, [categoryFilter]); // Reload when category filter changes
+  }, [categoryFilter]);
 
-  // Filter products based on search term
-  useEffect(() => {
-    if (!searchTerm.trim()) {
-      setFilteredProducts(products);
-      return;
+
+  const applyFilters = (productsToFilter = products) => {
+    let filtered = [...productsToFilter];
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase();
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchLower) ||
+        (product.description && product.description.toLowerCase().includes(searchLower))
+      );
     }
-    
-    const filtered = products.filter(product => 
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    
+    if (priceFilter.min && !isNaN(priceFilter.min)) {
+      filtered = filtered.filter(product => product.price >= parseFloat(priceFilter.min));
+    }
+    if (priceFilter.max && !isNaN(priceFilter.max)) {
+      filtered = filtered.filter(product => product.price <= parseFloat(priceFilter.max));
+    }
+    if (sellerFilter.length > 0) {
+      filtered = filtered.filter(product => sellerFilter.includes(product.seller));
+    }
     setFilteredProducts(filtered);
-  }, [searchTerm, products]);
+    setTotalPages(Math.ceil(filtered.length / productsPerPage));
+    setCurrentPage(1);
+  };
 
-  // Auto-hide "added to cart" message after 3 seconds
+
+   useEffect(() => {
+     applyFilters();
+   }, [searchTerm, priceFilter, sellerFilter, products]); // Added products dependency
+
+  useEffect(() => {
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    setDisplayedProducts(filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct));
+  }, [filteredProducts, currentPage, productsPerPage]);
+
   useEffect(() => {
     if (addedToCartMessage.show) {
       const timer = setTimeout(() => {
         setAddedToCartMessage({ show: false, productId: null });
       }, 3000);
-      
       return () => clearTimeout(timer);
     }
   }, [addedToCartMessage]);
 
-  // Handle search change
-  const handleSearchChange = (term) => {
-    setSearchTerm(term);
-  };
+   const handlePageChange = (pageNumber) => {
+     setCurrentPage(pageNumber);
+     const params = new URLSearchParams(location.search);
+     params.set('page', pageNumber);
+     navigate(`<span class="math-inline">\{location\.pathname\}?</span>{params.toString()}`);
+     window.scrollTo(0, 0);
+   };
 
-  // Handle category change
-  const handleCategoryChange = (category) => {
-    setCategoryFilter(category);
-  };
+   const handleSearchChange = (term) => {
+     setSearchTerm(term);
+   };
 
-  // Open product detail modal
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-    setProductQuantity(1);
-    setShowDetailModal(true);
-  };
+   const handleCategoryChange = (category) => {
+     setCategoryFilter(category);
+     const params = new URLSearchParams(location.search);
+     if (category) {
+        params.set('category', category);
+     } else {
+        params.delete('category');
+     }
+     navigate(`<span class="math-inline">\{location\.pathname\}?</span>{params.toString()}`);
+   };
 
-  // Add product to cart from card
-  const handleAddToCart = (e, product) => {
-    e.stopPropagation(); // Prevent opening the modal
-    addToCart(product, 1);
-    setAddedToCartMessage({ show: true, productId: product.id });
-  };
+   const handlePriceChange = (min, max) => {
+     setPriceFilter({ min, max });
+   };
 
-  // Go to cart
-  const handleGoToCart = () => {
-    navigate('/cart');
-  };
+   const handleSellerChange = (sellers) => {
+     setSellerFilter(sellers);
+   };
 
-  // Handle quantity change in modal
-  const handleQuantityChange = (operation) => {
-    if (operation === 'increase' && productQuantity < selectedProduct.stock) {
-      setProductQuantity(prev => prev + 1);
-    } else if (operation === 'decrease' && productQuantity > 1) {
-      setProductQuantity(prev => prev - 1);
-    }
-  };
+    const handleProductClick = (product) => {
+      // Option 1: Navigate to Product Detail Page
+      navigate(`/catalog/product/${product.id}`);
 
-  // Add product to cart from modal
-  const handleAddToCartFromModal = () => {
-    addToCart(selectedProduct, productQuantity);
-    setShowDetailModal(false);
-    setAddedToCartMessage({ show: true, productId: selectedProduct.id });
-  };
+      // Option 2: Show Modal (keep original logic if preferred)
+      // setSelectedProduct(product);
+      // setProductQuantity(1);
+      // setShowDetailModal(true);
+    };
 
-  // Buy now (goes directly to cart)
-  const handleBuyNow = () => {
-    addToCart(selectedProduct, productQuantity);
-    setShowDetailModal(false);
-    navigate('/cart');
-  };
 
-  // Close modal
-  const handleCloseModal = () => {
-    setShowDetailModal(false);
-  };
+    const handleAddToCart = (e, product) => {
+      e.stopPropagation();
+      addToCart(product, 1);
+      setAddedToCartMessage({ show: true, productId: product.id });
+    };
+
+    const handleGoToCart = () => {
+      navigate('/cart');
+    };
+
+    const handleQuantityChange = (operation) => {
+      if (operation === 'increase' && productQuantity < selectedProduct.stock) {
+        setProductQuantity(prev => prev + 1);
+      } else if (operation === 'decrease' && productQuantity > 1) {
+        setProductQuantity(prev => prev - 1);
+      }
+    };
+
+    const handleAddToCartFromModal = () => {
+      addToCart(selectedProduct, productQuantity);
+      setShowDetailModal(false);
+      setAddedToCartMessage({ show: true, productId: selectedProduct.id });
+    };
+
+    const handleBuyNow = () => {
+      addToCart(selectedProduct, productQuantity);
+      setShowDetailModal(false);
+      navigate('/cart');
+    };
+
+    const handleCloseModal = () => {
+      setShowDetailModal(false);
+    };
+
 
   return (
-    <div className="catalog-container">
-      <CatalogHeader 
-        onSearch={handleSearchChange} 
-        onGoToCart={handleGoToCart} 
-      />
-      
-      <div className="catalog-main">
-        <CatalogSidebar 
-          categories={categories}
-          selectedCategory={categoryFilter}
-          onCategoryChange={handleCategoryChange}
-        />
-        
-        <CatalogContent 
-          products={filteredProducts}
-          loading={loading}
-          onProductClick={handleProductClick}
-          onAddToCart={handleAddToCart}
-          addedToCartMessage={addedToCartMessage}
-          error={error}
-        />
+    <div className="catalog-page-wrapper"> {/* Optional: Add a wrapper div */}
+      <Navbar /> {/* <--- Add Navbar */}
+
+      <div className="catalog-container">
+        {/* Removed CatalogHeader */}
+
+        <div className="catalog-main">
+          <CatalogSidebar
+            categories={categories}
+            selectedCategory={categoryFilter}
+            onCategoryChange={handleCategoryChange}
+            onPriceChange={handlePriceChange}
+            onSellerChange={handleSellerChange}
+          />
+
+          <div className="catalog-content-wrapper">
+            <CatalogContent
+              products={displayedProducts}
+              loading={loading}
+              onProductClick={handleProductClick}
+              onAddToCart={handleAddToCart}
+              addedToCartMessage={addedToCartMessage}
+              error={error}
+              totalProducts={filteredProducts.length}
+            />
+
+            {!loading && filteredProducts.length > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Removed CatalogFooter */}
       </div>
-      
-      <CatalogFooter />
-      
+
+      {/* Keep ProductDetailModal if you still want modal functionality */}
       {showDetailModal && selectedProduct && (
-        <ProductDetailModal 
+        <ProductDetailModal
           product={selectedProduct}
           quantity={productQuantity}
           onQuantityChange={handleQuantityChange}
@@ -199,6 +253,8 @@ const ProductCatalog = () => {
           onClose={handleCloseModal}
         />
       )}
+
+      <Footer /> {/* <--- Add Footer */}
     </div>
   );
 };

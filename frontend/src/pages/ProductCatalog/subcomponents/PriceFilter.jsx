@@ -1,27 +1,67 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const PriceFilter = ({ onPriceChange }) => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [rangeValue, setRangeValue] = useState(2000);
+  const [error, setError] = useState('');
+
+  // Reset error when inputs change
+  useEffect(() => {
+    setError('');
+  }, [minPrice, maxPrice]);
 
   const handleRangeChange = (e) => {
-    setRangeValue(e.target.value);
-    setMaxPrice(e.target.value);
+    const value = parseInt(e.target.value);
+    setRangeValue(value);
+    setMaxPrice(value.toString());
   };
 
   const handleMinPriceChange = (e) => {
-    setMinPrice(e.target.value);
+    const value = e.target.value;
+    
+    // Only allow positive numbers or empty string
+    if (value === '' || (/^\d+$/.test(value) && parseInt(value) >= 0)) {
+      setMinPrice(value);
+    }
   };
 
   const handleMaxPriceChange = (e) => {
-    setMaxPrice(e.target.value);
-    setRangeValue(e.target.value);
+    const value = e.target.value;
+    
+    // Only allow positive numbers or empty string
+    if (value === '' || (/^\d+$/.test(value) && parseInt(value) >= 0)) {
+      setMaxPrice(value);
+      if (value !== '') {
+        setRangeValue(parseInt(value));
+      }
+    }
   };
 
   const handleApplyFilter = () => {
+    // Convert to numbers for comparison
+    const min = minPrice === '' ? 0 : parseInt(minPrice);
+    const max = maxPrice === '' ? 0 : parseInt(maxPrice);
+    
+    // Validate min and max values
+    if (min > max && max !== 0) {
+      setError('El precio mínimo no puede ser mayor que el máximo');
+      return;
+    }
+    
     if (onPriceChange) {
-      onPriceChange(Number(minPrice), Number(maxPrice));
+      onPriceChange(min || '', max || '');
+    }
+  };
+
+  const handleClearFilter = () => {
+    setMinPrice('');
+    setMaxPrice('');
+    setRangeValue(2000);
+    setError('');
+    
+    if (onPriceChange) {
+      onPriceChange('', '');
     }
   };
 
@@ -32,31 +72,43 @@ const PriceFilter = ({ onPriceChange }) => {
         <div className="range-input">
           <input 
             type="range" 
-            min="0" 
-            max="2000" 
+            min="5000" 
+            max="100000000" 
             value={rangeValue} 
             onChange={handleRangeChange} 
             className="range-slider" 
           />
         </div>
         <div className="price-inputs">
-          <input 
-            type="number" 
-            placeholder="Mín" 
-            value={minPrice} 
-            onChange={handleMinPriceChange} 
-            className="min-price" 
-          />
-          <span>-</span>
-          <input 
-            type="number" 
-            placeholder="Máx" 
-            value={maxPrice} 
-            onChange={handleMaxPriceChange} 
-            className="max-price" 
-          />
+          <div className="input-group">
+            <label>Mín.</label>
+            <input 
+              type="text" 
+              placeholder="0" 
+              value={minPrice} 
+              onChange={handleMinPriceChange} 
+              className="min-price" 
+            />
+          </div>
+          <span className="price-separator">-</span>
+          <div className="input-group">
+            <label>Máx.</label>
+            <input 
+              type="text" 
+              placeholder="Máx" 
+              value={maxPrice} 
+              onChange={handleMaxPriceChange} 
+              className="max-price" 
+            />
+          </div>
         </div>
-        <button className="apply-filter" onClick={handleApplyFilter}>Aplicar</button>
+        
+        {error && <div className="price-error">{error}</div>}
+        
+        <div className="price-buttons">
+          <button className="apply-filter" onClick={handleApplyFilter}>Aplicar</button>
+          <button className="clear-filter" onClick={handleClearFilter}>Limpiar</button>
+        </div>
       </div>
     </div>
   );

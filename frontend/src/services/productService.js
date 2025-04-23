@@ -138,6 +138,8 @@ export const addProductImage = async (productId, imageUrl, isPrimary = true) => 
  * @returns {Object} - Transformed product data for frontend
  */
 export const transformApiProduct = (apiProduct) => {
+  if (!apiProduct) return null;
+  
   // Get the primary image or the first image if no primary is set
   let primaryImage = null;
   if (apiProduct.images && apiProduct.images.length > 0) {
@@ -145,19 +147,52 @@ export const transformApiProduct = (apiProduct) => {
     primaryImage = primary ? primary.image_url : apiProduct.images[0].image_url;
   }
 
+  // Extract seller information - could be object or direct value depending on API
+  let sellerName = "Unknown Seller";
+  let sellerId = null;
+  
+  if (apiProduct.seller) {
+    // If seller is an object with business_name property
+    if (typeof apiProduct.seller === 'object' && apiProduct.seller.business_name) {
+      sellerName = apiProduct.seller.business_name;
+      sellerId = apiProduct.seller.seller_id;
+    } 
+    // If seller is a direct string
+    else if (typeof apiProduct.seller === 'string') {
+      sellerName = apiProduct.seller;
+    }
+  }
+  
+  // Use seller_id from main object if available
+  if (apiProduct.seller_id) {
+    sellerId = apiProduct.seller_id;
+  }
+
+  // Ensure price is a number
+  let price = 0;
+  if (apiProduct.price) {
+    if (typeof apiProduct.price === 'string') {
+      price = parseFloat(apiProduct.price);
+    } else {
+      price = apiProduct.price;
+    }
+  }
+
   return {
     id: apiProduct.product_id,
     name: apiProduct.name,
-    price: apiProduct.price,
+    price: price,
     stock: apiProduct.stock_quantity,
-    category: apiProduct.categories.length > 0 ? apiProduct.categories[0].name : '',
-    categoryIds: apiProduct.categories.map(cat => cat.category_id),
+    category: apiProduct.categories && apiProduct.categories.length > 0 ? apiProduct.categories[0].name : '',
+    categoryIds: apiProduct.categories ? apiProduct.categories.map(cat => cat.category_id) : [],
     description: apiProduct.description || '',
     image: primaryImage ? getImageUrl(primaryImage) : null,
-    images: apiProduct.images.map(img => getImageUrl(img.image_url)),
-    rating: 4.5, // Default rating if not provided by API
-    seller: apiProduct.seller ? apiProduct.seller.business_name : 'Unknown Seller',
-    sellerId: apiProduct.seller_id
+    images: apiProduct.images ? apiProduct.images.map(img => getImageUrl(img.image_url)) : [],
+    seller: sellerName,
+    sellerId: sellerId,
+    // Additional fields
+    rating: 4.5, // Default rating
+    // Add any other transformed fields here
   };
 };
 
@@ -167,6 +202,8 @@ export const transformApiProduct = (apiProduct) => {
  * @returns {Array} - Transformed categories for frontend
  */
 export const transformApiCategories = (apiCategories) => {
+  if (!apiCategories || !Array.isArray(apiCategories)) return [];
+  
   return apiCategories.map(category => ({
     id: category.category_id,
     name: category.name

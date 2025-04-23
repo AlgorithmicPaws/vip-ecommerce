@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../pages/CartContext';
-import ProductRating from './ProductRating';
 
 const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage }) => {
   const navigate = useNavigate();
@@ -26,9 +25,22 @@ const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage })
     navigate('/cart');
   };
 
-  // Format price with 2 decimal places
+  // Format price in Colombian Peso (COP) - with thousands separator and no decimals
   const formatPrice = (price) => {
-    return typeof price === 'number' ? price.toFixed(2) : '0.00';
+    // Handle invalid values
+    if (typeof price !== 'number' || isNaN(price)) return '0';
+    
+    try {
+      // Format as COP - add thousands separator (.) and no decimals
+      return price.toLocaleString('es-CO', {
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0
+      });
+    } catch (error) {
+      console.error('Error formatting price:', error);
+      // Fallback formatting
+      return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
   };
 
   return (
@@ -52,10 +64,13 @@ const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage })
         )}
       </div>
       <div className="product-info">
+        <p className="product-category">{product.category}</p>
         <h3 className="product-name">{product.name}</h3>
-        <p className="product-seller">Vendido por: {product.seller}</p>
-        <ProductRating rating={product.rating} showNumber />
-        <p className="product-price">${formatPrice(product.price)}</p>
+        <div className="product-seller">
+          <span className="seller-label">Vendido por:</span>
+          <span className="seller-name">{product.seller || "ConstructMarket"}</span>
+        </div>
+        <p className="product-price">$ {formatPrice(product.price)}</p>
         <div className="product-actions">
           {isInCart(product.id) ? (
             <div className="in-cart-info">

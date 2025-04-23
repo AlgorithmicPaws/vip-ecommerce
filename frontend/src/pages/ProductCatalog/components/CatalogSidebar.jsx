@@ -3,10 +3,15 @@ import { Link } from 'react-router-dom';
 import CategoryFilter from '../subcomponents/CategoryFilter';
 import PriceFilter from '../subcomponents/PriceFilter';
 import SellerFilter from '../subcomponents/SellerFilter';
-import RatingFilter from '../subcomponents/RatingFilter';
 import '../../../styles/ProductCatalog.css';
 
-const CatalogSidebar = ({ categories, selectedCategory, onCategoryChange }) => {
+const CatalogSidebar = ({ 
+  categories, 
+  selectedCategory, 
+  onCategoryChange, 
+  onPriceChange, 
+  onSellerChange 
+}) => {
   return (
     <aside className="catalog-sidebar">
       <CategoryFilter 
@@ -15,13 +20,15 @@ const CatalogSidebar = ({ categories, selectedCategory, onCategoryChange }) => {
         onCategoryChange={onCategoryChange}
       />
       
-      <PriceFilter />
+      <PriceFilter 
+        onPriceChange={onPriceChange}
+      />
       
-      <SellerFilter />
+      <SellerFilter 
+        onSellerChange={onSellerChange}
+      />
       
-      <RatingFilter />
-      
-      {/* Nueva sección para marcas */}
+      {/* Popular brands section */}
       <div className="filter-section">
         <h3>Marcas Populares</h3>
         <div className="popular-brands">

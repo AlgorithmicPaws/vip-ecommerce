@@ -14,9 +14,23 @@ const ProductDetailModal = ({
   const navigate = useNavigate();
   const { isInCart, getItemQuantity } = useCart();
 
-  // Format price with 2 decimal places
+
+
   const formatPrice = (price) => {
-    return typeof price === 'number' ? price.toFixed(2) : '0.00';
+    // Handle invalid values
+    if (typeof price !== 'number' || isNaN(price)) return '0';
+    
+    try {
+      // Format as COP - add thousands separator (.) and no decimals
+      return price.toLocaleString('es-CO', {
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0
+      });
+    } catch (error) {
+      console.error('Error formatting price:', error);
+      // Fallback formatting
+      return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
   };
 
   return (

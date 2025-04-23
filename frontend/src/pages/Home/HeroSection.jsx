@@ -22,14 +22,14 @@ const HeroSection = ({ navigate }) => {
     {
       id: 2,
       title: "ENVÍO GRATIS",
-      subtitle: "En pedidos superiores a 100€",
+      subtitle: "En pedidos superiores a 400.000",
       color: "#333333",
       bgImage: "linear-gradient(135deg, #333333 0%, #555555 100%)",
       icon: <TruckIcon />,
     },
     {
       id: 3,
-      title: "DESCUENTOS PARA PROFESIONALES",
+      title: "DESCUENTOS PROFESIONALES",
       subtitle: "Regístrate y obtén precios especiales",
       color: "#000000",
       bgImage: "linear-gradient(135deg, #000000 0%, #333333 100%)",
@@ -170,16 +170,6 @@ const HeroSection = ({ navigate }) => {
                     onClick={() => setActiveIndex(index)}
                   />
                 ))}
-              </div>
-            </div>
-
-            <div className="featured-categories">
-              <h4>Categorías Destacadas</h4>
-              <div className="category-pills">
-                <button className="category-pill">Herramientas Eléctricas</button>
-                <button className="category-pill">Materiales</button>
-                <button className="category-pill">Fontanería</button>
-                <button className="category-pill">Seguridad</button>
               </div>
             </div>
           </div>
