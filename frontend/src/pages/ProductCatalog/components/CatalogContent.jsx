@@ -2,21 +2,7 @@ import React, { useState } from 'react';
 import ProductCard from '../subcomponents/ProductCard';
 import LoadingIndicator from '../subcomponents/LoadingIndicator';
 
-const CatalogContent = ({ 
-  products, 
-  loading, 
-  error, 
-  onProductClick, 
-  onAddToCart, 
-  addedToCartMessage,
-  totalProducts
-}) => {
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
-
-  const toggleViewMode = (mode) => {
-    setViewMode(mode);
-  };
-
+const CatalogContent = ({ products, loading, error, onProductClick, onAddToCart, addedToCartMessage, onSearch }) => {
   return (
     <main className="catalog-content">
       <div className="catalog-heading">

@@ -1,8 +1,12 @@
 /* Estilos para perfil de usuario mejorado */
 .profile-container {
   display: flex;
-  min-height: 100vh;
+  position: relative;
+  min-height: calc(100vh - 150px); /* Resta la altura del navbar y footer */
   background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 /* Sidebar */
@@ -10,12 +14,15 @@
   width: 280px;
   background-color: white;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
+  position: sticky; /* Cambia de fixed a sticky para mejor integración */
+  top: 70px; /* Ajusta según la altura de tu navbar */
+  height: calc(100vh - 70px); /* Altura de la ventana menos la altura del navbar */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
+  z-index: 10; /* Asegura que esté por encima del contenido pero debajo del navbar */
+  flex-shrink: 0; /* Evita que se encoja */
+  align-self: flex-start; /* Se alinea al inicio del contenedor */
 }
 
 .sidebar-header {
@@ -143,11 +150,14 @@
 
 /* Contenido principal */
 .profile-content {
-  flex-grow: 1;
-  margin-left: 280px;
-  padding: 30px;
+  flex: 1;
+  padding: 30px 50px; /* Aumento el padding horizontal */
+  margin-left: 20px; /* Agregar margen izquierdo */
+  margin-right: 20px; /* Agregar margen derecho para centrar mejor */
+  overflow: auto;
+  min-height: calc(100vh - 150px);
+  max-width: 1200px; 
 }
-
 .content-header {
   margin-bottom: 30px;
 }
@@ -177,20 +187,40 @@
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding: 30px 40px; /* Aumentar padding interno */
+  margin: 0 auto;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
 }
 
 .section-header h2 {
   margin: 0;
   font-size: 1.5rem;
   color: #333;
+  position: relative;
+}
+
+edit-btn {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
 }
 
 .edit-btn, .add-btn {
@@ -369,12 +399,13 @@
 
 /* Visualización de información */
 .info-display {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
 }
 
 .info-section {
-  margin-bottom: 30px;
+  margin-bottom: 35px;
+  padding: 0 15px;
 }
 
 .info-section h3 {
@@ -388,18 +419,23 @@
 .info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  gap: 25px;
+  margin-top: 15px;
 }
 
 .info-item {
   display: flex;
   flex-direction: column;
+  background-color: #f9f9f9; /* Fondo sutil */
+  padding: 15px; /* Padding para cada item */
+  border-radius: 8px;
 }
 
 .info-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #666;
   margin-bottom: 5px;
+  font-weight: 500;
 }
 
 .info-value {
@@ -1122,6 +1158,46 @@
   background-color: #0056b3;
 }
 
+body.profile-page {
+  overflow-x: hidden;
+}
+
+/* Ajustes para modales dentro del perfil */
+.order-details-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1000;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Ajustes para arreglar scroll en el contenido principal */
+.tab-content {
+  overflow: visible;
+}
+
+
 /* Responsive */
 @media (max-width: 1024px) {
   .profile-sidebar {
@@ -1152,7 +1228,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .profile-container {
     flex-direction: column;
   }
@@ -1160,11 +1236,32 @@
   .profile-sidebar {
     width: 100%;
     min-height: auto;
+    position: relative;
+    height: auto;
+    top: 0;
+    margin-bottom: 20px;
+    max-height: none;
   }
   
   .profile-content {
     padding: 20px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    min-height: auto;
   }
+  .sidebar-header {
+    padding: 15px 20px;
+  }
+  
+  .profile-nav {
+    padding: 10px 0;
+  }
+  
+  .sidebar-footer {
+    padding: 15px 20px;
+  }
+
   
   .order-header-row, .order-item {
     grid-template-columns: 1fr 1fr 1fr;
@@ -1183,7 +1280,7 @@
 
 @media (max-width: 576px) {
   .tab-content {
-    padding: 15px;
+    padding: 20px;
   }
   
   .section-header {
@@ -1225,5 +1322,30 @@
   .items-table th:nth-child(3), 
   .items-table td:nth-child(3) {
     display: none;
+  }
+}
+@media (max-width: 768px) {
+  .profile-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .profile-nav li {
+    margin: 5px;
+  }
+  
+  .profile-nav button {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .nav-icon {
+    margin-right: 5px;
+  }
+  
+  .order-details-modal {
+    width: 95%;
+    max-height: 90vh;
   }
 }

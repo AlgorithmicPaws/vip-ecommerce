@@ -3,13 +3,7 @@ import React, { useState, useEffect } from 'react';
 const PriceFilter = ({ onPriceChange }) => {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [rangeValue, setRangeValue] = useState(2000);
-  const [error, setError] = useState('');
-
-  // Reset error when inputs change
-  useEffect(() => {
-    setError('');
-  }, [minPrice, maxPrice]);
+  const [rangeValue, setRangeValue] = useState(1000);
 
   const handleRangeChange = (e) => {
     const value = parseInt(e.target.value);
@@ -66,50 +60,38 @@ const PriceFilter = ({ onPriceChange }) => {
   };
 
   return (
-    <div className="filter-section">
-      <h3>Filtrar por Precio</h3>
-      <div className="price-range">
-        <div className="range-input">
-          <input 
-            type="range" 
-            min="5000" 
-            max="100000000" 
-            value={rangeValue} 
-            onChange={handleRangeChange} 
-            className="range-slider" 
-          />
-        </div>
-        <div className="price-inputs">
-          <div className="input-group">
-            <label>Mín.</label>
-            <input 
-              type="text" 
-              placeholder="0" 
-              value={minPrice} 
-              onChange={handleMinPriceChange} 
-              className="min-price" 
-            />
-          </div>
-          <span className="price-separator">-</span>
-          <div className="input-group">
-            <label>Máx.</label>
-            <input 
-              type="text" 
-              placeholder="Máx" 
-              value={maxPrice} 
-              onChange={handleMaxPriceChange} 
-              className="max-price" 
-            />
-          </div>
-        </div>
-        
-        {error && <div className="price-error">{error}</div>}
-        
-        <div className="price-buttons">
-          <button className="apply-filter" onClick={handleApplyFilter}>Aplicar</button>
-          <button className="clear-filter" onClick={handleClearFilter}>Limpiar</button>
-        </div>
+    <div className="price-range">
+      <div className="range-input">
+        <input 
+          type="range" 
+          min="0" 
+          max="2000" 
+          value={rangeValue} 
+          onChange={handleRangeChange} 
+          className="range-slider" 
+          aria-label="Filtro de precio máximo"
+        />
       </div>
+      <div className="price-inputs">
+        <input 
+          type="number" 
+          placeholder="0" 
+          value={minPrice} 
+          onChange={handleMinPriceChange} 
+          className="min-price"
+          aria-label="Precio mínimo" 
+        />
+        <span className="price-separator">-</span>
+        <input 
+          type="number" 
+          placeholder="1000" 
+          value={maxPrice} 
+          onChange={handleMaxPriceChange} 
+          className="max-price"
+          aria-label="Precio máximo" 
+        />
+      </div>
+      <button className="apply-filter" onClick={handleApplyFilter}>Aplicar</button>
     </div>
   );
 };

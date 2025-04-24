@@ -96,11 +96,22 @@ const Navbar = () => {
           
           <div className="navbar-actions">
             {isSeller && (
-              <Link to="/products" className="sell-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                  <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045z"/>
+              <Link to="/products" className="sell-btn" style={{
+                display: 'flex',
+                alignItems: 'center',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                backgroundColor: '#f7b923',
+                color: '#000',
+                textDecoration: 'none',
+                fontWeight: '500',
+                gap: '8px',
+                whiteSpace: 'nowrap'
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6z"/>
                 </svg>
-                <span className="sell-text">Mis Productos</span>
+                <span className="sell-text" style={{ fontSize: '14px' }}>Mis Productos</span>
               </Link>
             )}
             
@@ -152,9 +163,6 @@ const Navbar = () => {
                 ))}
                 <Link to="/catalog" className="view-all">Ver todas</Link>
               </div>
-            </li>
-            <li className={isActive('/offers') ? 'active' : ''}>
-              <Link to="/offers">Ofertas</Link>
             </li>
             <li className={isActive('/brands') ? 'active' : ''}>
               <Link to="/brands">Marcas</Link>
