@@ -1,17 +1,33 @@
 import { useNavigate } from "react-router-dom";
 import ProductRating from "./ProductRating";
 import ProductPrice from "./ProductPrice";
+import { useCart } from "../../../pages/CartContext";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
+
+  // Handle discount information - if not available in the product object, default to 0
+  const discount = product.discount || 0;
+
+  // Handle click to navigate to product detail
+  const handleCardClick = () => {
+    navigate(`/catalog/product/${product.id}`);
+  };
+
+  // Handle add to cart action
+  const handleAddToCart = (e) => {
+    e.stopPropagation(); // Prevent navigation
+    addToCart(product, 1);
+  };
 
   return (
     <div 
       className="product-card"
-      onClick={() => navigate(`/catalog/product/${product.id}`)}
+      onClick={handleCardClick}
     >
-      {product.discount > 0 && (
-        <div className="discount-badge">-{product.discount}%</div>
+      {discount > 0 && (
+        <div className="discount-badge">-{discount}%</div>
       )}
       <div className="product-image">
         {product.image ? (
@@ -24,16 +40,36 @@ const ProductCard = ({ product }) => {
             </svg>
           </div>
         )}
+        {product.stock !== undefined && product.stock < 10 && product.stock > 0 && (
+          <div className="stock-badge">¡Pocas unidades!</div>
+        )}
       </div>
       <div className="product-info">
-        <span className="product-category">{product.category}</span>
+        <span className="product-category">{product.category || "Sin categoría"}</span>
         <h3 className="product-name">{product.name}</h3>
         <div className="product-meta">
-          <ProductRating rating={product.rating} />
-          <span className="product-seller">por {product.seller}</span>
+          <span className="product-seller">por {product.seller || "ConstructMarket"}</span>
         </div>
-        <ProductPrice price={product.price} discount={product.discount} />
-        <button className="view-product-btn">Ver Producto</button>
+        <ProductPrice price={product.price} discount={discount} />
+        
+        {isInCart && isInCart(product.id) ? (
+          <button 
+            className="view-product-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate('/cart');
+            }}
+          >
+            Ver en Carrito
+          </button>
+        ) : (
+          <button 
+            className="view-product-btn"
+            onClick={handleAddToCart}
+          >
+            Añadir al Carrito
+          </button>
+        )}
       </div>
     </div>
   );
