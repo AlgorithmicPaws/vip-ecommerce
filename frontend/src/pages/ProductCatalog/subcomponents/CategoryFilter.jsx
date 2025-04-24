@@ -6,17 +6,19 @@ const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }) => {
   };
 
   return (
-    <div className="category-filter">
-      <select 
-        value={selectedCategory} 
-        onChange={handleCategoryChange}
-        aria-label="Categorías de productos"
-      >
-        <option value="">Todas las categorías</option>
-        {categories.map((category, index) => (
-          <option key={index} value={category}>{category}</option>
-        ))}
-      </select>
+    <div className="filter-section">
+      <h3>Categorías</h3>
+      <div className="category-filter">
+        <select 
+          value={selectedCategory} 
+          onChange={handleCategoryChange}
+        >
+          <option value="">Todas las categorías</option>
+          {categories.map((category, index) => (
+            <option key={index} value={category}>{category}</option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 };

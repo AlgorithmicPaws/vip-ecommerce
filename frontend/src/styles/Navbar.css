@@ -457,3 +457,79 @@
     font-size: 1.4rem;
   }
 }
+/* src/styles/Navbar.css */
+
+/* ... (Estilos existentes para .navbar, .navbar-top, .logo, etc.) ... */
+
+
+/* --- Search Form Styles (Flexbox Approach with Specific Classes) --- */
+.navbar-search-form { /* Nueva clase para el form */
+  flex-grow: 1;
+  max-width: 500px;
+  margin: 0 30px;
+}
+
+.navbar-search-wrapper { /* Nueva clase para el contenedor */
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.navbar-search-wrapper:focus-within { /* Estilo al enfocar el input interno */
+  border-color: #F2A900;
+  box-shadow: 0 0 0 3px rgba(242, 169, 0, 0.1);
+}
+
+.navbar-search-input { /* Nueva clase para el input */
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  background-color: transparent;
+  width: 100%;
+  min-width: 0;
+}
+
+.navbar-search-button { /* Nueva clase para el botón */
+  flex-shrink: 0;
+  width: 45px;
+  align-self: stretch; /* Estirar verticalmente */
+  background-color: transparent;
+  border: none;
+  border-left: 1px solid #ddd; /* Separador opcional */
+  cursor: pointer;
+  color: #6c757d; /* Color del icono */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.navbar-search-button:hover {
+  background-color: #f8f9fa; /* Fondo claro al pasar el mouse */
+  color: #F2A900; /* Color de realce */
+  border-left-color: #ced4da;
+}
+
+.navbar-search-button:focus {
+   outline: none;
+}
+
+.navbar-search-button svg { /* Estilo para el icono SVG */
+  width: 18px;
+  height: 18px;
+  stroke: currentColor; /* Heredar color del botón */
+  fill: none;
+}
+/* --- End Search Styles --- */
+
+
+/* ... (Resto de tus estilos para .navbar-actions, .nav-list, media queries, etc.) ... */
+/* ¡ASEGÚRATE DE BORRAR LAS REGLAS CSS ANTIGUAS PARA .search-form y sus hijos! */
+
