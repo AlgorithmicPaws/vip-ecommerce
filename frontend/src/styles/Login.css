@@ -1,85 +1,128 @@
+/* src/styles/Login.css */
+
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f5f5f5;
-    padding: 20px;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa; /* Fondo gris claro */
+  padding: 20px;
+}
+
+.login-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card h1 {
+  text-align: center;
+  color: #212529; /* Texto negro/gris oscuro */
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.login-card .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.login-card label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #495057;
+  font-weight: 500;
+}
+
+
+.login-card input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ced4da; /* Borde gris */
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card input:focus {
+  outline: none;
+  border-color: #F2A900; /* Borde amarillo al enfocar */
+  box-shadow: 0 0 0 3px rgba(242, 169, 0, 0.15); /* Sombra amarilla suave */
+}
+
+/* --- UPDATED BUTTON STYLES --- */
+.login-card .submit-btn {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #212529; /* Fondo NEGRO */
+  color: #ffffff; /* Texto BLANCO */
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.login-card .submit-btn:hover:not(:disabled) {
+  background-color: #F2A900; /* Fondo AMARILLO al pasar el mouse */
+  color: #212529; /* Texto OSCURO al pasar el mouse */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.login-card .submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
+  background-color: #6c757d; /* Gris oscuro para deshabilitado */
+  color: #e9ecef;
+}
+/* --- END UPDATED BUTTON STYLES --- */
+
+
+/* Estilos para mensajes de error */
+/* El TEXTO específico ("Credenciales inválidas") debe venir del componente JSX */
+.login-card .error-message {
+  background-color: #f8d7da; /* Fondo rojo suave */
+  color: #842029; /* Texto rojo oscuro */
+  border: 1px solid #f5c2c7; /* Borde rojo suave */
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-top: 1rem; /* Espacio arriba */
+  margin-bottom: 1rem; /* Espacio abajo */
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.register-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: #6c757d; /* Texto gris */
+  font-size: 0.9rem;
+}
+
+.register-link a {
+  color: #F2A900; /* Enlace amarillo */
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+  color: #e59c00; /* Amarillo más oscuro al pasar el mouse */
+}
+
+@media (max-width: 480px) {
   .login-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
+    padding: 1.5rem;
   }
-  
+
   .login-card h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 2rem;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
-  
-  .login-card .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .login-card input {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    transition: border-color 0.3s ease;
-  }
-  
-  .login-card input:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-  
-  .login-card .submit-btn {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 1rem;
-  }
-  
-  .login-card .submit-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .register-link {
-    text-align: center;
-    margin-top: 1.5rem;
-    color: #666;
-  }
-  
-  .register-link a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-  }
-  
-  .register-link a:hover {
-    text-decoration: underline;
-  }
-  
-  @media (max-width: 480px) {
-    .login-card {
-      padding: 1.5rem;
-    }
-  
-    .login-card h1 {
-      font-size: 1.5rem;
-    }
-  }
+}

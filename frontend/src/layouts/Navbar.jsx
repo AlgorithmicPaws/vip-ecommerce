@@ -25,15 +25,6 @@ const Navbar = () => {
   const [navCategories, setNavCategories] = useState([]);
   const [categoryError, setCategoryError] = useState(null);
 
-  // Categorías principales
-  const mainCategories = [
-    { name: "Herramientas Eléctricas", path: "/catalog?category=Herramientas%20Eléctricas" },
-    { name: "Herramientas Manuales", path: "/catalog?category=Herramientas%20Manuales" },
-    { name: "Material de Construcción", path: "/catalog?category=Material%20de%20Construcción" },
-    { name: "Electricidad", path: "/catalog?category=Electricidad" },
-    { name: "Fontanería", path: "/catalog?category=Fontanería" },
-    { name: "Seguridad", path: "/catalog?category=Seguridad" },
-  ];
 
   // Efecto para hacer el navbar fijo al hacer scroll
   useEffect(() => {

@@ -6,7 +6,6 @@ import '../styles/ShoppingCart.css';
 import '../styles/CheckoutForm.css';
 
 // Components
-import CartHeader from './ShoppingCart/CartHeader';
 import CartEmpty from './ShoppingCart/CartEmpty';
 import CheckoutForm from './ShoppingCart/CheckoutForm';
 
@@ -45,15 +44,6 @@ const ShoppingCart = () => {
     }
   }, [isCheckingOut, isAuthenticated, navigate]);
 
-  // Handle applying coupon
-  const handleApplyCoupon = () => {
-    if (couponCode.toLowerCase() === 'constru20') {
-      setCouponApplied(true);
-      setDiscount(totalPrice * 0.2); // 20% discount
-    } else {
-      alert('Cupón no válido');
-    }
-  };
 
   // Calculate totals
   const subtotal = totalPrice;
@@ -162,8 +152,6 @@ const ShoppingCart = () => {
   if (orderComplete) {
     return (
       <div className="cart-container">
-        <CartHeader />
-        
         <div className="cart-content">
           <div className="order-confirmation">
             <div className="order-confirmation-icon">✅</div>
@@ -212,8 +200,6 @@ const ShoppingCart = () => {
 
   return (
     <div className="cart-container">
-      <CartHeader />
-
       <div className="cart-content">
         {isCheckingOut ? (
           <>
@@ -386,12 +372,6 @@ const ShoppingCart = () => {
                     <span>${formatPrice(subtotal)}</span>
                   </div>
                   
-                  {couponApplied && (
-                    <div className="summary-row discount">
-                      <span>Descuento (Cupón)</span>
-                      <span>-${formatPrice(discount)}</span>
-                    </div>
-                  )}
                   
                   <div className="summary-row">
                     <span>Envío</span>
@@ -402,20 +382,7 @@ const ShoppingCart = () => {
                     <span>Total</span>
                     <span>${formatPrice(totalWithDiscount)}</span>
                   </div>
-                  
-                  <div className="coupon-section">
-                    <h3>¿Tienes un Cupón?</h3>
-                    <div className="coupon-input">
-                      <input
-                        type="text"
-                        placeholder="Código de descuento"
-                        value={couponCode}
-                        onChange={(e) => setCouponCode(e.target.value)}
-                      />
-                      <button onClick={handleApplyCoupon}>Aplicar</button>
-                    </div>
-                    <p className="coupon-hint">Prueba con: CONSTRU20</p>
-                  </div>
+                
                   
                   <div className="payment-info-box">
                     <p><strong>Forma de pago:</strong> Transferencia bancaria</p>

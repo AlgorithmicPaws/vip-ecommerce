@@ -1,31 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/Footer.css';
+import * as productService from '../services/productService';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   
-  // Enlaces para el footer
-  const categories = [
-    { name: "Herramientas Eléctricas", path: "/catalog?category=Herramientas%20Eléctricas" },
-    { name: "Herramientas Manuales", path: "/catalog?category=Herramientas%20Manuales" },
-    { name: "Material de Construcción", path: "/catalog?category=Material%20de%20Construcción" },
-    { name: "Electricidad", path: "/catalog?category=Electricidad" },
-    { name: "Fontanería", path: "/catalog?category=Fontanería" },
-    { name: "Seguridad", path: "/catalog?category=Seguridad" },
-  ];
+  // Fetch categories on component mount
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const categoriesData = await productService.getCategories();
+        
+        // Transform categories data if needed
+        const transformedCategories = productService.transformApiCategories 
+          ? productService.transformApiCategories(categoriesData)
+          : categoriesData;
+        
+        // Limit to 6 categories for the footer
+        const limitedCategories = transformedCategories.slice(0, 8).map(category => ({
+          name: category.name,
+          path: `/catalog?category=${encodeURIComponent(category.name)}`
+        }));
+        
+        setCategories(limitedCategories);
+      } catch (err) {
+        console.error("Error fetching categories for footer:", err);
+        // Fallback to static categories
+        setCategories([
+          { name: "Herramientas Eléctricas", path: "/catalog?category=Herramientas%20Eléctricas" },
+          { name: "Herramientas Manuales", path: "/catalog?category=Herramientas%20Manuales" },
+          { name: "Material de Construcción", path: "/catalog?category=Material%20de%20Construcción" },
+          { name: "Electricidad", path: "/catalog?category=Electricidad" },
+          { name: "Fontanería", path: "/catalog?category=Fontanería" },
+          { name: "Seguridad", path: "/catalog?category=Seguridad" },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
   
   const customerService = [
-    { name: "Envíos y Entregas", path: "/shipping" },
-    { name: "Devoluciones", path: "/returns" },
-    { name: "Garantías", path: "/warranty" },
-    { name: "Área Profesional", path: "/professional" },
     { name: "Vende con Nosotros", path: "/sell" },
-    { name: "Contacto", path: "/contact" },
-  ];
-  
-  const company = [
-    { name: "Sobre Nosotros", path: "/about" },
   ];
   
   // Redes sociales
@@ -72,11 +94,15 @@ const Footer = () => {
             <div className="footer-column">
               <h3>Categorías</h3>
               <ul>
-                {categories.map((category, index) => (
-                  <li key={index}>
-                    <Link to={category.path}>{category.name}</Link>
-                  </li>
-                ))}
+                {loading ? (
+                  <li className="footer-loading">Cargando...</li>
+                ) : (
+                  categories.map((category, index) => (
+                    <li key={index}>
+                      <Link to={category.path}>{category.name}</Link>
+                    </li>
+                  ))
+                )}
               </ul>
             </div>
             
@@ -90,31 +116,6 @@ const Footer = () => {
                 ))}
               </ul>
             </div>
-            
-            <div className="footer-column">
-              <h3>Contacto</h3>
-              <div className="footer-newsletter">
-                <p>Suscríbete a nuestro boletín</p>
-                <form className="newsletter-form">
-                  <input type="email" placeholder="Tu correo electrónico" required />
-                  <button type="submit">Suscribir</button>
-                </form>
-              </div>
-              <div className="social-links">
-                {socialMedia.map((social, index) => (
-                  <a 
-                    key={index} 
-                    href={social.url} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="social-link"
-                    aria-label={social.name}
-                  >
-                    {social.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -122,13 +123,6 @@ const Footer = () => {
       <div className="footer-bottom">
         <div className="footer-container">
           <div className="footer-bottom-content">
-            <div className="footer-bottom-links">
-              <Link to="/terms">Términos y Condiciones</Link>
-              <Link to="/privacy">Política de Privacidad</Link>
-              <Link to="/cookies">Política de Cookies</Link>
-              <Link to="/legal">Aviso Legal</Link>
-            </div>
-            
             <div className="copyright">
               © {currentYear} ConstructMarket. Todos los derechos reservados.
             </div>
