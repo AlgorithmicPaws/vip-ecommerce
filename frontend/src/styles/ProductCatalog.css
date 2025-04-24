@@ -16,7 +16,7 @@
 /* Main container holding sidebar and content */
 .catalog-container {
   flex-grow: 1; /* Allows container to fill space if wrapped by flex column */
-  max-width: 1600px; /* Max width for the content area */
+  max-width: 1800px; /* Max width for the content area */
   margin: 20px auto; /* Center the container with top/bottom margin */
   padding: 0 20px; /* Padding on the sides */
   width: 100%;
@@ -41,25 +41,25 @@
    ========================================================================== */
 
 .catalog-sidebar {
-  width: 280px; /* Slightly narrower sidebar */
-  flex-shrink: 0; /* Prevent sidebar from shrinking */
-  background-color: #f1f3f5; /* UPDATED: Slightly darker background */
+  width: 280px;
+  flex-shrink: 0;
+  /* UPDATED: Sidebar background and border */
+  background-color: #f1f3f5; /* Light gray background */
+  border: 1px solid #dee2e6; /* Matching border */
   border-radius: 8px;
-  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */ /* Removed shadow for flatter look */
-  border: 1px solid #dee2e6; /* UPDATED: Slightly darker border */
   padding: 20px;
-  align-self: flex-start; /* Align to top */
-  position: sticky; /* Make sidebar sticky */
-  top: 20px; /* Sticky position offset */
-  max-height: calc(100vh - 40px); /* Limit height for scrolling */
-  overflow-y: auto; /* Enable vertical scroll if content exceeds height */
+  align-self: flex-start;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
 }
 
-/* Styling for each filter section (Category, Price, Seller, Brands) */
+/* Styling for each filter section */
 .filter-section {
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 1px solid #dee2e6; /* UPDATED: Match sidebar border */
+  border-bottom: 1px solid #dee2e6; /* Match sidebar border */
 }
 
 .filter-section:last-child {
@@ -71,7 +71,7 @@
 .filter-section h3 {
   font-size: 1rem;
   margin-bottom: 16px;
-  color: #343a40; /* UPDATED: Darker heading */
+  color: #343a40; /* Darker heading */
   font-weight: 600;
 }
 
@@ -82,7 +82,7 @@
   border: 1px solid #ced4da;
   border-radius: 5px;
   font-size: 0.9rem;
-  background-color: #fff; /* Keep select background white */
+  background-color: #fff;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
@@ -113,7 +113,7 @@
   height: 5px;
   -webkit-appearance: none;
   appearance: none;
-  background: #ced4da; /* UPDATED: Slightly darker track */
+  background: #ced4da; /* Darker track */
   outline: none;
   border-radius: 5px;
   cursor: pointer;
@@ -154,7 +154,7 @@
 .price-inputs label {
   display: block;
   font-size: 0.8rem;
-  color: #495057; /* UPDATED: Darker label */
+  color: #495057; /* Darker label */
   margin-bottom: 4px;
 }
 
@@ -165,7 +165,7 @@
   border: 1px solid #ced4da;
   border-radius: 5px;
   font-size: 0.9rem;
-  background-color: #fff; /* Keep input background white */
+  background-color: #fff;
 }
 
 .price-inputs input:focus {
@@ -202,23 +202,24 @@
   transition: all 0.2s ease;
 }
 
+/* UPDATED: Apply filter button color (was yellow, now green) */
 .apply-filter {
-  background-color: #198754;
+  background-color: #198754; /* Green */
   color: white;
 }
 
 .apply-filter:hover {
-  background-color: #157347;
+  background-color: #157347; /* Darker green */
 }
 
 .clear-filter {
-  background-color: #ffffff; /* Keep clear button white */
+  background-color: #ffffff;
   color: #495057;
   border: 1px solid #ced4da;
 }
 
 .clear-filter:hover {
-  background-color: #f8f9fa; /* Lightest gray hover */
+  background-color: #f8f9fa;
 }
 
 /* --- Seller Filter --- */
@@ -233,7 +234,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #343a40; /* UPDATED: Darker text */
+  color: #343a40; /* Darker text */
   cursor: pointer;
   padding: 4px 0;
 }
@@ -261,7 +262,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #343a40; /* UPDATED: Darker text */
+  color: #343a40; /* Darker text */
   cursor: pointer;
   padding: 4px 0;
 }
@@ -285,7 +286,7 @@
 }
 
 .popular-brand-link {
-  color: #0d6efd; /* UPDATED: Blue link color */
+  color: #0d6efd; /* Blue link color */
   text-decoration: none;
   font-size: 0.9rem;
   padding: 6px 8px;
@@ -371,7 +372,7 @@
 }
 
 .view-btn:hover {
-  background-color: #f1f3f5; /* UPDATED: Lighter hover */
+  background-color: #f1f3f5; /* Lighter hover */
 }
 
 /* UPDATED: Active view button style */
@@ -391,7 +392,7 @@
 
 .products-grid {
   display: grid;
-  /* Default columns */
+  /* Default columns using auto-fill up to a certain point */
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 }
@@ -599,6 +600,40 @@
   white-space: nowrap;
 }
 
+/* UPDATED: View Cart Button - Yellow */
+.view-cart-btn {
+  background-color: #ffc107; /* Yellow */
+  color: #343a40; /* Dark text */
+  border: 1px solid #ffc107;
+}
+
+.view-cart-btn:hover {
+  background-color: #ffca2c; /* Lighter yellow on hover */
+  border-color: #ffca2c;
+}
+
+/* --- Product Rating --- */
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 8px;
+  color: #ffc107;
+}
+
+.star {
+  font-size: 1rem;
+}
+
+.star.empty {
+  color: #e9ecef;
+}
+
+.rating-number {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-left: 4px;
+}
 
 
 /* ==========================================================================
@@ -759,26 +794,24 @@
 }
 
 /* ==========================================================================
-   Responsive Design Adjustments (Including 4 columns)
+   Responsive Design Adjustments (Max 3 columns)
    ========================================================================== */
 
-/* UPDATED: Added breakpoint for 4 columns on wider screens */
-@media (min-width: 1200px) {
+/* UPDATED: Explicitly set max 3 columns for larger screens */
+@media (min-width: 992px) { /* Apply 3 columns starting from this breakpoint */
   .products-grid {
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    grid-template-columns: repeat(3, 1fr); /* Max 3 columns */
   }
 }
 
-/* Tablets and smaller desktops */
-@media (max-width: 1199px) { /* Adjusted max-width */
-   /* Default auto-fill handles this range well, but you could force 3 if needed */
-   /* .products-grid {
-      grid-template-columns: repeat(3, 1fr);
-   } */
-}
+/* Remove the previous 4-column rule */
+/* @media (min-width: 1200px) { ... } */
+
+/* Remove the redundant max-width: 1199px rule */
+/* @media (max-width: 1199px) { ... } */
 
 
-@media (max-width: 992px) {
+@media (max-width: 991px) { /* Adjusted breakpoint */
   .catalog-main {
     flex-direction: column;
   }
@@ -791,10 +824,10 @@
     overflow-y: visible;
   }
 
-  /* Adjust grid for tablets if auto-fill isn't quite right */
-   /* .products-grid {
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-   } */
+  /* Auto-fill handles columns below 992px (typically 1 or 2) */
+   .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+   }
 }
 
 /* Smaller tablets */
@@ -824,7 +857,6 @@
   }
 
   .products-grid {
-    /* Let auto-fill handle small screens, maybe adjust minmax */
      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Smaller min size */
     gap: 12px; /* Reduce gap further */
   }

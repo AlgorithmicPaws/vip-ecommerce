@@ -49,7 +49,7 @@
   text-decoration: none;
   transition: color 0.3s;
 }
-.logo .icon{ 
+.logo .icon{
   width: 5.5rem;
   height: 5.5rem;
   margin-right: 5px;
@@ -62,18 +62,20 @@
   color: #443c29e7; /* Color amarillo corporativo */
 }
 
+/* --- Search Form Styles --- */
 .search-form {
   flex-grow: 1;
   max-width: 500px;
   margin: 0 30px;
   display: flex;
-  position: relative;
+  position: relative; /* Needed for absolute positioning of the button */
 }
 
 .search-form input {
   width: 100%;
   padding: 10px 15px;
-  padding-right: 40px;
+  /* Ensure enough padding on the right for the button */
+  padding-right: 45px; /* Increased slightly for better spacing */
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -82,34 +84,53 @@
 
 .search-form input:focus {
   outline: none;
-  border-color: #F2A900;
+  border-color: #F2A900; /* Highlight color on focus */
   box-shadow: 0 0 0 3px rgba(242, 169, 0, 0.1);
 }
 
-.search-form button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 40px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #999;
-  transition: color 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* --- Search Button Styles (UPDATED with more specificity) --- */
+/* Target the button more directly within the navbar structure */
+.navbar .navbar-top .search-form button.search-button {
+  position: absolute !important; /* Added !important as a test */
+  right: 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  width: 45px !important; /* Match input padding-right */
+  background-color: transparent !important; /* Explicitly transparent background */
+  border: none !important;
+  border-radius: 0 5px 5px 0 !important; /* Match input border-radius on the right */
+  cursor: pointer !important;
+  color: #6c757d !important; /* Slightly darker icon color */
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important; /* Remove default padding */
+  z-index: 2; /* Ensure button is above input field */
 }
 
-.search-form button:hover {
-  color: #F2A900;
+.navbar .navbar-top .search-form button.search-button:hover {
+  background-color: #f8f9fa !important; /* Subtle background on hover */
+  color: #F2A900 !important; /* Highlight color on hover */
 }
 
-.search-button svg {
-  width: 18px;
-  height: 18px;
+.navbar .navbar-top .search-form button.search-button:focus {
+   /* Optional: Add focus style if needed */
+   outline: none !important;
+   box-shadow: 0 0 0 2px rgba(242, 169, 0, 0.2) !important;
 }
+
+
+/* --- Search Icon Styles --- */
+/* Target the SVG specifically */
+.navbar .navbar-top .search-form button.search-button svg {
+  width: 18px !important; /* Keep icon size */
+  height: 18px !important;
+  fill: currentColor; /* Ensure SVG color inherits from button */
+}
+
+/* --- End Search Styles --- */
+
 
 .navbar-actions {
   display: flex;
@@ -344,11 +365,11 @@
   .auth-buttons {
     display: none;
   }
-  
+
   .action-text {
     display: none;
   }
-  
+
   .search-form {
     max-width: 300px;
   }
@@ -358,15 +379,15 @@
   .navbar-top {
     padding: 15px 20px;
   }
-  
+
   .search-form {
     display: none;
   }
-  
+
   .mobile-menu-toggle {
     display: block;
   }
-  
+
   .navbar-nav {
     position: fixed;
     top: 70px;
@@ -380,20 +401,20 @@
     overflow-y: auto;
     z-index: 95;
   }
-  
+
   .navbar-nav.mobile-open {
     right: 0;
   }
-  
+
   .nav-list {
     flex-direction: column;
   }
-  
+
   .nav-list a, .dropdown-trigger {
     padding: 15px 20px;
     border-bottom: 1px solid #f0f0f0;
   }
-  
+
   .dropdown-menu {
     position: static;
     opacity: 1;
@@ -405,19 +426,19 @@
     overflow: hidden;
     transition: max-height 0.3s ease;
   }
-  
+
   .dropdown:hover .dropdown-menu {
     max-height: 1000px;
   }
-  
+
   .dropdown-menu a {
     padding-left: 30px;
   }
-  
+
   .mobile-overlay {
     display: block;
   }
-  
+
   .navbar-spacer {
     height: 70px;
   }
@@ -427,11 +448,11 @@
   .action-links {
     margin-right: 10px;
   }
-  
+
   .action-link {
     margin-right: 15px;
   }
-  
+
   .logo {
     font-size: 1.4rem;
   }

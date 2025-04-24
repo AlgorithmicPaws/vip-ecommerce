@@ -1,19 +1,17 @@
 // src/pages/ProductCatalog/ProductCatalog.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../CartContext';
-import '../../styles/ProductCatalog.css';
+import '../../styles/ProductCatalog.css'; // Keep existing CSS import
 import * as productService from '../../services/productService';
 
 // Import main layout components
-import Navbar from '../../layouts/Navbar'; // <--- Import Navbar
-import Footer from '../../layouts/Footer'; // <--- Import Footer
+import Navbar from '../../layouts/Navbar';
+import Footer from '../../layouts/Footer';
 
 // Import existing catalog components
-// import CatalogHeader from './components/CatalogHeader'; // <-- Decide if needed
 import CatalogSidebar from './components/CatalogSidebar';
 import CatalogContent from './components/CatalogContent';
-// import CatalogFooter from './components/CatalogFooter'; // <-- Decide if needed
 import ProductDetailModal from './components/ProductDetailModal';
 import Pagination from './components/Pagination';
 
@@ -22,68 +20,101 @@ const ProductCatalog = () => {
   const location = useLocation();
   const { addToCart } = useCart();
 
-  // ... (keep existing states and effects) ...
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  // State Variables
+  const [allProducts, setAllProducts] = useState([]); // Store the master list from API
+  const [filteredProducts, setFilteredProducts] = useState([]); // Products after all filters
+  const [displayedProducts, setDisplayedProducts] = useState([]); // Products for the current page
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]); // Store categories { id, name }
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState(''); // Selected category NAME
   const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
   const [sellerFilter, setSellerFilter] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [productQuantity, setProductQuantity] = useState(1);
   const [addedToCartMessage, setAddedToCartMessage] = useState({ show: false, productId: null });
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(30);
+  const [productsPerPage] = useState(30); // Or your desired number
   const [totalPages, setTotalPages] = useState(1);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
 
-  // ... (keep existing effects and handlers) ...
+  // --- Effects ---
+
+  // Effect 1: Fetch categories once on mount
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const category = params.get('category');
-    const search = params.get('search');
-    const page = params.get('page');
+    const loadCategories = async () => {
+      try {
+        const categoriesResponse = await productService.getCategories();
+        // Assuming transformApiCategories returns an array like [{ id: '1', name: 'Category A' }, ...]
+        const transformedCategories = productService.transformApiCategories(categoriesResponse);
+        setCategories(transformedCategories || []);
+      } catch (err) {
+        console.error('Error loading categories:', err);
+        // Handle category loading error if needed
+      }
+    };
+    loadCategories();
+  }, []); // Empty dependency array ensures this runs only once
 
-    if (category) setCategoryFilter(category);
-    if (search) setSearchTerm(search);
-    if (page) setCurrentPage(parseInt(page) || 1);
-  }, [location.search]);
+  // Effect 2: Read initial filters from URL
+   useEffect(() => {
+     const params = new URLSearchParams(location.search);
+     const category = params.get('category') || ''; // Default to empty string
+     const search = params.get('search') || '';
+     const page = parseInt(params.get('page') || '1', 10);
 
+     setCategoryFilter(category);
+     setSearchTerm(search);
+     setCurrentPage(page);
+     // We fetch products in the next effect based on these states
+   }, [location.search]); // Re-run if URL search params change
+
+  // Effect 3: Fetch products when category filter changes OR on initial load
   useEffect(() => {
     const loadProducts = async () => {
       setLoading(true);
       setError(null);
       try {
-        const categoriesResponse = await productService.getCategories();
-        const transformedCategories = productService.transformApiCategories(categoriesResponse);
-        setCategories(transformedCategories.map(cat => cat.name));
+        // Find the category ID based on the selected name
+        const selectedCategoryObj = categories.find(cat => cat.name === categoryFilter);
+        const categoryId = selectedCategoryObj ? selectedCategoryObj.id : null;
 
+        // Prepare options for the API call
         const options = {};
-        if (categoryFilter) {
-          const categoryId = transformedCategories.find(cat => cat.name === categoryFilter)?.id;
-          if (categoryId) options.categoryId = categoryId;
+        if (categoryId) {
+          options.categoryId = categoryId; // Pass categoryId if selected
         }
+        // Add other potential API options here if your service supports them (e.g., search term)
+        // options.search = searchTerm; // Example if API supports search
 
+        // Fetch products - ideally filtered by categoryId on the server
         const productsData = await productService.getAllProducts(options);
-        setProducts(productsData);
-        applyFilters(productsData);
+        setAllProducts(productsData || []); // Store the raw list fetched
+
       } catch (err) {
         console.error('Error loading products:', err);
         setError('Failed to load products. Please try again later.');
+        setAllProducts([]); // Clear products on error
       } finally {
         setLoading(false);
       }
     };
-    loadProducts();
-  }, [categoryFilter]);
 
+    // Only run fetch if categories have been loaded
+    if (categories.length > 0 || !categoryFilter) { // Fetch if categories are ready OR if no category is selected
+       loadProducts();
+    }
 
-  const applyFilters = (productsToFilter = products) => {
-    let filtered = [...productsToFilter];
+  }, [categoryFilter, categories]); // Re-fetch when categoryFilter changes or categories load
+
+  // Effect 4: Apply client-side filters whenever products or filter criteria change
+  // Use useCallback for applyFilters to stabilize its reference if needed elsewhere
+  const applyFilters = useCallback(() => {
+    console.log("Applying filters. Base product count:", allProducts.length, "Filters:", { searchTerm, priceFilter, sellerFilter });
+    let filtered = [...allProducts];
+
+    // Apply Search Filter (Client-side)
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(product =>
@@ -91,31 +122,43 @@ const ProductCatalog = () => {
         (product.description && product.description.toLowerCase().includes(searchLower))
       );
     }
+
+    // Apply Price Filter (Client-side)
     if (priceFilter.min && !isNaN(priceFilter.min)) {
       filtered = filtered.filter(product => product.price >= parseFloat(priceFilter.min));
     }
     if (priceFilter.max && !isNaN(priceFilter.max)) {
       filtered = filtered.filter(product => product.price <= parseFloat(priceFilter.max));
     }
+
+    // Apply Seller Filter (Client-side)
     if (sellerFilter.length > 0) {
-      filtered = filtered.filter(product => sellerFilter.includes(product.seller));
+      filtered = filtered.filter(product => product.seller && sellerFilter.includes(product.seller));
     }
+
+    console.log("Filtered product count:", filtered.length);
     setFilteredProducts(filtered);
-    setTotalPages(Math.ceil(filtered.length / productsPerPage));
-    setCurrentPage(1);
-  };
+    setCurrentPage(1); // Reset to first page whenever filters change
 
+  }, [allProducts, searchTerm, priceFilter, sellerFilter]); // Dependencies for filtering
 
-   useEffect(() => {
-     applyFilters();
-   }, [searchTerm, priceFilter, sellerFilter, products]); // Added products dependency
-
+  // Run the filter function when dependencies change
   useEffect(() => {
+    applyFilters();
+  }, [applyFilters]); // applyFilters is memoized by useCallback
+
+  // Effect 5: Paginate filtered products
+  useEffect(() => {
+    const total = Math.ceil(filteredProducts.length / productsPerPage);
+    setTotalPages(total > 0 ? total : 1); // Ensure totalPages is at least 1
+
     const indexOfLastProduct = currentPage * productsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
     setDisplayedProducts(filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct));
+
   }, [filteredProducts, currentPage, productsPerPage]);
 
+  // Effect 6: Handle "Added to Cart" message timeout
   useEffect(() => {
     if (addedToCartMessage.show) {
       const timer = setTimeout(() => {
@@ -125,27 +168,34 @@ const ProductCatalog = () => {
     }
   }, [addedToCartMessage]);
 
-   const handlePageChange = (pageNumber) => {
-     setCurrentPage(pageNumber);
-     const params = new URLSearchParams(location.search);
-     params.set('page', pageNumber);
-     navigate(`<span class="math-inline">\{location\.pathname\}?</span>{params.toString()}`);
-     window.scrollTo(0, 0);
-   };
 
-   const handleSearchChange = (term) => {
+  // --- Handlers ---
+
+  // Called by CategoryFilter component
+  const handleCategoryChange = (newCategoryName) => {
+    // Update state immediately
+    setCategoryFilter(newCategoryName);
+
+    // Update URL without full page reload
+    const params = new URLSearchParams(location.search);
+    if (newCategoryName) {
+      params.set('category', newCategoryName);
+    } else {
+      params.delete('category');
+    }
+    // Reset page param when category changes
+    params.set('page', '1');
+    // Use navigate to update URL query string. Should NOT redirect to home.
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true }); // Use replace to avoid history buildup
+  };
+
+  const handleSearchChange = (term) => {
      setSearchTerm(term);
-   };
-
-   const handleCategoryChange = (category) => {
-     setCategoryFilter(category);
-     const params = new URLSearchParams(location.search);
-     if (category) {
-        params.set('category', category);
-     } else {
-        params.delete('category');
-     }
-     navigate(`<span class="math-inline">\{location\.pathname\}?</span>{params.toString()}`);
+     // Optionally update URL for search term as well
+     // const params = new URLSearchParams(location.search);
+     // params.set('search', term);
+     // params.set('page', '1');
+     // navigate(`${location.pathname}?${params.toString()}`, { replace: true });
    };
 
    const handlePriceChange = (min, max) => {
@@ -156,80 +206,73 @@ const ProductCatalog = () => {
      setSellerFilter(sellers);
    };
 
-    const handleProductClick = (product) => {
-      // Option 1: Navigate to Product Detail Page
-      navigate(`/catalog/product/${product.id}`);
+   const handlePageChange = (pageNumber) => {
+     setCurrentPage(pageNumber);
+     // Update URL page parameter
+     const params = new URLSearchParams(location.search);
+     params.set('page', pageNumber);
+     navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+     window.scrollTo(0, 0); // Scroll to top on page change
+   };
 
-      // Option 2: Show Modal (keep original logic if preferred)
-      // setSelectedProduct(product);
-      // setProductQuantity(1);
-      // setShowDetailModal(true);
-    };
+  const handleProductClick = (product) => {
+    // Option 1: Navigate to Product Detail Page (Recommended)
+    navigate(`/product/${product.id}`); // Assuming '/product/:id' route exists
+
+    // Option 2: Show Modal (Keep if preferred)
+    // setSelectedProduct(product);
+    // setProductQuantity(1);
+    // setShowDetailModal(true);
+  };
+
+  const handleAddToCart = (e, product) => {
+    e.stopPropagation(); // Prevent card click handler
+    addToCart(product, 1); // Assuming quantity is 1 for catalog button
+    setAddedToCartMessage({ show: true, productId: product.id });
+  };
+
+  // Modal Handlers (keep if using modal)
+  const handleGoToCart = () => navigate('/cart');
+  const handleQuantityChange = (operation) => { /* ... keep logic ... */ };
+  const handleAddToCartFromModal = () => { /* ... keep logic ... */ };
+  const handleBuyNow = () => { /* ... keep logic ... */ };
+  const handleCloseModal = () => setShowDetailModal(false);
 
 
-    const handleAddToCart = (e, product) => {
-      e.stopPropagation();
-      addToCart(product, 1);
-      setAddedToCartMessage({ show: true, productId: product.id });
-    };
-
-    const handleGoToCart = () => {
-      navigate('/cart');
-    };
-
-    const handleQuantityChange = (operation) => {
-      if (operation === 'increase' && productQuantity < selectedProduct.stock) {
-        setProductQuantity(prev => prev + 1);
-      } else if (operation === 'decrease' && productQuantity > 1) {
-        setProductQuantity(prev => prev - 1);
-      }
-    };
-
-    const handleAddToCartFromModal = () => {
-      addToCart(selectedProduct, productQuantity);
-      setShowDetailModal(false);
-      setAddedToCartMessage({ show: true, productId: selectedProduct.id });
-    };
-
-    const handleBuyNow = () => {
-      addToCart(selectedProduct, productQuantity);
-      setShowDetailModal(false);
-      navigate('/cart');
-    };
-
-    const handleCloseModal = () => {
-      setShowDetailModal(false);
-    };
-
+  // --- Render ---
 
   return (
-    <div className="catalog-page-wrapper"> {/* Optional: Add a wrapper div */}
-      <Navbar /> {/* <--- Add Navbar */}
+    <div className="catalog-page-wrapper">
+      <Navbar />
 
       <div className="catalog-container">
-        {/* Removed CatalogHeader */}
-
         <div className="catalog-main">
           <CatalogSidebar
-            categories={categories}
+            // Pass category names for display in the filter
+            categories={categories.map(cat => cat.name)}
             selectedCategory={categoryFilter}
-            onCategoryChange={handleCategoryChange}
+            onCategoryChange={handleCategoryChange} // Pass the handler
             onPriceChange={handlePriceChange}
             onSellerChange={handleSellerChange}
+            // Pass other necessary props like sellers if dynamic
           />
 
           <div className="catalog-content-wrapper">
+             {/* Pass search handler to CatalogContent if SearchBar is inside it */}
+             {/* Or handle search input outside CatalogContent */}
+             {/* <SearchBar onSearch={handleSearchChange} /> */}
             <CatalogContent
-              products={displayedProducts}
+              products={displayedProducts} // Pass paginated products
               loading={loading}
+              error={error}
               onProductClick={handleProductClick}
               onAddToCart={handleAddToCart}
               addedToCartMessage={addedToCartMessage}
-              error={error}
-              totalProducts={filteredProducts.length}
+              totalProducts={filteredProducts.length} // Show count of filtered products
+              // Pass view mode state and handlers if needed
             />
 
-            {!loading && filteredProducts.length > 0 && (
+            {!loading && filteredProducts.length > 0 && totalPages > 1 && (
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -238,11 +281,9 @@ const ProductCatalog = () => {
             )}
           </div>
         </div>
-
-        {/* Removed CatalogFooter */}
       </div>
 
-      {/* Keep ProductDetailModal if you still want modal functionality */}
+      {/* Keep ProductDetailModal if using modal functionality */}
       {showDetailModal && selectedProduct && (
         <ProductDetailModal
           product={selectedProduct}
@@ -254,7 +295,7 @@ const ProductCatalog = () => {
         />
       )}
 
-      <Footer /> {/* <--- Add Footer */}
+      <Footer />
     </div>
   );
 };
