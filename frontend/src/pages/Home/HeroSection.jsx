@@ -17,22 +17,22 @@ const HeroSection = ({ navigate }) => {
       subtitle: "En todas las herramientas eléctricas",
       color: "#F2A900",
       bgImage: "linear-gradient(135deg, #F2A900 0%, #F8B008 100%)",
-      icon: <ToolIcon />,
+      icon: <TruckIcon />,
     },
     {
       id: 2,
       title: "ENVÍO GRATIS",
       subtitle: "En pedidos superiores a 400.000",
-      color: "#333333",
-      bgImage: "linear-gradient(135deg, #333333 0%, #555555 100%)",
+      color: "#FFFFFF",
+      bgImage: "linear-gradient(135deg, #f16646 0%,rgb(121, 107, 107) 100%)",
       icon: <TruckIcon />,
     },
     {
       id: 3,
-      title: "DESCUENTOS PROFESIONALES",
+      title: "DESCUENTOS IMPERDIBLES",
       subtitle: "Regístrate y obtén precios especiales",
-      color: "#000000",
-      bgImage: "linear-gradient(135deg, #000000 0%, #333333 100%)",
+      color: "#FFFFFF",
+      bgImage: "linear-gradient(135deg,rgb(43, 144, 226) 0%,rgb(177, 151, 151) 100%)",
       icon: <UserIcon />,
     },
   ];
@@ -80,14 +80,6 @@ const HeroSection = ({ navigate }) => {
             <h1>Todo lo que necesitas para tu proyecto de construcción</h1>
             <p>Las mejores marcas, precios competitivos y envío rápido para profesionales y particulares</p>
 
-            <div className="search-container">
-              <Search className="search-icon" size={20} />
-              <input type="text" placeholder="¿Qué necesitas para tu proyecto?" className="search-input" />
-              <button className="search-button">
-                <ArrowRight size={20} />
-              </button>
-            </div>
-
             <div className="hero-buttons">
               <button onClick={() => navigate("/catalog")} className="primary-btn">
                 Ver Productos
@@ -102,7 +94,7 @@ const HeroSection = ({ navigate }) => {
 
           <div className="stats-container">
             <div className="stat-item">
-              <span className="stat-number">10K+</span>
+              <span className="stat-number">50+</span>
               <span className="stat-label">Productos</span>
             </div>
             <div className="stat-item">
@@ -149,10 +141,6 @@ const HeroSection = ({ navigate }) => {
                       </div>
                       <h3>{offer.title}</h3>
                       <p>{offer.subtitle}</p>
-                      <button className="offer-button">
-                        Ver Oferta
-                        <ChevronRight size={16} />
-                      </button>
                     </div>
                     <div className="card-decoration">
                       <div className="decoration-circle"></div>

@@ -10,7 +10,7 @@ const Testimonios = () => {
       company: "Construcciones Méndez",
       avatar: null,
       initial: "C",
-      text: "ConstructMarket ha simplificado nuestra cadena de suministro. Precios competitivos y entrega puntual en obra.",
+      text: "VIP ha simplificado nuestra cadena de suministro. Precios competitivos y entrega puntual en obra.",
       rating: 5
     },
     {
