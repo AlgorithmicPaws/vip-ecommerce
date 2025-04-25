@@ -6,9 +6,10 @@
     padding: 40px 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     color: #333;
-    background-color: #f8f9fa;
+    background-color: #FFFFFF;
     box-sizing: border-box;
   }
+  
   
   /* ===== Header ===== */
   .seller-registration-header {
@@ -19,7 +20,7 @@
   .home-link {
     display: flex;
     align-items: center;
-    color: #007bff;
+    color: #F2A900;
     text-decoration: none;
     font-weight: 500;
     margin-bottom: 20px;
@@ -42,7 +43,7 @@
   
   .registration-subtitle {
     font-size: 1.25rem;
-    color: #4a5568;
+    color: #021027;
     max-width: 700px;
     margin: 0 auto;
   }
@@ -62,7 +63,7 @@
   
   .progress-fill {
     height: 100%;
-    background-color: #007bff;
+    background-color: #F2A900;
     transition: width 0.3s ease;
   }
   
@@ -95,7 +96,7 @@
   }
   
   .step.active .step-number {
-    background-color: #007bff;
+    background-color: #F2A900;
     color: white;
   }
   
@@ -132,7 +133,7 @@
     font-size: 1.5rem;
     margin: 0 0 25px;
     color: #1a202c;
-    border-bottom: 1px solid #e9ecef;
+    border-bottom: 1px solid #0a4783;
     padding-bottom: 15px;
   }
   
@@ -153,14 +154,14 @@
     width: 100%;
     padding: 12px 16px;
     font-size: 1rem;
-    border: 1px solid #ced4da;
+    border: 1px solid #dacece;
     border-radius: 4px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
   
   .form-input:focus,
   .form-select:focus {
-    border-color: #007bff;
+    border-color: #F2A900;
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
     outline: none;
   }
@@ -187,7 +188,7 @@
   }
   
   .file-upload-field:hover {
-    border-color: #adb5bd;
+    border-color: #afbdad;
     background-color: #f8f9fa;
   }
   
@@ -275,7 +276,7 @@
   }
   
   .radio-option.selected {
-    border-color: #007bff;
+    border-color: #F2A900;
     background-color: #f0f7ff;
   }
   
@@ -362,13 +363,13 @@
   }
   
   .next-btn {
-    background-color: #007bff;
+    background-color: #F2A900;
     border: none;
     color: white;
   }
   
   .next-btn:hover {
-    background-color: #0069d9;
+    background-color: #bb8508;
   }
   
   /* ===== Info Notes ===== */
@@ -412,21 +413,6 @@
     margin-right: 10px;
   }
   
-  .terms-agreement {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #e9ecef;
-  }
-  
-  .terms-agreement a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .terms-agreement a:hover {
-    text-decoration: underline;
-  }
-  
   /* ===== Success Message ===== */
   .success-message {
     background-color: white;
@@ -457,7 +443,7 @@
   .return-home-btn {
     display: inline-block;
     padding: 12px 24px;
-    background-color: #007bff;
+    background-color: #F2A900;
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -466,7 +452,7 @@
   }
   
   .return-home-btn:hover {
-    background-color: #0069d9;
+    background-color: #F2A900;
   }
   
   /* ===== Responsive Styles ===== */

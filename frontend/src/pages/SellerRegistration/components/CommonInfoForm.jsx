@@ -8,7 +8,7 @@ const CommonInfoForm = ({ data, errors, onChange, onPersonTypeChange }) => {
       <h2>Información de la tienda</h2>
 
       <FormField
-        label="Nombre de la tienda en ConstructMarket *"
+        label="Nombre de la tienda"
         name="storeName"
         value={data.storeName || ""}
         error={errors.storeName}
@@ -17,7 +17,7 @@ const CommonInfoForm = ({ data, errors, onChange, onPersonTypeChange }) => {
       />
 
       <FormField
-        label="Descripción de la tienda en ConstrcutMarket *"
+        label="Descripción de la tienda"
         name="storeDescription"
         value={data.storeDescription || ""}
         error={errors.storeDescription}
@@ -26,7 +26,7 @@ const CommonInfoForm = ({ data, errors, onChange, onPersonTypeChange }) => {
       />
 
       <FormField
-        label="Teléfono de contacto *"
+        label="Teléfono de contacto"
         name="storePhone"
         type="tel"
         value={data.storePhone || ""}
@@ -45,7 +45,7 @@ const CommonInfoForm = ({ data, errors, onChange, onPersonTypeChange }) => {
       />
 
       <div className="person-type-selection">
-        <p className="field-label">Tipo de persona *</p>
+        <p className="field-label">Tipo de persona</p>
         <div className="radio-group">
           <label
             className={`radio-option ${

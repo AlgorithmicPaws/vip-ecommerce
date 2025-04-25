@@ -57,7 +57,7 @@ const PersonalInfoForm = ({ data, errors, onChange }) => {
       </div>
       
       <FormField
-        label="Número de documento *"
+        label="Número de documento "
         name="documentNumber"
         value={data.documentNumber || ''}
         error={errors.documentNumber}
@@ -66,7 +66,7 @@ const PersonalInfoForm = ({ data, errors, onChange }) => {
       />
       
       <FileUploadField
-        label="Certificado de RUT *"
+        label="Certificado de RUT "
         name="personalRutCertificate"
         accept=".pdf,.jpg,.jpeg,.png"
         error={errors.personalRutCertificate}

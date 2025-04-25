@@ -180,12 +180,6 @@ const SellerRegistrationForm = ({ currentStep, formData, onSubmit, onPrevious })
                   <p><strong>Certificado RUT:</strong> {stepData.personalRutCertificate?.name}</p>
                 </>
               )}
-              
-              <div className="terms-agreement">
-                <p>
-                  Al enviar este formulario acepto los <a href="/terms" target="_blank">Términos y Condiciones</a> y la <a href="/privacy" target="_blank">Política de Privacidad</a> de ConstructMarket.
-                </p>
-              </div>
             </div>
           </div>
         );

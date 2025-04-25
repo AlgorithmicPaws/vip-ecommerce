@@ -81,9 +81,6 @@ const SellerRegistration = () => {
   return (
     <div className="seller-registration-container">
       <div className="seller-registration-header">
-        <Link to="/" className="home-link">
-          <span className="header-icon">🏠</span> Volver al inicio
-        </Link>
         <h1 className="registration-title">Registro de Vendedores</h1>
         <p className="registration-subtitle">
           ¡Empieza a vender tus productos en ConstructMarket y llega a miles de clientes!

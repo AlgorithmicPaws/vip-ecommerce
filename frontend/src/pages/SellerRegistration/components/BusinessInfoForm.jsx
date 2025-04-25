@@ -18,7 +18,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       <h2>Información de Persona Jurídica</h2>
       
       <div className="form-group">
-        <label className="field-label">Tipo de contribuyente *</label>
+        <label className="field-label">Tipo de contribuyente </label>
         <select
           name="taxpayerType"
           value={data.taxpayerType || ''}
@@ -35,7 +35,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       </div>
       
       <FormField
-        label="Razón social *"
+        label="Razón social "
         name="businessName"
         value={data.businessName || ''}
         error={errors.businessName}
@@ -46,7 +46,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       <div className="nit-container">
         <div className="nit-number">
           <FormField
-            label="NIT *"
+            label="NIT "
             name="nit"
             value={data.nit || ''}
             error={errors.nit}
@@ -56,7 +56,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
         </div>
         <div className="verification-digit">
           <FormField
-            label="Dígito de verificación *"
+            label="Dígito de verificación "
             name="verificationDigit"
             value={data.verificationDigit || ''}
             error={errors.verificationDigit}
@@ -68,7 +68,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       </div>
       
       <FileUploadField
-        label="Certificado de RUT *"
+        label="Certificado de RUT "
         name="rutCertificate"
         accept=".pdf,.jpg,.jpeg,.png"
         error={errors.rutCertificate}
@@ -77,7 +77,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       />
       
       <FileUploadField
-        label="Documento legal *"
+        label="Documento legal "
         name="legalDocument"
         accept=".pdf,.jpg,.jpeg,.png"
         error={errors.legalDocument}
@@ -86,7 +86,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       />
       
       <FileUploadField
-        label="Cédula del representante legal *"
+        label="Cédula del representante legal "
         name="legalRepresentativeId"
         accept=".pdf,.jpg,.jpeg,.png"
         error={errors.legalRepresentativeId}
@@ -95,7 +95,7 @@ const BusinessInfoForm = ({ data, errors, onChange }) => {
       />
       
       <div className="form-info-note">
-        <p>* Campos obligatorios</p>
+        <p> Campos obligatorios</p>
         <p>
           <strong>Nota:</strong> Todos los documentos deben estar vigentes y ser legibles. 
           Tu solicitud será revisada por nuestro equipo antes de activar tu cuenta de vendedor.
