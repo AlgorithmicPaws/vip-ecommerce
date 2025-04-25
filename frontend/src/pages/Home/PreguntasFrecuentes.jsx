@@ -66,9 +66,6 @@ const PreguntasFrecuentes = () => {
           </div>
         ))}
       </div>
-      <div className="faq-more">
-        <Link to="/faq" className="view-all-link">Ver todas las preguntas →</Link>
-      </div>
     </section>
   );
 };

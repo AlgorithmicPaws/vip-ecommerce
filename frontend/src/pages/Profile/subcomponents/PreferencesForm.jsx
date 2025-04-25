@@ -22,7 +22,7 @@ const PreferencesForm = ({ preferences, onChange }) => {
             checked={preferences.newsletter}
             onChange={onChange}
           />
-          Suscribirse al boletín
+          
         </label>
         
         <label className="checkbox-label">
@@ -32,7 +32,7 @@ const PreferencesForm = ({ preferences, onChange }) => {
             checked={preferences.smsAlerts}
             onChange={onChange}
           />
-          Alertas por SMS
+          
         </label>
       </div>
     </div>

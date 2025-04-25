@@ -378,33 +378,23 @@ const Profile = () => {
           <ul>
             <li className={activeTab === 'personal-info' ? 'active' : ''}>
               <button onClick={() => handleTabChange('personal-info')}>
-                <span className="nav-icon">👤</span>
                 Información Personal
               </button>
             </li>
             <li className={activeTab === 'orders' ? 'active' : ''}>
               <button onClick={() => handleTabChange('orders')}>
-                <span className="nav-icon">📦</span>
                 Mis Pedidos
-              </button>
-            </li>
-            <li className={activeTab === 'addresses' ? 'active' : ''}>
-              <button onClick={() => handleTabChange('addresses')}>
-                <span className="nav-icon">📍</span>
-                Direcciones
               </button>
             </li>
             {isSeller && (
               <li className={activeTab === 'seller' ? 'active' : ''}>
                 <button onClick={() => handleTabChange('seller')}>
-                  <span className="nav-icon">🏪</span>
                   Perfil de Vendedor
                 </button>
               </li>
             )}
             <li className={activeTab === 'security' ? 'active' : ''}>
               <button onClick={() => handleTabChange('security')}>
-                <span className="nav-icon">🔒</span>
                 Seguridad
               </button>
             </li>
@@ -428,14 +418,7 @@ const Profile = () => {
             {activeTab === 'seller' && 'Perfil de Vendedor'}
             {activeTab === 'security' && 'Seguridad'}
           </h1>
-          <p className="breadcrumb">
-            <a href="/">Inicio</a> / Mi Perfil / 
-            {activeTab === 'personal-info' && ' Información Personal'}
-            {activeTab === 'orders' && ' Mis Pedidos'}
-            {activeTab === 'addresses' && ' Direcciones'}
-            {activeTab === 'seller' && ' Perfil de Vendedor'}
-            {activeTab === 'security' && ' Seguridad'}
-          </p>
+          
         </div>
 
         <div className="tab-content">
@@ -765,8 +748,8 @@ const Profile = () => {
                         {selectedOrder.payment_status === 'pending' && (
                           <div className="bank-details">
                             <p><strong>Banco:</strong> Bancolombia</p>
-                            <p><strong>Titular:</strong> ConstructMarket Colombia S.A.S</p>
-                            <p><strong>Cuenta Corriente:</strong> 69812345678</p>
+                            <p><strong>Titular:</strong> VIP Servicios de construccion y mantenimiento S.A.S</p>
+                            <p><strong>Cuenta Corriente:</strong> xxxxxxxx</p>
                             <p><strong>Concepto:</strong> Pedido {selectedOrder.order_id}</p>
                             <p><strong>Importe:</strong> ${formatPrice(selectedOrder.total_amount)}</p>
                           </div>

@@ -4,13 +4,6 @@ import ProfileImage from '../subcomponents/ProfileImage';
 const ProfileSidebar = ({ userData, activeTab, onTabChange, onLogout, isSeller }) => {
   // Define tabs that should be visible
   // We're showing only implemented tabs
-  const tabs = [
-    { id: 'personal', icon: '👤', label: 'Datos Personales' },
-    { id: 'orders', icon: '📦', label: 'Mis Pedidos' },
-    // Only show seller tab for sellers
-    ...(isSeller ? [{ id: 'seller', icon: '🏪', label: 'Perfil de Vendedor' }] : []),
-    { id: 'security', icon: '🔒', label: 'Seguridad' },
-  ];
 
   return (
     <div className="profile-sidebar">

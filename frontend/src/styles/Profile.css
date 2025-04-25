@@ -12,7 +12,7 @@
 /* Sidebar */
 .profile-sidebar {
   width: 280px;
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   position: sticky; /* Cambia de fixed a sticky para mejor integración */
   top: 70px; /* Ajusta según la altura de tu navbar */
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #007bff;
+  background-color: #333;
   color: white;
   font-size: 2.5rem;
   font-weight: bold;
@@ -109,14 +109,14 @@
 
 .profile-nav button:hover {
   background-color: #f0f7ff;
-  color: #007bff;
+  color: #F2A900;
 }
 
 .profile-nav li.active button {
   background-color: #e6f2ff;
-  color: #007bff;
+  color: #F2A900;
   font-weight: 500;
-  border-left: 3px solid #007bff;
+  border-left: 3px solid #F2A900;
 }
 
 .nav-icon {
@@ -174,7 +174,7 @@
 }
 
 .breadcrumb a {
-  color: #007bff;
+  color: #F2A900;
   text-decoration: none;
 }
 
@@ -197,7 +197,7 @@
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 2px solid #918b8b;
 }
 
 .section-header h2 {
@@ -207,10 +207,63 @@
   position: relative;
 }
 
-edit-btn {
+/* Actualización para los botones de editar perfil y gestionar productos */
+
+/* Estilo actualizado para el botón de editar perfil */
+/* Actualización para los botones de editar perfil y gestionar productos */
+
+/* Estilo actualizado para el botón de editar perfil */
+.edit-btn {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: #F2A900; /* Color amarillo similar al de la imagen */
+  color: black;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+}
+
+.edit-btn:hover {
+  background-color: #d49000; /* Una versión más oscura para el hover */
+}
+
+/* Estilo actualizado para el botón de gestionar productos */
+.profile-content a[href="/products"],
+.profile-sidebar a[href="/products"],
+a.edit-btn {
+  padding: 10px 20px;
+  background-color: #F2A900;
+  color: black !important;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.profile-content a[href="/products"]:hover,
+.profile-sidebar a[href="/products"]:hover,
+a.edit-btn:hover {
+  background-color: #d49000;
+  text-decoration: none;
+}
+
+/* Asegurarse de que los mismos estilos se apliquen a otros botones como "save-btn" y similares para mantener consistencia */
+.save-btn, 
+.action-btn, 
+.login-btn,
+.update-btn {
+  padding: 10px 20px;
+  background-color: #F2A900;
+  color: black;
   border: none;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -219,13 +272,33 @@ edit-btn {
   font-weight: 500;
 }
 
-.edit-btn:hover {
-  background-color: #0056b3;
+.save-btn:hover, 
+.action-btn:hover, 
+.login-btn:hover,
+.update-btn:hover {
+  background-color: #d49000;
+}
+
+/* Ajustar el botón de cancelar para que tenga un aspecto consistente pero diferenciado */
+.cancel-btn {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: #555;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
 }
 
 .edit-btn, .add-btn {
   padding: 8px 15px;
-  background-color: #007bff;
+  background-color: #F2A900;
   color: white;
   border: none;
   border-radius: 5px;
@@ -235,7 +308,7 @@ edit-btn {
 }
 
 .edit-btn:hover, .add-btn:hover {
-  background-color: #0056b3;
+  background-color: #f8ae00d3;
 }
 
 /* Formularios */
@@ -323,7 +396,7 @@ edit-btn {
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #F2A900;
 }
 
 .form-group textarea {
@@ -517,7 +590,7 @@ edit-btn {
 }
 
 .status-procesando {
-  color: #007bff;
+  color: #F2A900;
 }
 
 .status-cancelado {
@@ -670,7 +743,7 @@ edit-btn {
 
 .track-order-btn, .reorder-btn {
   padding: 8px 15px;
-  background-color: #007bff;
+  background-color: #F2A900;
   color: white;
   border: none;
   border-radius: 5px;
@@ -680,7 +753,7 @@ edit-btn {
 }
 
 .track-order-btn:hover, .reorder-btn:hover {
-  background-color: #0056b3;
+  background-color: #F2A900;
 }
 
 /* Direcciones */
@@ -704,7 +777,7 @@ edit-btn {
 }
 
 .address-card.default {
-  border-color: #007bff;
+  border-color: #F2A900;
   background-color: #f0f7ff;
 }
 
@@ -712,7 +785,7 @@ edit-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background-color: #007bff;
+  background-color: #F2A900;
   color: white;
   padding: 3px 8px;
   border-radius: 3px;
@@ -825,7 +898,7 @@ edit-btn {
 }
 
 .payment-card.default {
-  border-color: #007bff;
+  border-color: #F2A900;
   background-color: #f0f7ff;
 }
 
@@ -859,7 +932,7 @@ edit-btn {
 
 .info-icon {
   font-size: 1.2rem;
-  color: #007bff;
+  color: #F2A900;
 }
 
 .payment-info p {
