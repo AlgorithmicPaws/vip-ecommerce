@@ -33,12 +33,30 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
           <button 
             className="edit-btn-sm"
             onClick={onEdit}
+            style={{
+              backgroundColor: '#F2A900',
+              color: '#000',
+              fontWeight: '600',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
           >
             Editar
           </button>
           <button 
             className="delete-btn-sm"
             onClick={onDelete}
+            style={{
+              backgroundColor: '#f8d7da',
+              color: '#721c24',
+              fontWeight: '600',
+              border: 'none',
+              padding: '6px 12px',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
           >
             Eliminar
           </button>
