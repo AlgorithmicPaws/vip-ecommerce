@@ -138,17 +138,85 @@ export const getCurrentUser = async () => {
     });
 
     if (!response.ok) {
+      // Add more detailed error handling
+      if (response.status === 401) {
+        throw new Error('Your session has expired. Please log in again.');
+      }
       throw new Error(`Failed to get user profile: ${response.status}`);
     }
 
     const userData = await response.json();
     
-    // Update user info in localStorage
+    // Update user info in localStorage with the latest data
     localStorage.setItem(USER_INFO_KEY, JSON.stringify(userData.user));
+    
+    // Debug log to see if seller role is present
+    console.log("Current user data:", userData);
     
     return userData;
   } catch (error) {
     console.error('Error getting current user:', error);
+    throw error;
+  }
+};
+
+/**
+ * Refresh the authentication token to include updated role information
+ * This is crucial after role changes like becoming a seller
+ * @returns {Promise} - Response from the API with new token and user info
+ */
+export const refreshToken = async () => {
+  try {
+    // Get user credentials from storage
+    const userInfo = getUserInfo();
+    if (!userInfo || !userInfo.email) {
+      throw new Error('User information not found');
+    }
+    
+    // We need to get the saved password or use token-based refresh
+    // Since we don't store passwords, we'll use the token to request a new one
+    
+    const token = getToken();
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    // Request a new token using the /auth/token/refresh endpoint
+    // NOTE: This endpoint needs to be implemented on your backend
+    const response = await fetch(`${API_URL}/auth/token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Bearer ${token}`
+      },
+      body: new URLSearchParams({
+        'username': userInfo.email,
+        'grant_type': 'refresh_token'
+      })
+    });
+    
+    if (!response.ok) {
+      // If token refresh fails, try to re-authenticate user
+      // This is a fallback measure that will prompt a new login
+      console.warn("Token refresh failed, user may need to log in again");
+      throw new Error('Token refresh failed. Please log in again.');
+    }
+    
+    const data = await response.json();
+    
+    // Store the new token
+    localStorage.setItem(TOKEN_KEY, data.access_token);
+    
+    // Also update user info if it's in the response
+    if (data.user) {
+      localStorage.setItem(USER_INFO_KEY, JSON.stringify(data.user));
+    }
+    
+    return data;
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    // If we can't refresh the token, the user needs to log in again
+    logout();
     throw error;
   }
 };
@@ -161,7 +229,10 @@ export const authHeader = () => {
   const token = getToken();
   
   if (token) {
-    return { 'Authorization': `Bearer ${token}` };
+    // For API requests that expect a JSON body
+    return { 
+      'Authorization': `Bearer ${token}` 
+    };
   } else {
     return {};
   }

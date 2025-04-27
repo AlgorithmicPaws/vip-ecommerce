@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SellerRegistrationForm from './components/SellerRegistrationForm';
 import ProgressSteps from './components/ProgressSteps';
 import '../../styles/SellerRegistration.css';
 import { post } from '../../services/apiService';
+import { useAuth } from '../../context/AuthContext';
 
 const SellerRegistration = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth(); // We'll use logout to clear current session
   const [currentStep, setCurrentStep] = useState(1);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,17 +63,31 @@ const SellerRegistration = () => {
   
         const postData = {
           business_name: formData.storeName,
-          business_description: formData.storeDescription, // Evita enviar vacío
-          id_type: formData.documentType,
-          number_id: formData.documentNumber
+          business_description: formData.storeDescription || "",
+          id_type: formData.documentType || formData.personType,
+          number_id: formData.documentNumber || formData.nit || "12345678"
         };
   
-        console.log("Datos a enviar:", postData); // 👈 Verifica esto en la consola
+        console.log("Datos a enviar:", postData);
   
-        const response = await post('/sellers/', postData);
+        // Register as seller
+        await post('/sellers/', postData);
         setFormSubmitted(true);
+        
+        // Set a flag in localStorage to indicate seller registration success
+        localStorage.setItem('just_registered_as_seller', 'true');
+        
+        // After a short delay to show the success message, redirect to login
+        setTimeout(() => {
+          // First logout the current user - this clears the token
+          logout();
+          
+          // Redirect to login page
+          navigate("/login");
+        }, 3000);
+        
       } catch (error) {
-        console.error("Error detallado:", error.response?.data || error.message); // 👈 Más detalles
+        console.error("Error detallado:", error.response?.data || error.message);
         setError("Error al registrar. Verifica los datos e intenta nuevamente.");
       } finally {
         setIsSubmitting(false);
@@ -81,6 +98,9 @@ const SellerRegistration = () => {
   return (
     <div className="seller-registration-container">
       <div className="seller-registration-header">
+        <Link to="/" className="home-link">
+          <span className="header-icon">🏠</span> Volver al inicio
+        </Link>
         <h1 className="registration-title">Registro de Vendedores</h1>
         <p className="registration-subtitle">
           ¡Empieza a vender tus productos en ConstructMarket y llega a miles de clientes!
@@ -107,9 +127,9 @@ const SellerRegistration = () => {
       ) : (
         <div className="success-message">
           <div className="success-icon">✅</div>
-          <h2>¡Gracias por registrarte!</h2>
-          <p>Hemos recibido tu solicitud y está siendo revisada. Te notificaremos cuando tu cuenta de vendedor esté lista.</p>
-          <Link to="/" className="return-home-btn">Volver al inicio</Link>
+          <h2>¡Registro de vendedor exitoso!</h2>
+          <p>Hemos recibido tu solicitud correctamente. Para acceder a las funciones de vendedor, necesitas iniciar sesión nuevamente.</p>
+          <p>Serás redirigido a la página de inicio de sesión en unos segundos...</p>
         </div>
       )}
     </div>

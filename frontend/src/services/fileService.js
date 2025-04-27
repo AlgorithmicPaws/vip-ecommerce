@@ -37,19 +37,31 @@ export const uploadProductImage = async (file, category = 'uncategorized', produ
     formData.append('category', category);
     formData.append('product_id', productId);
     
+    // Get fresh auth headers - important to get the latest token
+    const headers = authHeader();
+    console.log("Auth headers for upload:", headers); // Debug log
+    
     // Send the request
     const response = await fetch(`${API_URL}/files/product-image`, {
       method: 'POST',
-      headers: {
-        ...authHeader(),
-        // Don't set Content-Type for FormData as it'll be set automatically with the proper boundary
-      },
+      headers: headers,
       body: formData
     });
     
+    // Log status for debugging
+    console.log("File upload response status:", response.status);
+    
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || `Upload failed with status ${response.status}`);
+      let errorDetail;
+      try {
+        const errorData = await response.json();
+        errorDetail = errorData.detail || `Upload failed with status ${response.status}`;
+      } catch (e) {
+        errorDetail = `Upload failed with status ${response.status}`;
+      }
+      
+      console.error("File upload error:", errorDetail);
+      throw new Error(errorDetail);
     }
     
     const data = await response.json();

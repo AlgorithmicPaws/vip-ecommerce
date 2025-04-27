@@ -19,6 +19,7 @@ import OrderHistory from "./pages/OrderHistory/OrderHistory";
 import OrderDetail from "./pages/OrderDetail/OrderDetail";
 import PaymentConfirmation from "./pages/PaymentConfirmation/PaymentConfirmation";
 import ScrollToTop from "./ScrollToTop";
+import TokenRefreshAlert from "./components/TokenRefreshAlert"; // Import the new alert component
 
 const App = () => {
   return (
@@ -27,6 +28,9 @@ const App = () => {
       <CartProvider>
         <AuthProvider>
           <div className="app">
+            {/* Add the token refresh alert */}
+            <TokenRefreshAlert />
+            
             <Routes>
               {/* Routes that use MainLayout (with Navbar and Footer) */}
               <Route element={<MainLayout />}>

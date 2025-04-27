@@ -22,15 +22,14 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection navigate={navigate} />
       
-      {/* Categorías Section */}
-      <CategoriasSection navigate={navigate} />
-      
-      {/* Productos Destacados */}
+            {/* Productos Destacados */}
       <section className="featured-products-section">
         <div className="section-container">
           <ProductosDestacados navigate={navigate} />
         </div>
       </section>
+      {/* Categorías Section */}
+      <CategoriasSection navigate={navigate} />
       
       {/* Marcas */}
       <section className="brands-section">

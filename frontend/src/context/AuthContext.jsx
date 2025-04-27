@@ -106,6 +106,65 @@ export const AuthProvider = ({ children }) => {
     navigate('/login');
   };
 
+  // Function to refresh current user information
+  const getCurrentUserInfo = async () => {
+    setLoading(true);
+    try {
+      const userData = await authService.getCurrentUser();
+      setUser({
+        ...userData.user,
+        roles: userData.roles,
+        isSeller: userData.is_seller
+      });
+      return userData;
+    } catch (err) {
+      console.error("Error refreshing user info:", err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  // NEW: Function to refresh the auth token after role changes
+  const refreshAuthToken = async () => {
+    setLoading(true);
+    try {
+      // Try to get a fresh token from the server
+      try {
+        // First try to use the token refresh endpoint
+        const data = await authService.refreshToken();
+        setUser({
+          ...data.user,
+          roles: data.roles,
+          isSeller: data.is_seller
+        });
+        return data;
+      } catch (refreshError) {
+        // If token refresh fails, fall back to re-login
+        console.warn("Token refresh failed, attempting to get new user info", refreshError);
+        
+        // Just update the user info without a new token as fallback
+        const userData = await authService.getCurrentUser();
+        setUser({
+          ...userData.user,
+          roles: userData.roles,
+          isSeller: userData.is_seller
+        });
+        
+        // Return what we have, but the token might still be stale
+        console.warn("User info updated, but token might not contain updated roles");
+        return userData;
+      }
+    } catch (err) {
+      console.error("Error refreshing auth token:", err);
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Context value
   const value = {
     user,
@@ -115,7 +174,9 @@ export const AuthProvider = ({ children }) => {
     isSeller: user?.isSeller || false,
     login,
     register,
-    logout
+    logout,
+    getCurrentUserInfo,
+    refreshAuthToken // Export the new function
   };
 
   return (
