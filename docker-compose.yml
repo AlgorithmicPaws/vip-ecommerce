@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+
+  db:
+
+    image: postgres:17-alpine
+    volumes:
+      # Existing data volume - IMPORTANT for upgrades
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      # These should match your existing setup or desired defaults
+      - POSTGRES_USER=${DB_USER:-postgres}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres_password}
+      - POSTGRES_DB=${DB_NAME:-ecommercedb}
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"] # Use the env var for user
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    environment:
+      - VITE_API_URL=http://localhost:8000
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      db: # <-- Cambia de una lista a un mapa
+        condition: service_healthy 
+    environment:
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres_password}
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=${DB_NAME:-ecommercedb}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-your_secure_jwt_secret_key_change_in_production}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES:-30}
+    networks:
+      - app-network
+    volumes:
+      - ./backend:/app
+      - static-data:/app/static
+
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data: # Persists DB data across container restarts/recreations
+  static-data:   # Persists static backend data

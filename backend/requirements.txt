@@ -11,3 +11,5 @@ psycopg2-binary
 pytest
 aiofiles>=23.1.0
 python-multipart>=0.0.5
+bcrypt>=3.2.0
+uvicorn
