@@ -49,424 +49,22 @@
   text-decoration: none;
   transition: color 0.3s;
 }
-.logo .icon{
-  width: 5.5rem;
-  height: 5.5rem;
-  margin-right: 5px;
-}
-.construct-text {
-  color: #000000;
+
+.logo .icon {
+  width: 3.5rem; /* Reducido el tamaño del logo para mejor adaptabilidad */
+  height: 3.5rem;
+  margin-right: 10px; /* Aumentado el margen */
 }
 
 .market-text {
   color: #443c29e7; /* Color amarillo corporativo */
 }
 
-/* --- Search Form Styles --- */
-.search-form {
-  flex-grow: 1;
-  max-width: 500px;
-  margin: 0 30px;
-  display: flex;
-  position: relative; /* Needed for absolute positioning of the button */
-}
-
-.search-form input {
-  width: 100%;
-  padding: 10px 15px;
-  /* Ensure enough padding on the right for the button */
-  padding-right: 45px; /* Increased slightly for better spacing */
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 0.9rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.search-form input:focus {
-  outline: none;
-  border-color: #F2A900; /* Highlight color on focus */
-  box-shadow: 0 0 0 3px rgba(242, 169, 0, 0.1);
-}
-
-/* --- Search Button Styles (UPDATED with more specificity) --- */
-/* Target the button more directly within the navbar structure */
-.navbar .navbar-top .search-form button.search-button {
-  position: absolute !important; /* Added !important as a test */
-  right: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  width: 45px !important; /* Match input padding-right */
-  background-color: transparent !important; /* Explicitly transparent background */
-  border: none !important;
-  border-radius: 0 5px 5px 0 !important; /* Match input border-radius on the right */
-  cursor: pointer !important;
-  color: #6c757d !important; /* Slightly darker icon color */
-  transition: background-color 0.2s ease, color 0.2s ease;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 !important; /* Remove default padding */
-  z-index: 2; /* Ensure button is above input field */
-}
-
-.navbar .navbar-top .search-form button.search-button:hover {
-  background-color: #f8f9fa !important; /* Subtle background on hover */
-  color: #F2A900 !important; /* Highlight color on hover */
-}
-
-.navbar .navbar-top .search-form button.search-button:focus {
-   /* Optional: Add focus style if needed */
-   outline: none !important;
-   box-shadow: 0 0 0 2px rgba(242, 169, 0, 0.2) !important;
-}
-
-
-/* --- Search Icon Styles --- */
-/* Target the SVG specifically */
-.navbar .navbar-top .search-form button.search-button svg {
-  width: 18px !important; /* Keep icon size */
-  height: 18px !important;
-  fill: currentColor; /* Ensure SVG color inherits from button */
-}
-
-/* --- End Search Styles --- */
-
-
-.navbar-actions {
-  display: flex;
-  align-items: center;
-}
-
-.action-links {
-  display: flex;
-  margin-right: 20px;
-}
-
-.action-link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #333;
-  text-decoration: none;
-  margin-right: 20px;
-  position: relative;
-}
-
-.action-link:hover {
-  color: #F2A900;
-}
-
-.action-icon {
-  font-size: 1.4rem;
-  margin-bottom: 3px;
-}
-
-.action-text {
-  font-size: 0.8rem;
-}
-
-.cart-count {
-  position: absolute;
-  top: -5px;
-  right: -8px;
-  background-color: #F2A900;
-  color: white;
-  font-size: 0.7rem;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.auth-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.login-btn, .register-btn {
-  padding: 8px 15px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.3s;
-}
-
-.login-btn {
-  color: #F2A900;
-  border: 1px solid #F2A900;
-  background-color: white;
-}
-
-.login-btn:hover {
-  background-color: #fff8e6;
-}
-
-.register-btn {
-  color: white;
-  background-color: #F2A900;
-  border: 1px solid #F2A900;
-}
-
-.register-btn:hover {
-  background-color: #e59c00;
-  border-color: #e59c00;
-}
-
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #333;
-  cursor: pointer;
-}
-
-.navbar-nav {
-  padding: 0 5%;
-  background-color: white;
-}
-
-.nav-list {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-list li {
-  position: relative;
-}
-
-.nav-list a, .dropdown-trigger {
-  display: block;
-  padding: 15px;
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.nav-list a:hover, .dropdown-trigger:hover {
-  color: #F2A900;
-}
-
-.nav-list li.active a {
-  color: #F2A900;
-  font-weight: 600;
-}
-
-.dropdown {
-  position: relative;
-}
-
-.dropdown-trigger::after {
-  content: '▼';
-  font-size: 0.7rem;
-  margin-left: 5px;
-  vertical-align: middle;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: white;
-  min-width: 220px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(10px);
-  transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
-  z-index: 10;
-}
-
-.dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.dropdown-menu a {
-  padding: 12px 15px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.dropdown-menu a:last-child {
-  border-bottom: none;
-}
-
-.dropdown-menu a.view-all {
-  background-color: #f8f9fa;
-  text-align: center;
-  font-weight: 500;
-}
-
-.mobile-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 90;
-  display: none;
-}
-
-/* Estilos para el botón de vender */
-.sell-btn {
-  display: flex;
-  align-items: center;
-  background-color: #141313;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 25px;
-  text-decoration: none;
-  margin-right: 15px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 5px rgba(242, 169, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sell-btn:hover {
-  background-color: #e59c00;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(242, 169, 0, 0.4);
-}
-
-.sell-btn-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.2);
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  margin-right: 8px;
-  padding: 4px;
-}
-
-.sell-btn svg {
-  width: 16px;
-  height: 16px;
-}
-
-.sell-text {
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.3px;
-}
-
-/* Media Queries */
-@media (max-width: 992px) {
-  .auth-buttons {
-    display: none;
-  }
-
-  .action-text {
-    display: none;
-  }
-
-  .search-form {
-    max-width: 300px;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar-top {
-    padding: 15px 20px;
-  }
-
-  .search-form {
-    display: none;
-  }
-
-  .mobile-menu-toggle {
-    display: block;
-  }
-
-  .navbar-nav {
-    position: fixed;
-    top: 70px;
-    right: -280px;
-    width: 280px;
-    height: calc(100vh - 70px);
-    background-color: white;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    transition: right 0.3s ease;
-    padding: 0;
-    overflow-y: auto;
-    z-index: 95;
-  }
-
-  .navbar-nav.mobile-open {
-    right: 0;
-  }
-
-  .nav-list {
-    flex-direction: column;
-  }
-
-  .nav-list a, .dropdown-trigger {
-    padding: 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
-  .dropdown-menu {
-    position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    box-shadow: none;
-    background-color: #f8f9fa;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-
-  .dropdown:hover .dropdown-menu {
-    max-height: 1000px;
-  }
-
-  .dropdown-menu a {
-    padding-left: 30px;
-  }
-
-  .mobile-overlay {
-    display: block;
-  }
-
-  .navbar-spacer {
-    height: 70px;
-  }
-}
-
-@media (max-width: 576px) {
-  .action-links {
-    margin-right: 10px;
-  }
-
-  .action-link {
-    margin-right: 15px;
-  }
-
-  .logo {
-    font-size: 1.4rem;
-  }
-}
-/* src/styles/Navbar.css */
-
-/* ... (Estilos existentes para .navbar, .navbar-top, .logo, etc.) ... */
-
-
 /* --- Search Form Styles (Flexbox Approach with Specific Classes) --- */
 .navbar-search-form { /* Nueva clase para el form */
   flex-grow: 1;
   max-width: 500px;
-  margin: 0 30px;
+  margin: 10px 2%; /* Ajustado el margen para responsive */
 }
 
 .navbar-search-wrapper { /* Nueva clase para el contenedor */
@@ -518,7 +116,7 @@
 }
 
 .navbar-search-button:focus {
-   outline: none;
+  outline: none;
 }
 
 .navbar-search-button svg { /* Estilo para el icono SVG */
@@ -527,9 +125,521 @@
   stroke: currentColor; /* Heredar color del botón */
   fill: none;
 }
+
 /* --- End Search Styles --- */
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
 
-/* ... (Resto de tus estilos para .navbar-actions, .nav-list, media queries, etc.) ... */
-/* ¡ASEGÚRATE DE BORRAR LAS REGLAS CSS ANTIGUAS PARA .search-form y sus hijos! */
+.action-links {
+  display: flex;
+  margin-right: 10px; /* Reducido el margen */
+}
 
+.action-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
+  text-decoration: none;
+  margin-right: 10px; /* Reducido el margen */
+  position: relative;
+}
+
+.action-link:hover {
+  color: #F2A900;
+}
+
+.action-icon {
+  font-size: 1.2rem; /* Reducido el tamaño del icono */
+  margin-bottom: 3px;
+}
+
+.action-text {
+  font-size: 0.7rem; /* Reducido el tamaño del texto */
+  white-space: nowrap; /* Evitar el salto de línea */
+}
+
+.cart-count {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background-color: #F2A900;
+  color: white;
+  font-size: 0.6rem; /* Reducido el tamaño del contador */
+  width: 16px; /* Reducido el ancho del contador */
+  height: 16px; /* Reducido la altura del contador */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-buttons {
+  display: none; /* Ocultar en pantallas más pequeñas, se mostrarán en el menú móvil */
+  gap: 5px; /* Reducido el espacio entre botones */
+}
+
+.login-btn,
+.register-btn {
+  padding: 6px 10px; /* Reducido el padding */
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.8rem; /* Reducido el tamaño de la fuente */
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.login-btn {
+  color: #F2A900;
+  border: 1px solid #F2A900;
+  background-color: white;
+}
+
+.login-btn:hover {
+  background-color: #fff8e6;
+}
+
+.register-btn {
+  color: white;
+  background-color: #F2A900;
+  border: 1px solid #F2A900;
+}
+
+.register-btn:hover {
+  background-color: #e59c00;
+  border-color: #e59c00;
+}
+
+.mobile-menu-toggle {
+  display: block;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #333;
+  cursor: pointer;
+}
+
+.navbar-nav {
+  padding: 0;
+  background-color: white;
+  display: none; /* Ocultar en pantallas grandes, se mostrará con JS en móviles */
+}
+
+.navbar-nav.mobile-open {
+  display: block;
+  position: fixed;
+  top: 70px;
+  right: 0;
+  width: 250px;
+  height: calc(100vh - 70px);
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease;
+  overflow-y: auto;
+  z-index: 95;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-list li {
+  position: relative;
+}
+
+.nav-list a,
+.dropdown-trigger {
+  display: block;
+  padding: 12px 15px;
+  color: #333;
+  text-decoration: none;
+  transition: color 0.3s;
+  cursor: pointer;
+  font-weight: 500;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-list a:hover,
+.dropdown-trigger:hover {
+  color: #F2A900;
+}
+
+.nav-list li.active a {
+  color: #F2A900;
+  font-weight: 600;
+}
+
+.dropdown {
+  position: static; /* Cambiado a static para el menú móvil */
+}
+
+.dropdown-trigger::after {
+  content: '▼';
+  font-size: 0.7rem;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.dropdown-menu {
+  position: static; /* Cambiado a static para el menú móvil */
+  background-color: #f8f9fa;
+  box-shadow: none;
+  border-radius: 0;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  z-index: auto;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.dropdown:hover .dropdown-menu {
+  max-height: 500px; /* Ajustar según sea necesario */
+}
+
+.dropdown-menu a {
+  padding: 10px 20px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.dropdown-menu a:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu a.view-all {
+  background-color: #e9ecef;
+  text-align: center;
+  font-weight: 500;
+}
+
+.mobile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 90;
+  display: none;
+}
+
+.mobile-overlay.open {
+  display: block;
+}
+
+/* Estilos para el botón de vender */
+.sell-btn {
+  display: none; /* Ocultar en pantallas pequeñas inicialmente */
+  align-items: center;
+  background-color: #141313;
+  color: white;
+  padding: 8px 12px; /* Reducido el padding */
+  border-radius: 20px; /* Reducido el radio */
+  text-decoration: none;
+  margin-right: 10px; /* Reducido el margen */
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(242, 169, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  white-space: nowrap;
+  font-size: 0.8rem; /* Reducido el tamaño de la fuente */
+}
+
+.sell-btn:hover {
+  background-color: #e59c00;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 7px rgba(242, 169, 0, 0.4);
+}
+
+.sell-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 20px; /* Reducido el tamaño del icono */
+  height: 20px; /* Reducido el tamaño del icono */
+  border-radius: 50%;
+  margin-right: 5px; /* Reducido el margen */
+  padding: 3px; /* Reducido el padding */
+}
+
+.sell-btn svg {
+  width: 14px; /* Reducido el tamaño del SVG */
+  height: 14px; /* Reducido el tamaño del SVG */
+}
+
+.sell-text {
+  font-weight: 600;
+  font-size: 0.8rem; /* Reducido el tamaño de la fuente */
+  letter-spacing: 0.3px;
+}
+
+/* Media Queries */
+@media (min-width: 993px) {
+  .navbar-nav {
+    display: flex !important; /* Asegura que sea flex */
+    position: static;
+    width: auto; /* El ancho se ajusta al contenido */
+    height: auto;
+    box-shadow: none;
+    right: auto;
+    overflow-y: visible;
+    padding: 0 5%; /* Mantén el padding horizontal */
+  }
+
+  .nav-list {
+    flex-direction: row; /* Alinea los elementos horizontalmente */
+    justify-content: flex-start; /* Alinea los elementos al inicio */
+    align-items: center; /* Centra verticalmente los elementos */
+  }
+
+  .nav-list li {
+    margin-right: 15px; /* Espacio entre los elementos del menú */
+  }
+
+  .nav-list li:last-child {
+    margin-right: 0; /* Elimina el margen del último elemento */
+  }
+
+  .nav-list a,
+  .dropdown-trigger {
+    border-bottom: none; /* Elimina el border inferior en horizontal */
+  }
+
+  .dropdown {
+    position: relative; /* Restaura la posición relativa para el dropdown */
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    min-width: 220px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+    z-index: 10;
+    max-height: none; /* Asegura que no esté limitado */
+    overflow: visible; /* Asegura que el contenido sea visible */
+  }
+
+  .dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  .mobile-overlay {
+    display: none !important;
+  }
+
+  .auth-buttons {
+    display: flex;
+  }
+
+  .action-text {
+    display: inline;
+  }
+
+  .sell-btn {
+    display: flex;
+  }
+
+  .navbar-spacer {
+    height: 100px; /* Ajustar para desktop */
+  }
+
+  .navbar-top {
+    padding: 15px 5%;
+  }
+
+  .navbar-search-form {
+    display: block;
+    margin: 0 30px;
+  }
+}
+
+/* Media Queries */
+@media (min-width: 993px) {
+  .navbar-nav {
+    display: flex !important;
+    position: static;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    right: auto;
+    overflow-y: visible;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+  }
+
+  .mobile-overlay {
+    display: none !important;
+  }
+
+  .auth-buttons {
+    display: flex;
+  }
+
+  .action-text {
+    display: inline;
+  }
+
+  .sell-btn {
+    display: flex;
+  }
+
+  .navbar-spacer {
+    height: 100px; /* Ajustar para desktop */
+  }
+
+  .navbar-top {
+    padding: 15px 5%;
+  }
+
+  .navbar-search-form {
+    display: block;
+    margin: 0 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .auth-buttons {
+    display: none;
+  }
+
+  .action-text {
+    display: none;
+  }
+
+  .search-form {
+    display: none; /* Ocultar el formulario de búsqueda grande en pantallas medianas */
+  }
+
+  .navbar-spacer {
+    height: 70px; /* Ajustar para tablet */
+  }
+
+  .navbar-top {
+    padding: 15px 20px;
+  }
+
+  .logo .icon {
+    width: 3rem;
+    height: 3rem;
+    margin-right: 8px;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+  }
+
+  .navbar-search-form {
+    display: block; /* Mostrar el formulario de búsqueda reducido */
+    margin: 10px auto;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-top {
+    padding: 10px 15px;
+  }
+
+  .logo .icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: 5px;
+  }
+
+  .logo {
+    font-size: 1.4rem;
+  }
+
+  .navbar-search-form {
+    margin: 10px auto;
+  }
+
+  .action-links {
+    margin-right: 5px;
+  }
+
+  .action-icon {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+
+  .sell-btn {
+    margin-right: 5px;
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  .sell-btn-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 3px;
+  }
+
+  .sell-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .navbar-spacer {
+    height: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .navbar-search-form {
+    margin: 10px auto;
+  }
+
+  .action-links {
+    margin-right: 2px;
+  }
+
+  .action-icon {
+    font-size: 0.9rem;
+  }
+
+  .sell-btn {
+    padding: 5px 8px;
+    font-size: 0.6rem;
+  }
+
+  .sell-btn-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 2px;
+  }
+
+  .sell-btn svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .navbar-spacer {
+    height: 55px;
+  }
