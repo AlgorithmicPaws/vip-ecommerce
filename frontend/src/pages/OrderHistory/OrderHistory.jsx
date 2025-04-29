@@ -157,7 +157,7 @@ const OrderHistory = () => {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 

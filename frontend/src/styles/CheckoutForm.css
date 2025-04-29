@@ -1,10 +1,6 @@
 /* src/styles/CheckoutForm.css */
 
-/* --- Container and Form Base --- */
-.checkout-form-container {
-  /* Removed max-width and margin, rely on parent (.checkout-grid) */
-  /* Removed padding, rely on parent (.checkout-grid) */
-}
+
 
 .checkout-form {
   background-color: #fff;
@@ -60,11 +56,7 @@
   color: #495057; /* Dark gray */
   font-size: 0.9rem;
 }
-/* Style required indicator */
-.form-group label:after {
-    /* content: ' *'; Remove if not desired */
-    /* color: #dc3545; */
-}
+
 
 
 /* --- Inputs, Selects, Textareas --- */
@@ -161,10 +153,7 @@
    min-width: 180px; /* Give button some minimum width */
 }
 
-/* Disabled state for submit button */
-.place-order-btn:disabled {
-  /* Inherits .primary-btn:disabled styles */
-}
+
 
 /* Optional: Terms and conditions styling */
 .terms-group {

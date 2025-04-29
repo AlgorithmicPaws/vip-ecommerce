@@ -169,9 +169,7 @@ const OrderDetail = () => {
   };
 
   return (
-    <div className="order-detail-container">
-      <Navbar />
-      
+    <div className="order-detail-container">      
       <div className="order-detail-content">
         <div className="order-detail-breadcrumbs">
           <Link to="/">Inicio</Link> &gt; 
@@ -359,8 +357,7 @@ const OrderDetail = () => {
           </div>
         )}
       </div>
-      
-      <Footer />
+
     </div>
   );
 };
