@@ -1,230 +1,184 @@
 /* src/styles/CheckoutForm.css */
 
+/* --- Container and Form Base --- */
 .checkout-form-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .checkout-form {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-  }
-  
-  .checkout-section {
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  .checkout-section:last-child {
-    border-bottom: none;
-  }
-  
-  .checkout-section h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    color: #333;
-    border-bottom: 2px solid #3fb0ac;
-    padding-bottom: 10px;
-    display: inline-block;
-  }
-  
+  /* Removed max-width and margin, rely on parent (.checkout-grid) */
+  /* Removed padding, rely on parent (.checkout-grid) */
+}
+
+.checkout-form {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e9ecef;
+  overflow: hidden; /* Clip borders/shadows */
+}
+
+/* --- Section Styling --- */
+.checkout-section {
+  padding: 25px 30px; /* Consistent padding */
+  border-bottom: 1px solid #e9ecef; /* Separator */
+}
+.checkout-section:last-of-type { /* Remove border from last section */
+  border-bottom: none;
+}
+
+.checkout-section h2 {
+  margin-top: 0;
+  margin-bottom: 25px; /* Space below heading */
+  font-size: 1.2rem;
+  color: #212529; /* Dark heading */
+  font-weight: 600;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6; /* Subtle underline */
+}
+
+/* --- Form Layout --- */
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 0; /* Remove bottom margin from row */
+}
+/* Stack rows on smaller screens */
+@media (max-width: 768px) {
   .form-row {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 15px;
-  }
-  
-  @media (max-width: 768px) {
-    .form-row {
-      flex-direction: column;
-      gap: 10px;
-    }
-  }
-  
-  .form-group {
-    flex: 1;
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #555;
-    font-size: 0.9rem;
-  }
-  
-  .form-group input[type="text"],
-  .form-group input[type="email"],
-  .form-group input[type="tel"],
-  .form-group input[type="password"],
-  .form-group select,
-  .form-group textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s;
-  }
-  
-  .form-group input:focus,
-  .form-group select:focus,
-  .form-group textarea:focus {
-    border-color: #3fb0ac;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(63, 176, 172, 0.2);
-  }
-  
-  .form-group input.error,
-  .form-group select.error,
-  .form-group textarea.error {
-    border-color: #dc3545;
-  }
-  
-  .error-message {
-    color: #dc3545;
-    font-size: 0.85rem;
-    margin-top: 5px;
-  }
-  
-  .checkbox-group {
-    margin-bottom: 20px;
-  }
-  
-  .checkbox-container, 
-  .radio-container {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 10px;
-  }
-  
-  .checkbox-container input[type="checkbox"],
-  .radio-container input[type="radio"] {
-    margin-right: 10px;
-    cursor: pointer;
-  }
-  
-  .checkbox-text,
-  .radio-text {
-    font-size: 0.95rem;
-    color: #333;
-  }
-  
-  .payment-methods {
-    display: flex;
     flex-direction: column;
-    margin-bottom: 20px;
+    gap: 0; /* Remove gap when stacked */
   }
-  
-  .payment-info-box {
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .payment-info-box p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
-  .form-actions {
-    padding: 20px;
-    background-color: #f9f9f9;
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .place-order-btn {
-    background-color: #3fb0ac;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 12px 24px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .place-order-btn:hover {
-    background-color: #339693;
-  }
-  
-  .place-order-btn:disabled {
-    background-color: #b3b3b3;
-    cursor: not-allowed;
-  }
-  
-  /* Order Confirmation Styles */
-  .order-confirmation {
-    text-align: center;
-    padding: 40px 20px;
-  }
-  
-  .order-confirmation-icon {
-    font-size: 3rem;
-    color: #3fb0ac;
-    margin-bottom: 20px;
-  }
-  
-  .order-confirmation h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .order-confirmation p {
-    margin-bottom: 15px;
-    color: #555;
-  }
-  
-  .order-number {
-    font-weight: bold;
-    color: #3fb0ac;
-  }
-  
-  .order-actions {
-    margin-top: 30px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-  }
-  
-  .order-actions button,
-  .order-actions a {
-    padding: 10px 20px;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+}
+
+.form-group {
+  flex: 1; /* Allow groups to share space */
+  margin-bottom: 20px; /* Space between form groups */
+}
+
+/* --- Labels --- */
+.form-group label {
+  display: block;
+  margin-bottom: 6px; /* Space below label */
+  font-weight: 500;
+  color: #495057; /* Dark gray */
+  font-size: 0.9rem;
+}
+/* Style required indicator */
+.form-group label:after {
+    /* content: ' *'; Remove if not desired */
+    /* color: #dc3545; */
+}
+
+
+/* --- Inputs, Selects, Textareas --- */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="password"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px 14px; /* Consistent padding */
+  border: 1px solid #ced4da; /* Standard border */
+  border-radius: 5px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  background-color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Focus State */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #F2A900; /* Theme color border */
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(242, 169, 0, 0.15); /* Theme color shadow */
+}
+
+/* Error State */
+.form-group input.input-error,
+.form-group select.input-error,
+.form-group textarea.input-error {
+  border-color: #dc3545; /* Red border for errors */
+}
+.form-group input.input-error:focus,
+.form-group select.input-error:focus,
+.form-group textarea.input-error:focus {
+   box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25); /* Red shadow on focus */
+}
+
+
+.error-message {
+  color: #dc3545; /* Red text for errors */
+  font-size: 0.8rem;
+  margin-top: 5px; /* Space above error message */
+}
+
+/* Textarea specific */
+.form-group textarea {
+  resize: vertical; /* Allow vertical resize */
+  min-height: 80px;
+}
+
+/* --- Checkbox Styling --- */
+.checkbox-group {
+  margin-bottom: 20px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 10px;
+  width: 16px;
+  height: 16px;
+  accent-color: #F2A900; /* Use theme color for check */
+  cursor: pointer;
+}
+
+.checkbox-text {
+  font-size: 0.95rem;
+  color: #343a40;
+}
+
+/* --- Payment Info Box (if needed specifically here) --- */
+/* Styles moved to ShoppingCart.css for consistency */
+
+/* --- Form Actions / Submit Button --- */
+.form-actions.checkout-actions {
+  padding: 25px 30px; /* Match section padding */
+  background-color: #f8f9fa; /* Light background for actions area */
+  border-top: 1px solid #e9ecef; /* Separator */
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
+  margin-top: 10px; /* Ensure some space if section border was removed */
+}
+
+/* Re-use primary button style defined in ShoppingCart.css */
+.place-order-btn {
+  /* Inherits .primary-btn styles */
+   min-width: 180px; /* Give button some minimum width */
+}
+
+/* Disabled state for submit button */
+.place-order-btn:disabled {
+  /* Inherits .primary-btn:disabled styles */
+}
+
+/* Optional: Terms and conditions styling */
+.terms-group {
+    margin-top: 15px;
+    margin-bottom: 0; /* No extra margin below terms */
+}
+.terms-group .checkbox-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+.terms-group .checkbox-text a {
+    color: #0d6efd;
     text-decoration: none;
-  }
-  
-  .download-pdf-btn {
-    background-color: #fff;
-    color: #3fb0ac;
-    border: 1px solid #3fb0ac;
-  }
-  
-  .download-pdf-btn:hover {
-    background-color: #f0f9f9;
-  }
-  
-  .continue-shopping-btn {
-    background-color: #3fb0ac;
-    color: white;
-    border: none;
-  }
-  
-  .continue-shopping-btn:hover {
-    background-color: #339693;
-  }
+}
+.terms-group .checkbox-text a:hover {
+    text-decoration: underline;
+}
