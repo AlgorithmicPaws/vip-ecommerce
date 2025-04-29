@@ -1,293 +1,161 @@
 // src/pages/ProductCatalog/ProductCatalog.jsx
-import React, { useState, useEffect, useCallback } from 'react'; // Added useCallback
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../CartContext';
-import '../../styles/ProductCatalog.css'; // Keep existing CSS import
+import '../../styles/ProductCatalog.css';
 import * as productService from '../../services/productService';
+import * as sellerService from '../../services/sellerService';
 
-// Import main layout components
-import Navbar from '../../layouts/Navbar';
-import Footer from '../../layouts/Footer';
-
-// Import existing catalog components
+// Import child components
 import CatalogSidebar from './components/CatalogSidebar';
-import CatalogContent from './components/CatalogContent';
+import CatalogContent from './components/CatalogContent'; // Make sure this component passes props correctly
 import ProductDetailModal from './components/ProductDetailModal';
 import Pagination from './components/Pagination';
+import LoadingIndicator from './subcomponents/LoadingIndicator';
 
 const ProductCatalog = () => {
+  // Hooks
   const navigate = useNavigate();
   const location = useLocation();
   const { addToCart } = useCart();
 
-  // State Variables
-  const [allProducts, setAllProducts] = useState([]); // Store the master list from API
-  const [filteredProducts, setFilteredProducts] = useState([]); // Products after all filters
-  const [displayedProducts, setDisplayedProducts] = useState([]); // Products for the current page
-  const [loading, setLoading] = useState(true);
+  // --- State Variables ---
+  const [initialProducts, setInitialProducts] = useState([]);
+  const [productsWithSellers, setProductsWithSellers] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [sellerMap, setSellerMap] = useState({});
+  const [allSellersForFilter, setAllSellersForFilter] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingSellers, setLoadingSellers] = useState(false);
+  const [loadingFilterData, setLoadingFilterData] = useState(true);
   const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]); // Store categories { id, name }
+  const [categories, setCategories] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState(''); // Selected category NAME
+  const [categoryFilter, setCategoryFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState({ min: '', max: '' });
   const [sellerFilter, setSellerFilter] = useState([]);
+
+  // Modal State
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [productQuantity, setProductQuantity] = useState(1);
+
+  // UI State
   const [addedToCartMessage, setAddedToCartMessage] = useState({ show: false, productId: null });
+
+  // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(30); // Or your desired number
+  const [productsPerPage] = useState(30);
   const [totalPages, setTotalPages] = useState(1);
 
-  // --- Effects ---
-
-  // Effect 1: Fetch categories once on mount
+  // --- Effects (Keep existing effects 1-7 as they are correct for data fetching/filtering/pagination) ---
+  // Effect 1: Fetch static filter data
   useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const categoriesResponse = await productService.getCategories();
-        // Assuming transformApiCategories returns an array like [{ id: '1', name: 'Category A' }, ...]
-        const transformedCategories = productService.transformApiCategories(categoriesResponse);
-        setCategories(transformedCategories || []);
-      } catch (err) {
-        console.error('Error loading categories:', err);
-        // Handle category loading error if needed
-      }
-    };
-    loadCategories();
-  }, []); // Empty dependency array ensures this runs only once
-
-  // Effect 2: Read initial filters from URL
-   useEffect(() => {
-     const params = new URLSearchParams(location.search);
-     const category = params.get('category') || ''; // Default to empty string
-     const search = params.get('search') || '';
-     const page = parseInt(params.get('page') || '1', 10);
-
-     setCategoryFilter(category);
-     setSearchTerm(search);
-     setCurrentPage(page);
-     // We fetch products in the next effect based on these states
-   }, [location.search]); // Re-run if URL search params change
-
-  // Effect 3: Fetch products when category filter changes OR on initial load
-  useEffect(() => {
-    const loadProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        // Find the category ID based on the selected name
-        const selectedCategoryObj = categories.find(cat => cat.name === categoryFilter);
-        const categoryId = selectedCategoryObj ? selectedCategoryObj.id : null;
-
-        // Prepare options for the API call
-        const options = {};
-        if (categoryId) {
-          options.categoryId = categoryId; // Pass categoryId if selected
-        }
-        // Add other potential API options here if your service supports them (e.g., search term)
-        // options.search = searchTerm; // Example if API supports search
-
-        // Fetch products - ideally filtered by categoryId on the server
-        const productsData = await productService.getAllProducts(options);
-        setAllProducts(productsData || []); // Store the raw list fetched
-
-      } catch (err) {
-        console.error('Error loading products:', err);
-        setError('Failed to load products. Please try again later.');
-        setAllProducts([]); // Clear products on error
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Only run fetch if categories have been loaded
-    if (categories.length > 0 || !categoryFilter) { // Fetch if categories are ready OR if no category is selected
-       loadProducts();
-    }
-
-  }, [categoryFilter, categories]); // Re-fetch when categoryFilter changes or categories load
-
-  // Effect 4: Apply client-side filters whenever products or filter criteria change
-  // Use useCallback for applyFilters to stabilize its reference if needed elsewhere
-  const applyFilters = useCallback(() => {
-    console.log("Applying filters. Base product count:", allProducts.length, "Filters:", { searchTerm, priceFilter, sellerFilter });
-    let filtered = [...allProducts];
-
-    // Apply Search Filter (Client-side)
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchLower) ||
-        (product.description && product.description.toLowerCase().includes(searchLower))
-      );
-    }
-
-    // Apply Price Filter (Client-side)
-    if (priceFilter.min && !isNaN(priceFilter.min)) {
-      filtered = filtered.filter(product => product.price >= parseFloat(priceFilter.min));
-    }
-    if (priceFilter.max && !isNaN(priceFilter.max)) {
-      filtered = filtered.filter(product => product.price <= parseFloat(priceFilter.max));
-    }
-
-    // Apply Seller Filter (Client-side)
-    if (sellerFilter.length > 0) {
-      filtered = filtered.filter(product => product.seller && sellerFilter.includes(product.seller));
-    }
-
-    console.log("Filtered product count:", filtered.length);
-    setFilteredProducts(filtered);
-    setCurrentPage(1); // Reset to first page whenever filters change
-
-  }, [allProducts, searchTerm, priceFilter, sellerFilter]); // Dependencies for filtering
-
-  // Run the filter function when dependencies change
-  useEffect(() => {
-    applyFilters();
-  }, [applyFilters]); // applyFilters is memoized by useCallback
-
-  // Effect 5: Paginate filtered products
-  useEffect(() => {
-    const total = Math.ceil(filteredProducts.length / productsPerPage);
-    setTotalPages(total > 0 ? total : 1); // Ensure totalPages is at least 1
-
-    const indexOfLastProduct = currentPage * productsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-    setDisplayedProducts(filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct));
-
-  }, [filteredProducts, currentPage, productsPerPage]);
-
-  // Effect 6: Handle "Added to Cart" message timeout
-  useEffect(() => {
-    if (addedToCartMessage.show) {
-      const timer = setTimeout(() => {
-        setAddedToCartMessage({ show: false, productId: null });
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [addedToCartMessage]);
+    const loadFilterData = async () => { setLoadingFilterData(true); setError(null); try { const [cats, sells] = await Promise.all([productService.getCategories(), sellerService.getAllSellers()]); setCategories(productService.transformApiCategories(cats) || []); setAllSellersForFilter(sells || []); } catch (err) { console.error('Error loading filter data:', err); setError('Error al cargar filtros.'); } finally { setLoadingFilterData(false); } }; loadFilterData();
+   }, []);
+  // Effect 2: Read URL Filters
+   useEffect(() => { const params = new URLSearchParams(location.search); setCategoryFilter(params.get('category') || ''); setSearchTerm(params.get('search') || ''); setCurrentPage(parseInt(params.get('page') || '1', 10)); }, [location.search]);
+  // Effect 3: Fetch initial products
+  useEffect(() => { if (categoryFilter && categories.length === 0) return; const loadProds = async () => { setLoadingProducts(true); setLoadingSellers(true); setError(null); setInitialProducts([]); setProductsWithSellers([]); setSellerMap({}); try { const catObj = categories.find(c => c.name === categoryFilter); const catId = catObj ? catObj.id : null; const opts = catId ? { categoryId: catId } : {}; const prods = await productService.getAllProducts(opts); setInitialProducts(prods || []); if (prods?.length > 0) { const ids = [...new Set(prods.map(p => p.sellerId).filter(id => id != null))]; if (ids.length > 0) { const sells = await Promise.all(ids.map(id => sellerService.getSellerById(id))); const map = {}; sells.forEach(s => { if (s?.seller_id) map[s.seller_id] = s.business_name || "Desconocido"; }); setSellerMap(map); } else setSellerMap({}); } else setSellerMap({}); } catch (err) { console.error('Err loading prods:', err); setError('Err cargando prods.'); setInitialProducts([]); setSellerMap({}); } finally { setLoadingProducts(false); } }; loadProds(); }, [categoryFilter, categories]);
+  // Effect 4: Combine products & sellers
+  useEffect(() => { if (!loadingProducts) { const combined = initialProducts.map(p => ({ ...p, seller: sellerMap[p.sellerId] || "Desconocido" })); setProductsWithSellers(combined); setLoadingSellers(false); } }, [initialProducts, sellerMap, loadingProducts]);
+  // Effect 5: Apply filters
+  const applyFilters = useCallback(() => { let f = [...productsWithSellers]; if (searchTerm) { const sL = searchTerm.toLowerCase(); f = f.filter(p => p.name?.toLowerCase().includes(sL) || p.description?.toLowerCase().includes(sL) || p.seller?.toLowerCase().includes(sL)); } if (priceFilter.min) f = f.filter(p => p.price >= parseFloat(priceFilter.min)); if (priceFilter.max) f = f.filter(p => p.price <= parseFloat(priceFilter.max)); if (sellerFilter.length > 0) { const sIdSet = new Set(sellerFilter.map(String)); f = f.filter(p => p.sellerId && sIdSet.has(String(p.sellerId))); } setFilteredProducts(f); }, [productsWithSellers, searchTerm, priceFilter, sellerFilter]);
+  useEffect(() => { if (!loadingSellers) applyFilters(); }, [applyFilters, loadingSellers]);
+  // Effect 6: Paginate
+  useEffect(() => { const total = Math.ceil(filteredProducts.length / productsPerPage); const validTp = total > 0 ? total : 1; setTotalPages(validTp); const newCp = Math.max(1, Math.min(currentPage, validTp)); if (currentPage !== newCp) { setCurrentPage(newCp); const params = new URLSearchParams(location.search); params.set('page', newCp); navigate(`${location.pathname}?${params.toString()}`, { replace: true }); } const iLast = newCp * productsPerPage; const iFirst = iLast - productsPerPage; setDisplayedProducts(filteredProducts.slice(iFirst, iLast)); }, [filteredProducts, currentPage, productsPerPage, location.search, navigate]);
+  // Effect 7: Cart Message Timeout
+  useEffect(() => { let timer; if (addedToCartMessage.show) timer = setTimeout(() => setAddedToCartMessage({ show: false, productId: null }), 3000); return () => clearTimeout(timer); }, [addedToCartMessage]);
 
 
-  // --- Handlers ---
+  // --- Event Handlers ---
 
-  // Called by CategoryFilter component
-  const handleCategoryChange = (newCategoryName) => {
-    // Update state immediately
-    setCategoryFilter(newCategoryName);
-
-    // Update URL without full page reload
-    const params = new URLSearchParams(location.search);
-    if (newCategoryName) {
-      params.set('category', newCategoryName);
+  // Handler to NAVIGATE to detail page
+  // Triggered by card background click or "Ver Detalles" button
+  const handleNavigateToDetail = useCallback((product) => {
+    console.log("Attempting to navigate to detail for:", product?.id); // Debug log
+    if (product && product.id) {
+        navigate(`/catalog/product/${product.id}`);
     } else {
-      params.delete('category');
+        console.error("handleNavigateToDetail called with invalid product:", product);
     }
-    // Reset page param when category changes
-    params.set('page', '1');
-    // Use navigate to update URL query string. Should NOT redirect to home.
-    navigate(`${location.pathname}?${params.toString()}`, { replace: true }); // Use replace to avoid history buildup
-  };
+  }, [navigate]); // Include navigate in dependency array
 
-  const handleSearchChange = (term) => {
-     setSearchTerm(term);
-     // Optionally update URL for search term as well
-     // const params = new URLSearchParams(location.search);
-     // params.set('search', term);
-     // params.set('page', '1');
-     // navigate(`${location.pathname}?${params.toString()}`, { replace: true });
-   };
+  // Handler to OPEN THE MODAL
+  // Triggered ONLY by "Añadir al Carrito" button on card
+  const handleOpenModal = useCallback((product) => {
+    console.log("Attempting to open modal for:", product?.id); // Debug log
+    if (product && product.id) {
+        setSelectedProduct(product);
+        setProductQuantity(1);
+        setShowDetailModal(true);
+    } else {
+        console.error("handleOpenModal called with invalid product:", product);
+    }
+  }, []); // No dependencies needed if only setting state
 
-   const handlePriceChange = (min, max) => {
-     setPriceFilter({ min, max });
-   };
+  // Filter/Pagination Handlers
+  const handleCategoryChange = (newCategoryName) => { setCategoryFilter(newCategoryName); setCurrentPage(1); const params = new URLSearchParams(location.search); if (newCategoryName) params.set('category', newCategoryName); else params.delete('category'); params.set('page', '1'); navigate(`${location.pathname}?${params.toString()}`, { replace: true }); };
+  const handleSearchChange = (term) => { setSearchTerm(term); setCurrentPage(1); };
+  const handlePriceChange = (min, max) => { setPriceFilter({ min, max }); setCurrentPage(1); };
+  const handleSellerChange = (selectedSellerIds) => { setSellerFilter(selectedSellerIds); setCurrentPage(1); };
+  const handlePageChange = (pageNumber) => { if (pageNumber >= 1 && pageNumber <= totalPages) { setCurrentPage(pageNumber); const params = new URLSearchParams(location.search); params.set('page', pageNumber); navigate(`${location.pathname}?${params.toString()}`, { replace: true }); window.scrollTo(0, 0); } };
 
-   const handleSellerChange = (sellers) => {
-     setSellerFilter(sellers);
-   };
-
-   const handlePageChange = (pageNumber) => {
-     setCurrentPage(pageNumber);
-     // Update URL page parameter
-     const params = new URLSearchParams(location.search);
-     params.set('page', pageNumber);
-     navigate(`${location.pathname}?${params.toString()}`, { replace: true });
-     window.scrollTo(0, 0); // Scroll to top on page change
-   };
-
-  const handleProductClick = (product) => {
-    // Option 1: Navigate to Product Detail Page (Recommended)
-    navigate(`/product/${product.id}`); // Assuming '/product/:id' route exists
-
-    // Option 2: Show Modal (Keep if preferred)
-    // setSelectedProduct(product);
-    // setProductQuantity(1);
-    // setShowDetailModal(true);
-  };
-
-  const handleAddToCart = (e, product) => {
-    e.stopPropagation(); // Prevent card click handler
-    addToCart(product, 1); // Assuming quantity is 1 for catalog button
-    setAddedToCartMessage({ show: true, productId: product.id });
-  };
-
-  // Modal Handlers (keep if using modal)
-  const handleGoToCart = () => navigate('/cart');
-  const handleQuantityChange = (operation) => { /* ... keep logic ... */ };
-  const handleAddToCartFromModal = () => { /* ... keep logic ... */ };
-  const handleBuyNow = () => { /* ... keep logic ... */ };
+  // --- Modal Specific Handlers ---
+  const handleQuantityChange = (operation) => { if (!selectedProduct) return; if (operation === 'increase' && productQuantity < selectedProduct.stock) setProductQuantity(prev => prev + 1); else if (operation === 'decrease' && productQuantity > 1) setProductQuantity(prev => prev - 1); };
+  const handleAddToCartFromModal = () => { if (selectedProduct) { addToCart(selectedProduct, productQuantity); setAddedToCartMessage({ show: true, productId: selectedProduct.id }); setShowDetailModal(false); } };
+  const handleBuyNow = () => { if (selectedProduct) { addToCart(selectedProduct, productQuantity); navigate('/cart'); } };
   const handleCloseModal = () => setShowDetailModal(false);
 
+  // --- Derived State ---
+  const isLoading = loadingProducts || loadingSellers || loadingFilterData;
+  const categoryNames = useMemo(() => categories.map(cat => cat.name), [categories]);
 
   // --- Render ---
-
   return (
     <div className="catalog-page-wrapper">
       <div className="catalog-container">
         <div className="catalog-main">
+          {/* Sidebar */}
           <CatalogSidebar
-            // Pass category names for display in the filter
-            categories={categories.map(cat => cat.name)}
+            categories={categoryNames}
+            sellers={allSellersForFilter}
             selectedCategory={categoryFilter}
-            onCategoryChange={handleCategoryChange} // Pass the handler
+            selectedSellers={sellerFilter}
+            onCategoryChange={handleCategoryChange}
             onPriceChange={handlePriceChange}
             onSellerChange={handleSellerChange}
-            // Pass other necessary props like sellers if dynamic
+            isLoading={loadingFilterData}
           />
-
+          {/* Main Content */}
           <div className="catalog-content-wrapper">
-             {/* Pass search handler to CatalogContent if SearchBar is inside it */}
-             {/* Or handle search input outside CatalogContent */}
-             {/* <SearchBar onSearch={handleSearchChange} /> */}
             <CatalogContent
-              products={displayedProducts} // Pass paginated products
-              loading={loading}
+              products={displayedProducts}
+              loading={isLoading}
               error={error}
-              onProductClick={handleProductClick}
-              onAddToCart={handleAddToCart}
+              // --- Pass BOTH handlers ---
+              onNavigateToDetail={handleNavigateToDetail} // For card background & "Ver Detalles" btn
+              onOpenModal={handleOpenModal}             // For "Añadir al Carrito" btn
+              // --- End Passing Handlers ---
               addedToCartMessage={addedToCartMessage}
-              totalProducts={filteredProducts.length} // Show count of filtered products
-              // Pass view mode state and handlers if needed
+              totalProducts={filteredProducts.length}
             />
-
-            {!loading && filteredProducts.length > 0 && totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
+            {/* Pagination */}
+            {!isLoading && filteredProducts.length > 0 && totalPages > 1 && (
+              <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
             )}
           </div>
         </div>
       </div>
 
-      {/* Keep ProductDetailModal if using modal functionality */}
+      {/* Modal Rendering */}
       {showDetailModal && selectedProduct && (
         <ProductDetailModal
           product={selectedProduct}
           quantity={productQuantity}
           onQuantityChange={handleQuantityChange}
-          onAddToCart={handleAddToCartFromModal}
+          onAddToCart={handleAddToCartFromModal} // Pass the correct handler
           onBuyNow={handleBuyNow}
           onClose={handleCloseModal}
         />

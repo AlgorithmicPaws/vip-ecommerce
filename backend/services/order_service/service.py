@@ -88,7 +88,7 @@ class OrderService:
             user_id=effective_user_id,
             order_date=func.now(),
             total_amount=total_amount,
-            shipping_address=order_data.shipping_address.dict(),  # Pass as dict, SQLAlchemy will convert
+            shipping_address=json.dumps(order_data.shipping_address.dict()),  # Convert dict to JSON string
             payment_method=order_data.payment_method.value,
             order_status=OrderStatus.pending.value,
             notes=notes

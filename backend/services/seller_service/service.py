@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from models import Seller, User
-from .schemas import SellerCreate, SellerUpdate
+from .schemas import SellerCreate, SellerUpdate, SellerFilterItem
 
 class SellerService:
     @staticmethod
@@ -14,6 +14,24 @@ class SellerService:
     def get_seller_by_id(db: Session, seller_id: int) -> Optional[Seller]:
         """Get a seller by seller ID"""
         return db.query(Seller).filter(Seller.seller_id == seller_id).first()
+    
+    @staticmethod
+    def get_sellers(db: Session, skip: int = 0, limit: int = 100) -> List[SellerFilterItem]:
+        """
+        Get a list of sellers containing only ID and business name, suitable for filtering.
+        Supports pagination with skip and limit.
+        Orders results by business name.
+        """
+        # Query only the necessary columns (seller_id, business_name)
+        sellers_query = db.query(Seller.seller_id, Seller.business_name)\
+                          .order_by(Seller.business_name)\
+                          .offset(skip)\
+                          .limit(limit)\
+                          .all()
+
+        # Map the SQLAlchemy result (list of Row objects) to Pydantic SellerFilterItem objects
+        # Each 's' in sellers_query will be a Row object with attributes 'seller_id' and 'business_name'
+        return [SellerFilterItem(seller_id=s.seller_id, business_name=s.business_name) for s in sellers_query]
     
     @staticmethod
     def create_seller(db: Session, user_id: int, seller_data: SellerCreate) -> Seller:

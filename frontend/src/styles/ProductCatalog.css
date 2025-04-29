@@ -897,3 +897,352 @@
     font-size: 0.85rem;
   }
 }
+/* src/styles/ProductCatalog.css */
+
+/* ... (Keep your existing styles for .modal-overlay, .modal-content, .modal-header, .close-modal etc.) ... */
+
+/* --- Product Detail Modal Specific Styles --- */
+
+/* Adjust modal size and layout */
+.modal-content.product-detail-modal {
+  max-width: 900px; /* Wider modal for more details */
+  width: 90%;
+  max-height: 90vh; /* Limit height */
+  display: flex; /* Use flex for header/body structure */
+  flex-direction: column;
+  overflow: hidden; /* Prevent content spill before scrolling */
+}
+
+.product-detail-modal .modal-header {
+  /* Optional: Adjust header padding if needed */
+   padding: 15px 25px;
+   background-color: #f8f9fa; /* Lighter header */
+   border-bottom: 1px solid #dee2e6;
+}
+
+.product-detail-modal .modal-header h2 {
+    font-size: 1.3rem; /* Slightly smaller title */
+    color: #343a40;
+}
+
+.product-detail-modal .modal-body {
+  padding: 25px; /* Consistent padding */
+  overflow-y: auto; /* Enable vertical scrolling for content */
+  flex-grow: 1; /* Allow body to take available space */
+}
+
+/* Two-column grid layout for image and info */
+.product-detail-grid {
+  display: flex;
+  gap: 30px; /* Space between image and info */
+}
+
+@media (max-width: 768px) {
+  .product-detail-grid {
+    flex-direction: column; /* Stack columns on smaller screens */
+    gap: 20px;
+  }
+}
+
+/* Left Column: Image */
+.product-detail-image {
+  flex: 0 0 40%; /* Adjust width percentage as needed */
+  max-width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa; /* Light background for image area */
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px; /* Fixed height for consistency */
+  border: 1px solid #e9ecef;
+}
+
+.product-detail-image img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ensure image fits well */
+}
+
+/* Placeholder styling (if image is missing) */
+.image-placeholder.large {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9ecef; /* Slightly darker placeholder */
+  color: #adb5bd; /* Lighter text color */
+  font-size: 4rem; /* Adjust size as needed */
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .product-detail-image {
+    flex-basis: auto; /* Reset basis */
+    max-width: 100%;
+    height: 300px; /* Adjust height for mobile */
+  }
+}
+
+/* Right Column: Info & Actions */
+.product-detail-info {
+  flex: 1; /* Take remaining space */
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-category {
+  font-size: 0.8rem;
+  color: #6c757d; /* Gray text */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.detail-seller {
+  font-size: 0.9rem;
+  color: #495057; /* Darker gray */
+  margin-bottom: 12px;
+}
+
+.seller-name-modal {
+  font-weight: 600;
+  color: #343a40; /* Darker text for name */
+}
+
+/* Rating styles */
+.detail-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.detail-rating .product-rating .star { /* Target stars within the rating component */
+  font-size: 1.1rem; /* Adjust star size */
+}
+
+.rating-text {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+/* Price styles */
+.detail-price {
+  font-size: 1.75rem; /* Larger price */
+  font-weight: 700;
+  color: #198754; /* Green price */
+  margin-bottom: 5px;
+}
+
+.detail-original-price {
+  font-size: 0.95rem;
+  color: #6c757d; /* Gray */
+  margin-bottom: 16px; /* More space after price */
+}
+
+.original-price-value {
+  text-decoration: line-through;
+}
+
+/* Stock status styles */
+.detail-stock {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: inline-block; /* Fit content */
+}
+
+.stock-available {
+  color: #146c43; /* Darker green */
+  background-color: #d1e7dd; /* Light green background */
+  border: 1px solid #a3cfbb;
+}
+
+.stock-low {
+  color: #997404; /* Darker yellow/orange */
+  background-color: #fff3cd; /* Light yellow background */
+  border: 1px solid #ffe69c;
+}
+
+.stock-out {
+  color: #842029; /* Darker red */
+  background-color: #f8d7da; /* Light red background */
+  border: 1px solid #f5c2c7;
+}
+
+/* Description styles */
+.detail-description {
+  font-size: 0.95rem;
+  color: #495057;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+/* "Ver más detalles" link button */
+.link-button {
+  background: none;
+  border: none;
+  color: #0d6efd; /* Blue link color */
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 5px;
+  font-size: 0.9rem;
+}
+
+.link-button:hover {
+  color: #0a58ca; /* Darker blue */
+}
+
+/* Quantity Selector */
+.product-quantity {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+.product-quantity label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ced4da; /* Gray border */
+  border-radius: 5px;
+  overflow: hidden; /* Clip corners */
+}
+
+.quantity-btn {
+  width: 36px; /* Slightly smaller buttons */
+  height: 36px;
+  background-color: #f8f9fa; /* Light gray background */
+  border: none;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #495057;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.quantity-btn:hover:not(:disabled) {
+  background-color: #e9ecef; /* Darker gray on hover */
+}
+
+.quantity-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity-controls input[type="number"] {
+  width: 50px; /* Adjust width */
+  height: 36px;
+  text-align: center;
+  border: none;
+  border-left: 1px solid #ced4da; /* Separator */
+  border-right: 1px solid #ced4da; /* Separator */
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0 5px;
+  /* Remove spinner arrows */
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.quantity-controls input[type="number"]::-webkit-outer-spin-button,
+.quantity-controls input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Action Buttons in Modal */
+.detail-actions {
+  display: flex;
+  gap: 12px; /* Space between buttons */
+  margin-top: auto; /* Push buttons to the bottom if needed */
+  padding-top: 20px; /* Space above buttons */
+  border-top: 1px solid #e9ecef; /* Separator line */
+}
+
+.add-to-cart-btn-lg,
+.view-cart-btn-lg,
+.out-of-stock-btn {
+  flex-grow: 1; /* Make buttons share space */
+  padding: 12px 15px; /* Larger padding */
+  border: none;
+  border-radius: 5px;
+  font-size: 0.95rem; /* Slightly larger font */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  text-align: center;
+}
+
+/* Specific button styles */
+.add-to-cart-btn-lg {
+  background-color: #ffc107; /* Yellow */
+  color: #343a40; /* Dark text */
+}
+
+.add-to-cart-btn-lg:hover {
+  background-color: #ffca2c;
+}
+
+.view-cart-btn-lg {
+  background-color: #198754; /* Green */
+  color: white;
+}
+
+.view-cart-btn-lg:hover {
+  background-color: #157347;
+}
+
+.out-of-stock-btn {
+  background-color: #6c757d; /* Gray */
+  color: white;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+
+/* --- General Modal Adjustments --- */
+
+/* Ensure overlay is effective */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1050; /* Ensure it's above other content */
+  padding: 20px; /* Add padding for smaller screens */
+}
+
+/* Close button styling */
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.8rem; /* Larger close button */
+  line-height: 1;
+  color: #6c757d; /* Gray */
+  cursor: pointer;
+  padding: 5px;
+  position: absolute; /* Position relative to header */
+  top: 10px;
+  right: 15px;
+}
+
+.close-modal:hover {
+  color: #343a40; /* Darker on hover */
+}

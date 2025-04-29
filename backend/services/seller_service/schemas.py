@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class SellerBase(BaseModel):
@@ -29,3 +29,11 @@ class SellerUpdate(BaseModel):
     
     class Config:
         from_attributes = True
+
+class SellerFilterItem(BaseModel):
+    """Schema specifically for listing sellers in filters (ID and Name)."""
+    seller_id: int
+    business_name: str
+
+    class Config:
+        orm_mode = True # or from_attributes = True in newer Pydantic V1 versions

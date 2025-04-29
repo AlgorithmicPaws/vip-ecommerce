@@ -1,44 +1,49 @@
+// src/pages/ProductCatalog/components/CatalogSidebar.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
-import CategoryFilter from '../subcomponents/CategoryFilter';
-import PriceFilter from '../subcomponents/PriceFilter';
-import SellerFilter from '../subcomponents/SellerFilter';
-import '../../../styles/ProductCatalog.css';
+import CategoryFilter from '../subcomponents/CategoryFilter'; // Displays category names
+import PriceFilter from '../subcomponents/PriceFilter';       // Handles price range
+import SellerFilter from '../subcomponents/SellerFilter';    // Displays seller names, handles ID selection
+import LoadingIndicator from '../subcomponents/LoadingIndicator'; // Shows loading state
+import '../../../styles/ProductCatalog.css'; // Styles for the sidebar
 
-const CatalogSidebar = ({ 
-  categories, 
-  selectedCategory, 
-  onCategoryChange, 
-  onPriceChange, 
-  onSellerChange 
+const CatalogSidebar = ({
+  categories,        // Array of category names: ['Category A', 'Category B']
+  sellers,           // Array of seller objects: [{ seller_id: 1, business_name: 'Seller X' }, ...]
+  selectedCategory,  // Currently selected category name (string)
+  selectedSellers,   // Array of currently selected seller IDs: [1, 5, 10]
+  onCategoryChange,  // Function to call when category selection changes (passes name)
+  onPriceChange,     // Function to call when price range changes (passes min, max)
+  onSellerChange,    // Function to call when seller selection changes (passes array of IDs)
+  isLoading          // Boolean indicating if filter data (categories, sellers) is loading
 }) => {
   return (
     <aside className="catalog-sidebar">
-      <CategoryFilter 
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onCategoryChange={onCategoryChange}
-      />
-      
-      <PriceFilter 
-        onPriceChange={onPriceChange}
-      />
-      
-      <SellerFilter 
-        onSellerChange={onSellerChange}
-      />
-      
-      {/* Popular brands section */}
-      <div className="filter-section">
-        <h3>Marcas Populares</h3>
-        <div className="popular-brands">
-          <Link to="/brands/dewalt" className="popular-brand-link">DeWalt</Link>
-          <Link to="/brands/bosch" className="popular-brand-link">Bosch</Link>
-          <Link to="/brands/makita" className="popular-brand-link">Makita</Link>
-          <Link to="/brands/stanley" className="popular-brand-link">Stanley</Link>
-          <Link to="/brands" className="view-all-brands">Ver todas las marcas</Link>
-        </div>
-      </div>
+      {/* Show loading indicator if filter data is not ready */}
+      {isLoading ? (
+        <LoadingIndicator message="Cargando filtros..." />
+      ) : (
+        <>
+          {/* Category Filter Component */}
+          <CategoryFilter
+            categories={categories}             // Pass the list of category names
+            selectedCategory={selectedCategory} // Pass the current selection
+            onCategoryChange={onCategoryChange} // Pass the handler function
+          />
+
+          {/* Price Filter Component */}
+          <PriceFilter
+            onPriceChange={onPriceChange} // Pass the handler function
+          />
+
+          {/* Seller Filter Component */}
+          <SellerFilter
+            sellers={sellers}                 // Pass the full list of seller objects
+            selectedSellers={selectedSellers} // Pass the array of selected seller IDs
+            onSellerChange={onSellerChange}   // Pass the handler function (expects IDs)
+          />
+        </>
+      )}
     </aside>
   );
 };

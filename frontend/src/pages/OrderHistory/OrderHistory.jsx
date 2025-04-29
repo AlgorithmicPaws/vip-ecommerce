@@ -111,9 +111,7 @@ const OrderHistory = () => {
   };
 
   return (
-    <div className="order-history-container">
-      <Navbar />
-      
+    <div className="order-history-container">      
       <div className="order-history-content">
         <h1>Mis Pedidos</h1>
         
@@ -159,8 +157,6 @@ const OrderHistory = () => {
           </Link>
         </div>
       </div>
-      
-      <Footer />
     </div>
   );
 };

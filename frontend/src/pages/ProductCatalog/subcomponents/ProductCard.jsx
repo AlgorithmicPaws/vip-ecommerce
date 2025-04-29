@@ -1,96 +1,127 @@
+// src/pages/ProductCatalog/subcomponents/ProductCard.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../../pages/CartContext';
 
-const ProductCard = ({ product, onProductClick, onAddToCart, showAddedMessage }) => {
+// --- Accept both handlers ---
+const ProductCard = ({ product, onNavigateToDetail, onOpenModal, showAddedMessage }) => {
   const navigate = useNavigate();
   const { isInCart, getItemQuantity } = useCart();
 
+  // --- Event Handlers ---
+
+  // --- Card click NAVIGATES ---
   const handleCardClick = (e) => {
-    // Avoid opening modal if clicked on a button
+    // Prevent navigation if a button inside the card was clicked
     if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
       return;
     }
-    
-    onProductClick(product);
-  };
-
-  const handleAddToCart = (e) => {
-    e.stopPropagation(); // Prevent opening the modal
-    onAddToCart(e, product);
-  };
-
-  const handleViewCart = (e) => {
-    e.stopPropagation();
-    navigate('/cart');
-  };
-
-  // Format price in Colombian Peso (COP) - with thousands separator and no decimals
-  const formatPrice = (price) => {
-    // Handle invalid values
-    if (typeof price !== 'number' || isNaN(price)) return '0';
-    
-    try {
-      // Format as COP - add thousands separator (.) and no decimals
-      return price.toLocaleString('es-CO', {
-        maximumFractionDigits: 0,
-        minimumFractionDigits: 0
-      });
-    } catch (error) {
-      console.error('Error formatting price:', error);
-      // Fallback formatting
-      return Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    // Call the navigation handler passed from parent
+    console.log("Card background clicked, calling onNavigateToDetail"); // Debug log
+    if (onNavigateToDetail) {
+      onNavigateToDetail(product);
+    } else {
+      // Fallback navigation if no handler provided
+      navigate(`/catalog/product/${product.id}`);
     }
   };
 
+  // --- "Add to Cart" button calls onOpenModal ---
+  const handleAddToCartClick = (e) => {
+    e.stopPropagation(); // Prevent card click handler
+    console.log("Add to Cart button clicked, calling onOpenModal"); // Debug log
+    if (onOpenModal) {
+      onOpenModal(product); // Call modal opener
+    }
+  };
+
+  // --- "View Cart" button navigates to cart ---
+  const handleViewCartClick = (e) => {
+    e.stopPropagation(); // Prevent card click handler
+    console.log("View Cart button clicked, navigating to /cart"); // Debug log
+    navigate('/cart');
+  };
+
+  // --- "Ver Detalles" button calls onNavigateToDetail ---
+  const handleViewDetailsClick = (e) => {
+    e.stopPropagation(); // Prevent card click handler
+    console.log("View Details button clicked, calling onNavigateToDetail"); // Debug log
+    if (onNavigateToDetail) {
+      onNavigateToDetail(product); // Call navigation handler
+    } else {
+       // Fallback navigation if no handler provided
+       if (product && product.id) {
+           navigate(`/catalog/product/${product.id}`);
+       }
+    }
+  };
+
+
+  // --- Helper Functions ---
+  const formatPrice = (price) => {
+    if (typeof price !== 'number' || isNaN(price)) return '$ 0';
+    try { return price.toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0, minimumFractionDigits: 0 }); }
+    catch (error) { console.error('Error formatting price:', error); return '$ ' + Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+  };
+
+  // --- Render Logic ---
+  if (!product || !product.id) return null;
+
+  const isProductInCart = isInCart(product.id);
+  const cartQuantity = getItemQuantity(product.id);
+
   return (
-    <div 
+    <div
       className="product-card"
-      onClick={handleCardClick}
+      onClick={handleCardClick} // Main card click now navigates
+      role="button"
+      tabIndex={0}
+      aria-label={`Ver detalles de ${product.name}`}
     >
+      {/* Product Image Section */}
       <div className="product-image">
-        {product.image ? (
-          <img src={product.image} alt={product.name} />
-        ) : (
-          <div className="image-placeholder">
-            <span>{product.name.charAt(0)}</span>
-          </div>
-        )}
-        {product.stock < 10 && (
-          <div className="stock-badge">¡Pocas unidades!</div>
-        )}
-        {showAddedMessage && (
-          <div className="cart-message">¡Añadido al carrito!</div>
-        )}
+        {product.image ? ( <img src={product.image} alt={product.name} loading="lazy" /> ) : ( <div className="image-placeholder"><span>{product.name ? product.name.charAt(0) : '?'}</span></div> )}
+        {product.stock !== undefined && product.stock > 0 && product.stock < 10 && ( <div className="stock-badge">¡Pocas unidades!</div> )}
+        {showAddedMessage && ( <div className="cart-message">¡Añadido al carrito!</div> )}
       </div>
+
+      {/* Product Information Section */}
       <div className="product-info">
-        <p className="product-category">{product.category}</p>
-        <h3 className="product-name">{product.name}</h3>
+        <p className="product-category">{product.category || 'Sin categoría'}</p>
+        <h3 className="product-name" title={product.name}>{product.name}</h3>
         <div className="product-seller">
           <span className="seller-label">Vendido por:</span>
-          <span className="seller-name">{product.seller || "ConstructMarket"}</span>
+          <span className="seller-name">{product.seller || "Desconocido"}</span>
         </div>
-        <p className="product-price">$ {formatPrice(product.price)}</p>
+        <p className="product-price">{formatPrice(product.price)}</p>
+
+        {/* Action Buttons Area */}
         <div className="product-actions">
-          {isInCart(product.id) ? (
+          {isProductInCart ? (
             <div className="in-cart-info">
-              <span className="in-cart-text">En carrito: {getItemQuantity(product.id)}</span>
-              <button 
-                className="view-cart-btn"
-                onClick={handleViewCart}
-              >
-                Ver Carrito
+              <button className="view-cart-btn" onClick={handleViewCartClick} aria-label="Ver carrito de compras">
+                Ver Carrito ({cartQuantity})
               </button>
             </div>
           ) : (
-            <button 
+            // --- "Add to Cart" button uses handleAddToCartClick (opens modal) ---
+            <button
               className="add-to-cart-btn"
-              onClick={handleAddToCart}
+              onClick={handleAddToCartClick} // Calls the modal opener
+              disabled={product.stock === 0}
+              aria-label={`Ver opciones para añadir ${product.name} al carrito`}
             >
-              Añadir al Carrito
+              {product.stock === 0 ? 'Agotado' : 'Añadir al Carrito'}
             </button>
           )}
-          <button className="view-details-btn">Ver Detalles</button>
+          {/* --- "Ver Detalles" button uses handleViewDetailsClick (navigates) --- */}
+          <button
+            className="view-details-btn"
+            onClick={handleViewDetailsClick} // Navigates directly
+            aria-label={`Ver detalles de ${product.name}`}
+          >
+            Ver Detalles
+          </button>
         </div>
       </div>
     </div>

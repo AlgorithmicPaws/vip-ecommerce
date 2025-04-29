@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
+from typing import List
+from fastapi import Query
 from core.database import get_db
 from models import User, Seller
-from .schemas import SellerCreate, SellerResponse, SellerUpdate
+from .schemas import SellerCreate, SellerResponse, SellerUpdate, SellerFilterItem
 from .service import SellerService
 from services.auth_service.middleware import get_current_user, get_current_active_user
 
@@ -33,6 +34,44 @@ def create_seller(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=str(e)
+        )
+@router.get("/{seller_id}", response_model=SellerResponse)
+def read_seller(
+    seller_id: int, # Path parameter for the seller ID
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieve details for a specific seller by their unique seller ID.
+    This endpoint is publicly accessible.
+    - Raises HTTP 404 if the seller with the given ID is not found.
+    """
+    seller = SellerService.get_seller_by_id(db=db, seller_id=seller_id)
+    if not seller:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Seller with ID {seller_id} not found"
+        )
+    # Use SellerResponse which includes business_name etc.
+    return seller
+@router.get("/", response_model=List[SellerFilterItem])
+def read_sellers(
+    skip: int = Query(0, ge=0, description="Number of records to skip for pagination"),
+    limit: int = Query(100, ge=1, le=500, description="Maximum number of records to return (max 500)"), # Added limit with validation
+    db: Session = Depends(get_db)
+):
+    """
+    Retrieve a list of sellers (ID and Business Name) primarily for filtering purposes.
+    This endpoint is publicly accessible.
+    Supports pagination using 'skip' and 'limit' query parameters.
+    """
+    try:
+        sellers = SellerService.get_sellers(db=db, skip=skip, limit=limit)
+        return sellers
+    except Exception as e: # Catch unexpected errors
+        print(f"Unexpected error reading sellers list: {e}") # Log the error
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An error occurred while retrieving the list of sellers."
         )
 
 @router.get("/me", response_model=SellerResponse)
