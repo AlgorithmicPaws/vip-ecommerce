@@ -507,7 +507,6 @@
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   text-overflow: ellipsis;
 }
 
@@ -666,7 +665,6 @@
 
 .products-grid.list-view .product-name {
   height: auto;
-  -webkit-line-clamp: 3;
 }
 
 .products-grid.list-view .product-actions {

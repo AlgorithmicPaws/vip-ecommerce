@@ -298,7 +298,6 @@
   font-size: 1rem;
   font-weight: 500;
   padding: 0 5px;
-  -moz-appearance: textfield;
 }
 .quantity-input::-webkit-outer-spin-button,
 .quantity-input::-webkit-inner-spin-button {
