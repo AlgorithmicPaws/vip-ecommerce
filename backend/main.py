@@ -21,9 +21,9 @@ app = FastAPI(
 
 # Configure CORS
 origins = [
-    "http://localhost",           
-    "http://localhost:80",
-    "http://localhost:5173",           
+    "http://186.30.48.106",           
+    "http://186.30.48.106:80",
+    "http://186.30.48.106:5173",           
     "http://127.0.0.1:5173",
     "http://frontend",  # Add this for Docker service name
 ]
