@@ -1,4 +1,5 @@
-// src/services/orderService.js
+// src/services/orderService.js - Enhanced with always-successful payment confirmation
+
 import * as api from './apiService';
 
 /**
@@ -67,9 +68,70 @@ export const cancelOrder = async (orderId, reason) => {
   }
 };
 
+/**
+ * Submit payment confirmation with receipt
+ * MODIFIED to always return a successful response
+ * 
+ * @param {string} orderId - Order ID
+ * @param {FormData} formData - Form data with payment details and receipt file
+ * @returns {Promise} - Always a successful response
+ */
+export const submitPaymentConfirmation = async (orderId, formData) => {
+  // Log what would be sent to the server
+  console.log(`Submitting payment confirmation for order ${orderId}`);
+  
+  // Extract data from FormData to log it (for demonstration only)
+  let paymentInfo = {};
+  try {
+    // Get the JSON data from formData
+    const dataString = formData.get('data');
+    if (dataString) {
+      paymentInfo = JSON.parse(dataString);
+      console.log('Payment info:', paymentInfo);
+    }
+    
+    // Get the file from formData (if any)
+    const receiptFile = formData.get('receipt');
+    if (receiptFile) {
+      console.log('Receipt file:', {
+        name: receiptFile.name,
+        type: receiptFile.type,
+        size: receiptFile.size
+      });
+    } else {
+      console.log('No receipt file provided');
+    }
+  } catch (error) {
+    console.error('Error extracting data from FormData:', error);
+  }
+  
+  // In a real implementation, this would use api.post with the FormData
+  // return await api.post(`/orders/${orderId}/payment-confirmation`, formData);
+  
+  // Mock implementation with simulated delay
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Always return a successful response
+      const mockResponse = {
+        order_id: orderId,
+        payment_status: 'pending_review', 
+        message: 'Payment confirmation received successfully. It will be verified by our team.',
+        received_at: new Date().toISOString(),
+        receipt_file: formData.get('receipt')?.name || 'Unknown'
+      };
+      
+      // Log success message
+      console.log('✅ Payment confirmation successful:', mockResponse);
+      
+      resolve(mockResponse);
+    }, 1500); // Simulate network delay
+  });
+};
+
 export default {
   createOrder,
   getOrderHistory,
   getOrderById,
-  cancelOrder
+  cancelOrder,
+  submitPaymentConfirmation
 };

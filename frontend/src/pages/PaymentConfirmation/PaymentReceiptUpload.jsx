@@ -1,37 +1,36 @@
 // src/pages/PaymentConfirmation/PaymentReceiptUpload.jsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
+const PaymentReceiptUpload = ({ onFileChange, disabled = false, initialFile = null }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [fileName, setFileName] = useState('');
+  const [fileType, setFileType] = useState('');
+  const [fileSize, setFileSize] = useState(0);
   const [error, setError] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
+  const dropAreaRef = useRef(null);
 
-  // Allowed file types
+  // Allowed file types and max size
   const allowedFileTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
   const maxFileSizeMB = 10; // 10MB max size
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    setError('');
+  // Initialize with an initial file if provided
+  useEffect(() => {
+    if (initialFile) {
+      processFile(initialFile);
+    }
+  }, [initialFile]);
 
+  // Common file processing logic
+  const processFile = (file) => {
     if (!file) return;
 
-    // Validate file type
-    if (!allowedFileTypes.includes(file.type)) {
-      setError('Tipo de archivo no válido. Por favor, sube PDF, JPG o PNG.');
-      e.target.value = null;
-      return;
-    }
+    setFileType(file.type);
+    setFileName(file.name);
+    setFileSize(file.size);
 
-    // Validate file size
-    if (file.size > maxFileSizeMB * 1024 * 1024) {
-      setError(`El archivo es demasiado grande. El tamaño máximo es ${maxFileSizeMB}MB.`);
-      e.target.value = null;
-      return;
-    }
-
-    // Create preview URL for images (not for PDFs)
+    // Create preview for images
     if (file.type.startsWith('image/')) {
       const reader = new FileReader();
       reader.onload = () => {
@@ -39,40 +38,139 @@ const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
       };
       reader.readAsDataURL(file);
     } else {
-      // For PDF files, just show an icon/placeholder
+      // For PDFs, no preview
       setPreviewUrl(null);
     }
 
-    setFileName(file.name);
-    
     // Pass the file to parent component
     if (onFileChange) {
       onFileChange(file);
     }
   };
 
+  // Handle file selection from input
+  const handleFileSelect = (e) => {
+    setError('');
+    const file = e.target.files[0];
+    
+    if (!file) return;
+
+    // Validate file type
+    if (!allowedFileTypes.includes(file.type)) {
+      setError(`Tipo de archivo no válido (${file.type}). Por favor, sube PDF, JPG o PNG.`);
+      e.target.value = null;
+      return;
+    }
+
+    // Validate file size
+    if (file.size > maxFileSizeMB * 1024 * 1024) {
+      setError(`El archivo es demasiado grande (${(file.size / (1024 * 1024)).toFixed(2)}MB). El tamaño máximo es ${maxFileSizeMB}MB.`);
+      e.target.value = null;
+      return;
+    }
+
+    processFile(file);
+  };
+
+  // Drag and drop handlers
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (disabled) return;
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (disabled) return;
+    e.dataTransfer.dropEffect = 'copy';
+    setIsDragging(true);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (disabled) return;
+    
+    setError('');
+    
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    if (!allowedFileTypes.includes(file.type)) {
+      setError(`Tipo de archivo no válido (${file.type}). Por favor, sube PDF, JPG o PNG.`);
+      return;
+    }
+
+    // Validate file size
+    if (file.size > maxFileSizeMB * 1024 * 1024) {
+      setError(`El archivo es demasiado grande (${(file.size / (1024 * 1024)).toFixed(2)}MB). El tamaño máximo es ${maxFileSizeMB}MB.`);
+      return;
+    }
+
+    // If file input has value, reset it
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+
+    processFile(file);
+  };
+
+  // Trigger file input when clicking the upload area
   const triggerFileInput = () => {
     if (!disabled && fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
-  const removeFile = () => {
+  // Remove the file
+  const removeFile = (e) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    
     setPreviewUrl(null);
     setFileName('');
+    setFileType('');
+    setFileSize(0);
+    
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    
     if (onFileChange) {
       onFileChange(null);
     }
   };
 
+  // Format file size for display
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   return (
     <div className="payment-receipt-upload">
       <div 
-        className={`upload-area ${disabled ? 'disabled' : ''}`} 
+        ref={dropAreaRef}
+        className={`upload-area ${disabled ? 'disabled' : ''} ${isDragging ? 'dragging' : ''} ${error ? 'has-error' : ''}`}
         onClick={triggerFileInput}
+        onDragEnter={handleDragEnter}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
       >
         {previewUrl ? (
           <div className="preview-container">
@@ -89,12 +187,13 @@ const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
                   e.stopPropagation();
                   removeFile();
                 }}
+                aria-label="Eliminar archivo"
               >
                 &times;
               </button>
             )}
           </div>
-        ) : fileName ? (
+        ) : fileName && fileType === 'application/pdf' ? (
           <div className="pdf-preview">
             <div className="pdf-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -105,7 +204,10 @@ const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
                 <polyline points="10 9 9 9 8 9"></polyline>
               </svg>
             </div>
-            <span className="pdf-name">{fileName}</span>
+            <div className="pdf-info">
+              <span className="pdf-name">{fileName}</span>
+              <span className="pdf-size">{formatFileSize(fileSize)}</span>
+            </div>
             {!disabled && (
               <button 
                 type="button" 
@@ -114,6 +216,7 @@ const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
                   e.stopPropagation();
                   removeFile();
                 }}
+                aria-label="Eliminar PDF"
               >
                 &times;
               </button>
@@ -129,8 +232,15 @@ const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
               </svg>
             </div>
             <p className="upload-text">
-              Haz clic para subir tu comprobante de pago <br/>
-              <span className="upload-hint">(PDF, JPG, PNG - Máx. {maxFileSizeMB}MB)</span>
+              {disabled 
+                ? 'No hay comprobante cargado'
+                : isDragging 
+                  ? 'Suelta el archivo aquí'
+                  : 'Haz clic o arrastra aquí tu comprobante'
+              }
+            </p>
+            <p className="upload-hint">
+              {!disabled && `PDF, JPG, PNG (Máx. ${maxFileSizeMB}MB)`}
             </p>
           </div>
         )}
@@ -145,6 +255,7 @@ const PaymentReceiptUpload = ({ onFileChange, disabled = false }) => {
         accept=".pdf,.jpg,.jpeg,.png"
         className="file-input"
         disabled={disabled}
+        aria-label="Subir comprobante de pago"
       />
     </div>
   );
