@@ -12,6 +12,10 @@ from services.product_service.router import router as product_router
 from services.product_service.category_router import router as category_router
 from services.file_service.router import router as file_router
 from services.order_service.router import router as order_router 
+
+# Load CORS allowed origins from environment variable or use default
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*").split(",")
+
 # Create the FastAPI app
 app = FastAPI(
     title="E-Commerce API",
@@ -20,13 +24,17 @@ app = FastAPI(
 )
 
 # Configure CORS
-origins = [
-    "http://186.30.48.106",           
-    "http://186.30.48.106:80",
-    "http://186.30.48.106:5173",           
-    "http://127.0.0.1:5173",
-    "http://frontend",  # Add this for Docker service name
-]
+origins = CORS_ALLOWED_ORIGINS if CORS_ALLOWED_ORIGINS != ["*"] else ["*"] 
+
+# Add default development origins if not using wildcard
+if "*" not in origins:
+    origins.extend([
+        "http://localhost",           
+        "http://localhost:80",
+        "http://localhost:5173",           
+        "http://127.0.0.1:5173",
+        "http://frontend",  # For Docker service name
+    ])
 
 app.add_middleware(
     CORSMiddleware,
