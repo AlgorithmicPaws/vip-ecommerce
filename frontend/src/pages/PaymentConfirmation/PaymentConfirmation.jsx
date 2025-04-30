@@ -1,9 +1,11 @@
+// src/services/orderService.js - Enhanced with always-successful payment confirmation
 // src/pages/PaymentConfirmation/PaymentConfirmation.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import * as orderService from '../../services/orderService';
-import '../../styles/PaymentConfirmation.css'; // Styles for this page
+import PaymentReceiptUpload from './PaymentReceiptUpload'; // Import the new component
+import '../../styles/PaymentConfirmation.css';
 
 // Components
 import LoadingIndicator from '../ProductCatalog/subcomponents/LoadingIndicator';
@@ -11,21 +13,24 @@ import LoadingIndicator from '../ProductCatalog/subcomponents/LoadingIndicator';
 const PaymentConfirmation = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth(); // Get user info if needed
+  const { isAuthenticated, user } = useAuth();
 
   // State
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // Form submission loading state
-  const [success, setSuccess] = useState(false); // Form submission success state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  // File Upload State
+  const [receiptFile, setReceiptFile] = useState(null);
 
   // Form state
   const [paymentInfo, setPaymentInfo] = useState({
     payment_date: '',
     payment_reference: '',
     amount: '',
-    payer_name: user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : '', // Pre-fill if possible
+    payer_name: user?.first_name && user?.last_name ? `${user.first_name} ${user.last_name}` : '',
     notes: ''
   });
 
@@ -47,11 +52,29 @@ const PaymentConfirmation = () => {
         if (orderData.payment_method !== 'bank_transfer' || orderData.payment_status !== 'pending' || orderData.order_status === 'cancelled') {
           throw new Error('Este pedido no requiere o no permite la confirmación de pago manual.');
         }
+        
         setOrder(orderData);
+        
         // Pre-fill amount, ensure it's formatted correctly for input type="text"
+        // Make sure we properly convert the total_amount to a number before using toFixed
+        const totalAmount = orderData.total_amount;
+        let numAmount = 0;
+        
+        if (totalAmount !== undefined && totalAmount !== null) {
+          // Convert to number if it's a string or ensure it's a valid number
+          numAmount = typeof totalAmount === 'string' 
+            ? parseFloat(totalAmount.replace(/[^0-9.-]+/g, '')) 
+            : parseFloat(totalAmount);
+            
+          // Check if it's a valid number after conversion
+          if (isNaN(numAmount)) {
+            numAmount = 0;
+          }
+        }
+        
         setPaymentInfo(prev => ({
           ...prev,
-          amount: (orderData.total_amount || 0).toFixed(2) // Pre-fill with 2 decimals
+          amount: numAmount.toFixed(2) // Now safe to use toFixed
         }));
       } catch (err) {
         console.error(`Error fetching order ${orderId}:`, err);
@@ -67,7 +90,16 @@ const PaymentConfirmation = () => {
    const handleInputChange = (e) => {
      const { name, value } = e.target;
      setPaymentInfo(prev => ({ ...prev, [name]: value }));
-     if (formErrors[name]) setFormErrors(prev => ({ ...prev, [name]: null })); // Clear error on change
+     if (formErrors[name]) setFormErrors(prev => ({ ...prev, [name]: null }));
+   };
+
+   // Handle file change from the PaymentReceiptUpload component
+   const handleFileChange = (file) => {
+     setReceiptFile(file);
+     // Clear any file-related errors
+     if (formErrors.receiptFile) {
+       setFormErrors(prev => ({ ...prev, receiptFile: null }));
+     }
    };
 
    // Validate form
@@ -84,12 +116,12 @@ const PaymentConfirmation = () => {
      if (!paymentInfo.amount) errors.amount = 'El monto es obligatorio.';
      else {
         const inputAmount = parseFloat(paymentInfo.amount);
-        const orderAmount = parseFloat(order?.total_amount || 0);
         if (isNaN(inputAmount) || inputAmount <= 0) errors.amount = 'Ingrese un monto válido.';
-        // Optional: Check if amount matches exactly - might be too strict
-        // else if (order && Math.abs(inputAmount - orderAmount) > 0.01) { // Allow for small float differences
-        //   errors.amount = `El monto debe coincidir con el total del pedido (${formatPrice(orderAmount)}).`;
-        // }
+     }
+
+     // Validate file upload is required
+     if (!receiptFile) {
+       errors.receiptFile = 'Por favor, sube un comprobante de pago (PDF, JPG o PNG).';
      }
 
      setFormErrors(errors);
@@ -99,15 +131,14 @@ const PaymentConfirmation = () => {
    // Handle form submission
    const handleSubmit = async (e) => {
      e.preventDefault();
-     if (!validateForm() || !order) return; // Ensure order data is loaded
+     if (!validateForm() || !order) return;
 
-     setIsSubmitting(true); setError(null); // Reset error state
+     setIsSubmitting(true); setError(null);
 
      try {
-       // Prepare data for API (assuming API expects this structure)
-       // NOTE: You might need an actual 'uploadPaymentReceipt' service function
+       // Prepare data for API
        const receiptInfo = {
-         payment_date: new Date(paymentInfo.payment_date).toISOString(), // Send as ISO string
+         payment_date: new Date(paymentInfo.payment_date).toISOString(),
          payment_reference: paymentInfo.payment_reference,
          amount: parseFloat(paymentInfo.amount),
          payer_name: paymentInfo.payer_name,
@@ -115,16 +146,24 @@ const PaymentConfirmation = () => {
        };
 
        console.log("Submitting Payment Confirmation:", JSON.stringify(receiptInfo, null, 2));
+       console.log("With receipt file:", receiptFile ? receiptFile.name : 'No file');
 
-       // --- Replace with your actual API call ---
-       // Example: await orderService.submitPaymentConfirmation(orderId, receiptInfo);
-       // Simulating success for now:
-       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-       console.log("Payment confirmation submitted successfully (simulated).");
-       // --- End Replace ---
-
-       setSuccess(true); // Show success message
-       window.scrollTo(0, 0); // Scroll to top
+       // Create FormData to send both form data and file
+       const formData = new FormData();
+       
+       // Add the file
+       if (receiptFile) {
+         formData.append('receipt', receiptFile);
+       }
+       
+       // Add the JSON data
+       formData.append('data', JSON.stringify(receiptInfo));
+       
+       // Submit to the API
+       await orderService.submitPaymentConfirmation(orderId, formData);
+       
+       setSuccess(true);
+       window.scrollTo(0, 0);
 
      } catch (err) {
        console.error('Error submitting payment confirmation:', err);
@@ -134,12 +173,40 @@ const PaymentConfirmation = () => {
      }
    };
 
-   // Helper: Format Price
+   // Helper: Format Price - FIXED to safely handle non-numeric values
    const formatPrice = (price) => {
-     const numPrice = typeof price === 'string' ? parseFloat(price) : price;
-     if (isNaN(numPrice)) return '$ 0';
-     try { return numPrice.toLocaleString('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0, minimumFractionDigits: 0 }); }
-     catch (error) { return '$ ' + Math.round(numPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+     // First ensure price is a valid number
+     let numPrice;
+     try {
+       if (typeof price === 'string') {
+         // Try to convert string to number, removing any currency symbols
+         numPrice = parseFloat(price.replace(/[^0-9.-]+/g, ''));
+       } else {
+         numPrice = parseFloat(price);
+       }
+     } catch (e) {
+       console.error('Error formatting price:', e);
+       numPrice = 0; // Default to 0 if conversion fails
+     }
+     
+     // Check for NaN after conversion attempts
+     if (isNaN(numPrice)) {
+       return '$ 0';
+     }
+     
+     // Format with the locale string method - safer than toFixed
+     try {
+       return numPrice.toLocaleString('es-CO', { 
+         style: 'currency', 
+         currency: 'COP', 
+         maximumFractionDigits: 0, 
+         minimumFractionDigits: 0 
+       });
+     } catch (error) {
+       console.error('Error in locale formatting:', error);
+       // Fallback formatting - avoiding toFixed
+       return '$ ' + Math.round(numPrice).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+     }
    };
 
   // --- Render Logic ---
@@ -148,7 +215,6 @@ const PaymentConfirmation = () => {
 
   return (
     <div className="page-container payment-confirmation-container">
-      {/* Assumes Navbar/Footer in layout */}
       <div className="page-content payment-confirmation-content">
         {/* Breadcrumbs */}
         <div className="breadcrumbs payment-confirmation-breadcrumbs">
@@ -205,20 +271,32 @@ const PaymentConfirmation = () => {
                   <input type="text" id="payment_reference" name="payment_reference" value={paymentInfo.payment_reference} onChange={handleInputChange} placeholder="Ej: 9876543210" className={formErrors.payment_reference ? 'input-error' : ''} disabled={isSubmitting} required />
                   {formErrors.payment_reference && <div className="error-message">{formErrors.payment_reference}</div>}
                 </div>
-                 <div className="form-group">
-                   <label htmlFor="amount">Monto Pagado ({order.currency || 'COP'}) *</label>
-                   <input type="number" step="0.01" id="amount" name="amount" value={paymentInfo.amount} onChange={handleInputChange} placeholder={(order.total_amount || 0).toFixed(2)} className={formErrors.amount ? 'input-error' : ''} disabled={isSubmitting} required />
-                   {formErrors.amount && <div className="error-message">{formErrors.amount}</div>}
-                 </div>
+                <div className="form-group">
+                  <label htmlFor="amount">Monto Pagado ({order.currency || 'COP'}) *</label>
+                  <input type="number" step="0.01" id="amount" name="amount" value={paymentInfo.amount} onChange={handleInputChange} placeholder="0.00" className={formErrors.amount ? 'input-error' : ''} disabled={isSubmitting} required />
+                  {formErrors.amount && <div className="error-message">{formErrors.amount}</div>}
+                </div>
                 <div className="form-group">
                   <label htmlFor="payer_name">Nombre del Titular (Cuenta Origen) *</label>
                   <input type="text" id="payer_name" name="payer_name" value={paymentInfo.payer_name} onChange={handleInputChange} placeholder="Nombre completo" className={formErrors.payer_name ? 'input-error' : ''} disabled={isSubmitting} required />
                   {formErrors.payer_name && <div className="error-message">{formErrors.payer_name}</div>}
                 </div>
+                
+                {/* File Upload Component */}
+                <div className="form-group">
+                  <label>Comprobante de Pago *</label>
+                  <PaymentReceiptUpload 
+                    onFileChange={handleFileChange}
+                    disabled={isSubmitting}
+                  />
+                  {formErrors.receiptFile && <div className="error-message">{formErrors.receiptFile}</div>}
+                </div>
+                
                 <div className="form-group">
                   <label htmlFor="notes">Comentarios Adicionales (Opcional)</label>
                   <textarea id="notes" name="notes" value={paymentInfo.notes} onChange={handleInputChange} placeholder="Ej: Pago realizado desde cuenta empresarial..." rows="3" disabled={isSubmitting} />
                 </div>
+                
                 {/* Form Actions */}
                 <div className="form-actions">
                   <Link to={`/orders/${orderId}`} className="secondary-btn" disabled={isSubmitting}>Cancelar</Link>
@@ -238,3 +316,4 @@ const PaymentConfirmation = () => {
 };
 
 export default PaymentConfirmation;
+  
