@@ -21,6 +21,7 @@ export const generateOrderInvoice = async (orderData) => {
     
     // Format price with proper handling for potential string values
     const formatPrice = (price) => {
+      if (price === undefined || price === null) return '0.00';
       const numPrice = typeof price === 'string' ? parseFloat(price) : price;
       return !isNaN(numPrice) ? numPrice.toFixed(2) : '0.00';
     };
@@ -35,7 +36,7 @@ export const generateOrderInvoice = async (orderData) => {
     // Add order and customer information
     doc.setFontSize(12);
     doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 20, 45);
-    doc.text(`Nº Pedido: ${orderData.order_id || orderData.id}`, 20, 52);
+    doc.text(`Nº Pedido: ${orderData.order_id || orderData.id || 'N/A'}`, 20, 52);
     
     // Customer information
     doc.text('Datos del cliente:', 20, 65);
@@ -44,10 +45,20 @@ export const generateOrderInvoice = async (orderData) => {
     
     // Shipping address
     const shipAddress = orderData.shipping_address || {};
+    // Handle shipping address which might be a string (JSON) or object
+    let addressObj = shipAddress;
+    if (typeof shipAddress === 'string') {
+      try {
+        addressObj = JSON.parse(shipAddress);
+      } catch (e) {
+        addressObj = { address: shipAddress };
+      }
+    }
+    
     doc.text('Dirección de envío:', 20, 92);
-    doc.text(`${shipAddress.street || ""}`, 20, 99);
-    doc.text(`${shipAddress.city || ""}, ${shipAddress.state || ""} ${shipAddress.zip_code || ""}`, 20, 106);
-    doc.text(`${shipAddress.country || ""}`, 20, 113);
+    doc.text(`${addressObj.street || addressObj.address || ""}`, 20, 99);
+    doc.text(`${addressObj.city || ""}, ${addressObj.state || ""} ${addressObj.zip_code || ""}`, 20, 106);
+    doc.text(`${addressObj.country || ""}`, 20, 113);
     
     // Order items table - using basic text instead of autoTable
     let yPos = 130;
@@ -66,10 +77,13 @@ export const generateOrderInvoice = async (orderData) => {
     doc.setLineWidth(0.5);
     doc.line(20, yPos - 5, 190, yPos - 5);
     
+    // Determine which property to use for items (items vs order_items)
+    const orderItems = orderData.order_items || orderData.items || [];
+    
     // Make sure we have items before adding them to the table
-    if (orderData.items && orderData.items.length > 0) {
+    if (orderItems && orderItems.length > 0) {
       // Table rows
-      orderData.items.forEach(item => {
+      orderItems.forEach(item => {
         // Check if we're about to overflow the page
         if (yPos > 270) {
           doc.addPage();
@@ -83,7 +97,10 @@ export const generateOrderInvoice = async (orderData) => {
         doc.text(displayName, 20, yPos);
         doc.text(String(item.quantity), 105, yPos);
         doc.text(`$${formatPrice(item.price_per_unit)}`, 130, yPos);
-        doc.text(`$${formatPrice(item.total_price)}`, 170, yPos);
+        
+        // Calculate subtotal if it's not already provided
+        const subtotal = item.subtotal || (item.price_per_unit * item.quantity);
+        doc.text(`$${formatPrice(subtotal)}`, 170, yPos);
         
         yPos += 10;
       });
@@ -91,10 +108,18 @@ export const generateOrderInvoice = async (orderData) => {
       // Draw a line below the items
       doc.line(20, yPos - 5, 190, yPos - 5);
       
+      // Calculate subtotal from items if not provided
+      const calculatedSubtotal = orderItems.reduce((total, item) => {
+        const itemSubtotal = item.subtotal || (item.price_per_unit * item.quantity);
+        return total + (typeof itemSubtotal === 'string' ? parseFloat(itemSubtotal) : itemSubtotal);
+      }, 0);
+      
+      const subtotal = orderData.subtotal || calculatedSubtotal;
+      
       // Totals
       yPos += 5;
       doc.text("Subtotal:", 130, yPos);
-      doc.text(`$${formatPrice(orderData.subtotal)}`, 170, yPos);
+      doc.text(`$${formatPrice(subtotal)}`, 170, yPos);
       
       if (orderData.discount && orderData.discount > 0) {
         yPos += 10;
@@ -102,9 +127,12 @@ export const generateOrderInvoice = async (orderData) => {
         doc.text(`-$${formatPrice(orderData.discount)}`, 170, yPos);
       }
       
+      const shippingCost = orderData.shipping_cost || 
+                          (orderData.total_amount - subtotal + (orderData.discount || 0));
+      
       yPos += 10;
       doc.text("Gastos de envío:", 130, yPos);
-      doc.text(`$${formatPrice(orderData.shipping_cost)}`, 170, yPos);
+      doc.text(`$${formatPrice(shippingCost)}`, 170, yPos);
       
       yPos += 10;
       doc.setFont("helvetica", "bold");
@@ -148,7 +176,7 @@ export const generateOrderInvoice = async (orderData) => {
     yPos += 7;
     doc.text('Cuenta Corriente Nº: 69812345678', 25, yPos);
     yPos += 7;
-    doc.text(`Concepto: Pedido ${orderData.order_id || orderData.id}`, 25, yPos);
+    doc.text(`Concepto: Pedido ${orderData.order_id || orderData.id || 'N/A'}`, 25, yPos);
     yPos += 7;
     doc.text(`Importe: $${formatPrice(orderData.total_amount)}`, 25, yPos);
     

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../styles/Register.css'; // Asegúrate que este CSS tenga los estilos para .error-message y .success-message
+import '../styles/Register.css';
 
 const Register = () => {
   const navigate = useNavigate();
-  // Obtén la función register y el error global del contexto si existe
   const { register, isAuthenticated, error: globalAuthError } = useAuth();
 
-  // Estado del formulario
+  // Form state
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -19,13 +18,14 @@ const Register = () => {
     address: ''
   });
 
-  // Estado de la UI
+  // UI state
   const [isLoading, setIsLoading] = useState(false);
-  // Usaremos este estado para errores específicos de esta página/validación
   const [localError, setLocalError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  // Field-specific errors for more granular error display
+  const [fieldErrors, setFieldErrors] = useState({});
 
-  // Redirigir si ya está autenticado
+  // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
@@ -39,106 +39,130 @@ const Register = () => {
       [name]: value,
     }));
 
-    // Limpiar error local cuando el usuario empieza a escribir
+    // Clear the specific field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({ ...prev, [name]: '' }));
+    }
+    
+    // Clear general error when user makes changes
     if (localError) setLocalError('');
   };
 
-  // --- VALIDACIÓN MEJORADA CON MENSAJES CLAROS ---
+  // Improved validation with field-specific errors
   const validateForm = () => {
-    // Limpiar error previo
+    // Reset all errors
     setLocalError('');
+    const newFieldErrors = {};
+    let isValid = true;
 
     const { firstName, lastName, email, password, confirmPassword } = formData;
 
-    if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      setLocalError('Por favor, completa todos los campos obligatorios (*).');
-      return false;
+    // Check required fields
+    if (!firstName.trim()) {
+      newFieldErrors.firstName = 'El nombre es obligatorio';
+      isValid = false;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setLocalError('Por favor, ingresa un correo electrónico válido.');
-      return false;
+    if (!lastName.trim()) {
+      newFieldErrors.lastName = 'El apellido es obligatorio';
+      isValid = false;
     }
 
-     if (password.length < 8) {
-      setLocalError('La contraseña debe tener al menos 8 caracteres.');
-      return false;
+    if (!email.trim()) {
+      newFieldErrors.email = 'El correo electrónico es obligatorio';
+      isValid = false;
+    } else {
+      // Email format validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        newFieldErrors.email = 'Por favor, ingresa un correo electrónico válido';
+        isValid = false;
+      }
     }
 
-    if (password !== confirmPassword) {
-      setLocalError('Las contraseñas no coinciden. Por favor, verifícalas.');
-      return false;
+    if (!password) {
+      newFieldErrors.password = 'La contraseña es obligatoria';
+      isValid = false;
+    } else if (password.length < 8) {
+      newFieldErrors.password = 'La contraseña debe tener al menos 8 caracteres';
+      isValid = false;
+    } else if (!/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+      newFieldErrors.password = 'La contraseña debe contener al menos un número y una letra';
+      isValid = false;
     }
 
-    // Si todo está bien
-    return true;
+    if (!confirmPassword) {
+      newFieldErrors.confirmPassword = 'Debes confirmar tu contraseña';
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      newFieldErrors.confirmPassword = 'Las contraseñas no coinciden';
+      isValid = false;
+    }
+
+    setFieldErrors(newFieldErrors);
+    return isValid;
   };
-  // --- FIN VALIDACIÓN ---
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validar formulario antes de enviar
+    // Validate form before submitting
     if (!validateForm()) {
-      return; // Detener si la validación falla
+      return;
     }
 
-    // Preparar datos para la API
+    // Prepare data for the API
     const userData = {
       first_name: formData.firstName,
       last_name: formData.lastName,
       email: formData.email,
       password: formData.password,
-      phone: formData.phone || null, // Enviar null si está vacío
-      address: formData.address || null // Enviar null si está vacío
+      phone: formData.phone || null,
+      address: formData.address || null
     };
 
     setIsLoading(true);
-    setLocalError(''); // Limpiar error local
-    setSuccessMessage(''); // Limpiar mensaje de éxito
+    setLocalError('');
+    setSuccessMessage('');
 
     try {
-      // Llamar a la función register del contexto
       await register(userData);
-
-      // Mostrar mensaje de éxito
+      
       setSuccessMessage('¡Registro exitoso! Serás redirigido al inicio de sesión.');
-
-      // Resetear formulario (opcional, puedes dejarlo o no)
-      // setFormData({ ... });
-
-      // Redirigir a login después de un momento
+      
+      // Redirect to login after a moment
       setTimeout(() => {
         navigate('/login');
-      }, 2500); // Un poco más de tiempo para leer el mensaje
+      }, 2000);
 
     } catch (err) {
-      // --- MANEJO DE ERRORES MEJORADO ---
-      const errorMessage = err.message || 'Ocurrió un error inesperado.';
-
+      // Enhanced error handling
+      console.error("Register error:", err);
+      
+      const errorMessage = err.message || '';
+      
+      // Check for specific error types and set appropriate messages
       if (errorMessage.includes('already exists') || errorMessage.includes('409') || errorMessage.includes('duplicado')) {
-         // Error específico para email existente
-         setLocalError(`El correo electrónico "${formData.email}" ya está registrado. ¿Quizás querías <Link to="/login">iniciar sesión</Link>?`);
-         // Nota: Para que el Link funcione dentro del error, necesitarías renderizar el error como HTML o usar una librería.
-         // Alternativa simple: setLocalError(`El correo electrónico "${formData.email}" ya está registrado. Intenta iniciar sesión.`);
+        setFieldErrors(prev => ({
+          ...prev,
+          email: `El correo electrónico "${formData.email}" ya está registrado.`
+        }));
       } else if (errorMessage.includes('validation failed')) {
-         // Error genérico de validación del backend (si lo hay)
-         setLocalError('Hubo un problema con los datos enviados. Por favor, revisa el formulario.');
+        setLocalError('Hubo un problema con los datos enviados. Por favor, revisa el formulario.');
+      } else if (errorMessage.includes('network') || errorMessage.includes('connection')) {
+        setLocalError('No se pudo conectar con el servidor. Por favor, verifica tu conexión a internet.');
+      } else {
+        // Generic error message as fallback
+        setLocalError(
+          'No se pudo completar el registro. Por favor, inténtalo de nuevo más tarde o contacta con soporte.'
+        );
       }
-      else {
-        // Error genérico pero más informativo
-        setLocalError('Hubo un error durante el registro. Por favor, inténtalo de nuevo más tarde.');
-        console.error("Register error:", err); // Mantén el log para depuración
-      }
-       // --- FIN MANEJO DE ERRORES ---
-
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mostrar error local o el error global del AuthContext si existe
+  // Combined error to display (global or local)
   const displayError = localError || globalAuthError;
 
   return (
@@ -146,27 +170,23 @@ const Register = () => {
       <div className="register-card">
         <h1>Crear Cuenta</h1>
 
-        {/* Mensaje de éxito */}
+        {/* Success message */}
         {successMessage && (
           <div className="success-message">
             {successMessage}
           </div>
         )}
 
-        {/* Mensaje de error claro */}
+        {/* General error message */}
         {displayError && (
-          // Usar dangerouslySetInnerHTML si quieres renderizar el Link en el error (¡con precaución!)
-          // <div className="error-message" dangerouslySetInnerHTML={{ __html: displayError }}></div>
-          // O la versión simple:
-           <div className="error-message">
-             {displayError}
-           </div>
+          <div className="error-message">
+            {displayError}
+          </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          {/* Añadir etiquetas y marcar campos requeridos visualmente si es necesario */}
           <div className="form-group">
-             <label htmlFor="reg-firstName">Nombres *</label>
+            <label htmlFor="reg-firstName">Nombres *</label>
             <input
               id="reg-firstName"
               type="text"
@@ -175,12 +195,16 @@ const Register = () => {
               value={formData.firstName}
               onChange={handleChange}
               disabled={isLoading}
+              className={fieldErrors.firstName ? "error-input" : ""}
               required
-              aria-describedby={displayError ? "reg-error" : undefined}
             />
+            {fieldErrors.firstName && (
+              <span className="field-error">{fieldErrors.firstName}</span>
+            )}
           </div>
+          
           <div className="form-group">
-             <label htmlFor="reg-lastName">Apellidos *</label>
+            <label htmlFor="reg-lastName">Apellidos *</label>
             <input
               id="reg-lastName"
               type="text"
@@ -189,12 +213,16 @@ const Register = () => {
               value={formData.lastName}
               onChange={handleChange}
               disabled={isLoading}
+              className={fieldErrors.lastName ? "error-input" : ""}
               required
-              aria-describedby={displayError ? "reg-error" : undefined}
             />
+            {fieldErrors.lastName && (
+              <span className="field-error">{fieldErrors.lastName}</span>
+            )}
           </div>
+          
           <div className="form-group">
-             <label htmlFor="reg-email">Correo electrónico *</label>
+            <label htmlFor="reg-email">Correo electrónico *</label>
             <input
               id="reg-email"
               type="email"
@@ -203,12 +231,16 @@ const Register = () => {
               value={formData.email}
               onChange={handleChange}
               disabled={isLoading}
+              className={fieldErrors.email ? "error-input" : ""}
               required
-              aria-describedby={displayError ? "reg-error" : undefined}
             />
+            {fieldErrors.email && (
+              <span className="field-error">{fieldErrors.email}</span>
+            )}
           </div>
+          
           <div className="form-group">
-             <label htmlFor="reg-phone">Teléfono (Opcional)</label>
+            <label htmlFor="reg-phone">Teléfono (Opcional)</label>
             <input
               id="reg-phone"
               type="tel"
@@ -219,8 +251,9 @@ const Register = () => {
               disabled={isLoading}
             />
           </div>
+          
           <div className="form-group">
-             <label htmlFor="reg-address">Dirección (Opcional)</label>
+            <label htmlFor="reg-address">Dirección (Opcional)</label>
             <input
               id="reg-address"
               type="text"
@@ -231,8 +264,9 @@ const Register = () => {
               disabled={isLoading}
             />
           </div>
+          
           <div className="form-group">
-             <label htmlFor="reg-password">Contraseña *</label>
+            <label htmlFor="reg-password">Contraseña *</label>
             <input
               id="reg-password"
               type="password"
@@ -241,12 +275,16 @@ const Register = () => {
               value={formData.password}
               onChange={handleChange}
               disabled={isLoading}
+              className={fieldErrors.password ? "error-input" : ""}
               required
-              aria-describedby={displayError ? "reg-error" : undefined}
             />
+            {fieldErrors.password && (
+              <span className="field-error">{fieldErrors.password}</span>
+            )}
           </div>
+          
           <div className="form-group">
-             <label htmlFor="reg-confirmPassword">Confirmar contraseña *</label>
+            <label htmlFor="reg-confirmPassword">Confirmar contraseña *</label>
             <input
               id="reg-confirmPassword"
               type="password"
@@ -255,21 +293,23 @@ const Register = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               disabled={isLoading}
+              className={fieldErrors.confirmPassword ? "error-input" : ""}
               required
-              aria-describedby={displayError ? "reg-error" : undefined}
             />
+            {fieldErrors.confirmPassword && (
+              <span className="field-error">{fieldErrors.confirmPassword}</span>
+            )}
           </div>
-          {/* Añadido id al mensaje de error para aria-describedby */}
-          {displayError && <p id="reg-error" className="sr-only">Error: {displayError}</p>}
 
           <button
             type="submit"
             className={`submit-btn ${isLoading ? 'loading' : ''}`}
             disabled={isLoading}
           >
-            {isLoading ? 'Registrando...' : 'Crear Cuenta'} {/* Texto de carga más corto */}
+            {isLoading ? 'Registrando...' : 'Crear Cuenta'}
           </button>
         </form>
+        
         <p className="login-link">
           ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión aquí</Link>
         </p>
