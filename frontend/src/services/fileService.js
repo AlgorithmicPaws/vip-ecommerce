@@ -5,8 +5,8 @@ import { authHeader } from './authService';
  * Service for handling file uploads to the backend
  */
 
-// Base API URL
-const API_URL = 'http://localhost:8000';
+// Base API URL - Using environment variable with fallback
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 /**
  * Upload a product image to the server

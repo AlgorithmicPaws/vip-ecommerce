@@ -3,7 +3,6 @@ version: '3.8'
 services:
 
   db:
-
     image: postgres:17-alpine
     volumes:
       # Existing data volume - IMPORTANT for upgrades
@@ -18,7 +17,7 @@ services:
     networks:
       - app-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"] # Use the env var for user
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -34,7 +33,7 @@ services:
     networks:
       - app-network
     environment:
-      - VITE_API_URL=http://localhost:8000
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
 
   backend:
     build:
@@ -43,7 +42,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      db: # <-- Cambia de una lista a un mapa
+      db:
         condition: service_healthy 
     environment:
       - DB_USER=${DB_USER:-postgres}
@@ -58,7 +57,6 @@ services:
     volumes:
       - ./backend:/app
       - static-data:/app/static
-
 
 networks:
   app-network:

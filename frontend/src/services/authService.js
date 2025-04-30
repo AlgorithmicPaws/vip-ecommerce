@@ -4,8 +4,8 @@
  * Service for handling authentication-related API operations
  */
 
-// Base API URL - In a real application, this would come from environment variables
-const API_URL = 'http://localhost:8000';
+// Base API URL - Using environment variable with fallback
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Token key for localStorage
 const TOKEN_KEY = 'auth_token';
