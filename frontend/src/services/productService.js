@@ -2,10 +2,6 @@
 import * as api from './apiService';
 import { getImageUrl } from './fileService'; // Assuming getImageUrl is correctly implemented here
 
-// --- Functions like getAllProducts, getSellerProducts, getProductById, etc. remain the same ---
-// --- Functions like createProduct, updateProduct, deleteProduct, addProductImage remain the same ---
-// --- Functions like getCategories, transformApiCategories, getFeaturedProducts remain the same ---
-
 /**
  * Get all products with optional filtering
  * @param {Object} options - Query options (skip, limit, category_id, search)
@@ -171,26 +167,26 @@ export const addProductImage = async (productId, imageUrl, isPrimary = true) => 
   }
 };
 
-
 /**
- * Transform API product data to frontend format (Seller name NOT included here)
+ * Transform API product data to frontend format
  * @param {Object} apiProduct - Product data from API
  * @returns {Object|null} - Transformed product data for frontend or null if input is invalid
  */
 export const transformApiProduct = (apiProduct) => {
-  if (!apiProduct || typeof apiProduct !== 'object' || !apiProduct.product_id) {
+  // Check if product exists and has either product_id or id
+  if (!apiProduct || typeof apiProduct !== 'object' || (!apiProduct.product_id && !apiProduct.id)) {
     console.warn('Invalid API product data received in transformApiProduct:', apiProduct);
     return null;
   }
+
+  // Use either product_id or id, depending on which one exists
+  const productId = apiProduct.product_id || apiProduct.id;
 
   let primaryImage = null;
   if (apiProduct.images && Array.isArray(apiProduct.images) && apiProduct.images.length > 0) {
     const primary = apiProduct.images.find(img => img && img.is_primary);
     primaryImage = primary?.image_url || apiProduct.images[0]?.image_url || null;
   }
-
-  // --- Seller name is NOT extracted here in this alternative approach ---
-  // The 'seller' field will be added later in the component after fetching seller details.
 
   let price = 0;
   if (apiProduct.price !== null && apiProduct.price !== undefined) {
@@ -209,17 +205,16 @@ export const transformApiProduct = (apiProduct) => {
   const imageUrls = apiProduct.images?.map(img => img?.image_url ? getImageUrl(img.image_url) : null).filter(url => url != null) || [];
 
   return {
-    id: apiProduct.product_id,
+    id: productId,
     name: apiProduct.name || 'Nombre no disponible',
     price: price,
-    stock: stock,
+    stock: apiProduct.stock_quantity || stock,
     category: categoryName,
     categoryIds: categoryIds,
     description: apiProduct.description || '',
     image: primaryImage ? getImageUrl(primaryImage) : null,
     images: imageUrls,
-    // seller: "Desconocido", // Set default here, will be overwritten later
-    sellerId: apiProduct.seller_id || null, // Crucial for fetching seller name later
+    sellerId: apiProduct.seller_id || null,
     rating: typeof apiProduct.rating === 'number' ? apiProduct.rating : 4.5,
   };
 };
