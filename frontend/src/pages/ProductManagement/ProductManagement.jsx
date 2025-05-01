@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ManagementSidebar from './components/ManagementSidebar';
 import ProductsTable from './components/ProductsTable';
@@ -11,7 +11,6 @@ import '../../styles/ProductManagement.css';
 
 const ProductManagement = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { isAuthenticated, isSeller, user } = useAuth();
   
   // Estado para almacenar los productos
@@ -33,9 +32,6 @@ const ProductManagement = () => {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
 
-  // Add refresh counter to force reloads
-  const [refreshCounter, setRefreshCounter] = useState(0);
-
   // Categorías recibidas de la API
   const [categories, setCategories] = useState([]);
   const [categoryNames, setCategoryNames] = useState([]);
@@ -49,42 +45,20 @@ const ProductManagement = () => {
     }
   }, [isAuthenticated, isSeller, navigate]);
 
-  // Add refresh function to reload products
-  const refreshProducts = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Cargar productos del vendedor
-      const productsData = await productService.getSellerProducts();
-      
-      // Transformar datos de la API al formato del componente
-      let transformedProducts = productsData.map(product => 
-        productService.transformApiProduct(product)
-      );
-      
-      // Procesar las imágenes para asegurar que tengan URLs completas
-      transformedProducts = processProductImages(transformedProducts);
-      
-      setProducts(transformedProducts);
-      setFilteredProducts(transformedProducts);
-    } catch (err) {
-      console.error('Error al cargar productos:', err);
-      setError('Error al cargar los productos. Por favor, intente de nuevo más tarde.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Procesar productos para asegurar que las imágenes tengan URLs completas
+// Fix for processProductImages function in ProductManagement.jsx
+
+// Procesar productos para asegurar que las imágenes tengan URLs completas
   const processProductImages = (products) => {
-    return products.map(product => ({
+  // Filter out null products before mapping
+  return products
+    .filter(product => product !== null) // Remove null products
+    .map(product => ({
       ...product,
       // Asegurar que la imagen tenga la URL completa para acceder desde el backend
       image: product.image ? getImageUrl(product.image) : null
     }));
-  };
-
+};
   // Cargar productos y categorías
   useEffect(() => {
     const loadData = async () => {
@@ -98,21 +72,29 @@ const ProductManagement = () => {
         setCategories(transformedCategories);
         setCategoryNames(transformedCategories.map(cat => cat.name));
         
-        // Load products (now using the refreshProducts function)
-        await refreshProducts();
+        // Cargar productos del vendedor
+        const productsData = await productService.getSellerProducts();
+        
+        // Transformar datos de la API al formato del componente
+        let transformedProducts = productsData.map(product => 
+          productService.transformApiProduct(product)
+        );
+        
+        // Procesar las imágenes para asegurar que tengan URLs completas
+        transformedProducts = processProductImages(transformedProducts);
+        
+        setProducts(transformedProducts);
+        setFilteredProducts(transformedProducts);
       } catch (err) {
         console.error('Error al cargar datos:', err);
-        setError('Error al cargar los datos. Por favor, intente de nuevo más tarde.');
+        setError('Error al cargar los productos. Por favor, intente de nuevo más tarde.');
       } finally {
         setLoading(false);
       }
     };
     
     loadData();
-    
-    // This will ensure products reload when returning to this page
-    // or when refreshCounter changes
-  }, [refreshCounter, location.key]);
+  }, []);
 
   // Filtrar productos cuando cambian los filtros
   useEffect(() => {
@@ -203,9 +185,6 @@ const ProductManagement = () => {
       // Actualizar estado local
       setProducts([...products, newProduct]);
       setShowAddModal(false);
-      
-      // Trigger a refresh to ensure data consistency
-      setRefreshCounter(prev => prev + 1);
     } catch (err) {
       console.error('Error al crear producto:', err);
       setError('Error al crear el producto. Por favor, intente de nuevo más tarde.');
@@ -245,9 +224,6 @@ const ProductManagement = () => {
       setProducts(updatedProducts);
       setShowEditModal(false);
       setCurrentProduct(null);
-      
-      // Trigger a refresh to ensure data consistency
-      setRefreshCounter(prev => prev + 1);
     } catch (err) {
       console.error('Error al actualizar producto:', err);
       setError('Error al actualizar el producto. Por favor, intente de nuevo más tarde.');
@@ -283,24 +259,6 @@ const ProductManagement = () => {
             {error}
           </div>
         )}
-        
-        <div className="actions-bar" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
-          <button 
-            onClick={() => setRefreshCounter(prev => prev + 1)} 
-            className="refresh-btn"
-            style={{
-              backgroundColor: '#f0f0f0',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '8px 16px',
-              cursor: 'pointer',
-              marginRight: '10px'
-            }}
-            disabled={loading}
-          >
-            {loading ? 'Cargando...' : 'Actualizar Lista'}
-          </button>
-        </div>
         
         <ProductsTable 
           products={filteredProducts}
