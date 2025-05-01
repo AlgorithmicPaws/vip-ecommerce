@@ -88,6 +88,21 @@ const Navbar = () => {
    // Toggle mobile menu
    const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+    
+    // Bloquear scroll cuando el menú está abierto
+    if (!mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  };
+  
+  // Y en el dropdown para móviles
+  const toggleDropdown = (e) => {
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+      e.currentTarget.parentNode.classList.toggle('active');
+    }
   };
 
 
@@ -193,8 +208,8 @@ const Navbar = () => {
             <li className={isActive('/catalog') ? 'active' : ''}>
               <Link to="/catalog" onClick={() => setMobileMenuOpen(false)}>Todos los Productos</Link>
             </li>
-            <li className="dropdown">
-              <span className="dropdown-trigger">Categorías</span>
+            <li className={`dropdown ${mobileMenuOpen && window.innerWidth <= 768 ? 'mobile-dropdown' : ''}`}>
+              <span className="dropdown-trigger" onClick={toggleDropdown}>Categorías</span>
               <div className="dropdown-menu">
                 {/* Map sobre las categorías obtenidas */}
                 {navCategories.length > 0 ? (

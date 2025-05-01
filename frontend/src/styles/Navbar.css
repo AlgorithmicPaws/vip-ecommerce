@@ -361,7 +361,35 @@
 }
 
 /* Media Queries */
+/* Versión mejorada de tus media queries */
 @media (max-width: 992px) {
+  .navbar-top {
+    flex-wrap: wrap;
+    padding: 12px 5%;
+    gap: 10px;
+  }
+
+  .logo-container {
+    order: 1;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .navbar-search-form {
+    order: 3;
+    flex: 1 1 100%;
+    margin: 10px 0 0;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .navbar-actions {
+    order: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .auth-buttons {
     display: none;
   }
@@ -370,28 +398,51 @@
     display: none;
   }
 
-  .search-form {
-    max-width: 300px;
+  .action-link {
+    margin-right: 12px;
+  }
+
+  .sell-btn .sell-text {
+    display: none;
+  }
+
+  .sell-btn {
+    padding: 8px 12px;
+    margin-right: 0;
   }
 }
 
 @media (max-width: 768px) {
   .navbar-top {
-    padding: 15px 20px;
+    padding: 10px 15px;
+    flex-wrap: nowrap;
   }
 
-  .search-form {
-    display: none;
+  .logo-container {
+    flex: 0 1 auto;
+  }
+
+  .navbar-search-form {
+    order: 2;
+    margin: 0 10px;
+    flex: 1;
+    display: block !important;
+  }
+
+  .navbar-actions {
+    order: 3;
+    flex: 0 0 auto;
   }
 
   .mobile-menu-toggle {
     display: block;
+    margin-left: 8px;
   }
 
   .navbar-nav {
     position: fixed;
     top: 70px;
-    right: -280px;
+    right: -100%;
     width: 280px;
     height: calc(100vh - 70px);
     background-color: white;
@@ -410,25 +461,24 @@
     flex-direction: column;
   }
 
-  .nav-list a, .dropdown-trigger {
-    padding: 15px 20px;
+  .nav-list a, 
+  .dropdown-trigger {
+    padding: 14px 20px;
     border-bottom: 1px solid #f0f0f0;
   }
 
   .dropdown-menu {
     position: static;
-    opacity: 1;
-    visibility: visible;
-    transform: none;
     box-shadow: none;
     background-color: #f8f9fa;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
+    width: 100%;
   }
 
-  .dropdown:hover .dropdown-menu {
-    max-height: 1000px;
+  .dropdown.active .dropdown-menu {
+    max-height: 500px;
   }
 
   .dropdown-menu a {
@@ -437,6 +487,14 @@
 
   .mobile-overlay {
     display: block;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-overlay.active {
+    opacity: 1;
+    pointer-events: all;
   }
 
   .navbar-spacer {
@@ -445,16 +503,38 @@
 }
 
 @media (max-width: 576px) {
+  .navbar-top {
+    padding: 8px 12px;
+  }
+
+  .logo .icon {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .market-text {
+    font-size: 1.1rem;
+  }
+
   .action-links {
-    margin-right: 10px;
+    margin-right: 8px;
+    gap: 8px;
   }
 
   .action-link {
-    margin-right: 15px;
+    margin-right: 0;
   }
 
-  .logo {
-    font-size: 1.4rem;
+  .mobile-menu-toggle {
+    padding: 4px;
+  }
+
+  .navbar-search-form {
+    margin: 0 5px;
+  }
+
+  .sell-btn {
+    padding: 6px 10px;
   }
 }
 /* src/styles/Navbar.css */
