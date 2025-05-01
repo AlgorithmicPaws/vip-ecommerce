@@ -31,13 +31,6 @@ const Home = () => {
       {/* Categorías Section */}
       <CategoriasSection navigate={navigate} />
       
-      {/* Marcas */}
-      <section className="brands-section">
-        <div className="section-container">
-          <Marcas />
-        </div>
-      </section>
-      
       {/* Testimonios */}
       <section className="testimonials-section">
         <div className="section-container">

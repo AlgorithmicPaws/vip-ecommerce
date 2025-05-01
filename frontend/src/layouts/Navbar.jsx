@@ -233,9 +233,7 @@ const Navbar = () => {
                 <Link to="/catalog" className="view-all" onClick={() => setMobileMenuOpen(false)}>Ver todas</Link>
               </div>
             </li>
-            <li className={isActive('/brands') ? 'active' : ''}>
-              <Link to="/brands" onClick={() => setMobileMenuOpen(false)}>Marcas</Link>
-            </li>
+
             {/* <li className={isActive('/offers') ? 'active' : ''}><Link to="/offers">Ofertas</Link></li> */}
           </ul>
         </nav>

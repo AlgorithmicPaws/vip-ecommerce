@@ -10,7 +10,10 @@ const ProductImage = ({ image, onChange, category, productId = 'new', disabled =
   // Update display source when image path changes
   useEffect(() => {
     if (image) {
-      setDisplaySrc(getImageUrl(image));
+      // Ensure we're using the complete URL
+      const fullImageUrl = getImageUrl(image);
+      console.log('Setting image display to:', fullImageUrl);
+      setDisplaySrc(fullImageUrl);
     } else {
       setDisplaySrc(null);
     }
@@ -30,7 +33,9 @@ const ProductImage = ({ image, onChange, category, productId = 'new', disabled =
         onChange(imagePath);
         
         // Update display source for preview
-        setDisplaySrc(getImageUrl(imagePath));
+        const fullImageUrl = getImageUrl(imagePath);
+        console.log('New image uploaded, setting display to:', fullImageUrl);
+        setDisplaySrc(fullImageUrl);
       }
     } catch (err) {
       console.error('Error uploading image:', err);
@@ -85,7 +90,11 @@ const ProductImage = ({ image, onChange, category, productId = 'new', disabled =
                 width: '100%', 
                 height: '100%', 
                 objectFit: 'contain' 
-              }} 
+              }}
+              onError={(e) => {
+                console.error('Image failed to load:', displaySrc);
+                e.target.src = 'https://via.placeholder.com/200x200?text=Error+loading+image';
+              }}
             />
             {!disabled && (
               <button 

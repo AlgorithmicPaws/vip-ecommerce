@@ -5,7 +5,7 @@ import { authHeader } from './authService';
  * Service for handling file uploads to the backend
  */
 
-// Base API URL - Using environment variable with fallback
+// Base API URL
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 /**
@@ -109,7 +109,16 @@ export const getImageUrl = (imagePath) => {
   if (imagePath.startsWith('data:')) {
     return imagePath;
   }
+
+  // Fix for handling both formats with or without leading slash
+  if (!imagePath.startsWith('/')) {
+    imagePath = '/' + imagePath;
+  }
   
-  // Otherwise, create a full URL
-  return `${API_URL}/static${imagePath}`;
+  // Create the full URL - make sure we don't double the '/static' part
+  if (imagePath.startsWith('/static')) {
+    return `${API_URL}${imagePath}`;
+  } else {
+    return `${API_URL}/static${imagePath}`;
+  }
 };

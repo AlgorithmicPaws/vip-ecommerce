@@ -1,4 +1,5 @@
 import React from 'react';
+import { getImageUrl } from '../../../services/fileService';
 
 const ProductRow = ({ product, onEdit, onDelete }) => {
   // Ensure price is a number before using toFixed
@@ -10,15 +11,35 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
     return !isNaN(numPrice) ? numPrice.toFixed(2) : '0.00';
   };
 
+  // Ensure the image URL is complete
+  const imageUrl = product.image ? getImageUrl(product.image) : null;
+
   return (
     <tr>
       <td>{product.id}</td>
       <td>
         <div className="product-image-small">
-          {product.image ? (
-            <img src={product.image} alt={product.name} />
+          {imageUrl ? (
+            <img 
+              src={imageUrl} 
+              alt={product.name} 
+              style={{ width: '60px', height: '60px', objectFit: 'contain' }}
+              onError={(e) => {
+                console.error('Image failed to load:', imageUrl);
+                e.target.src = 'https://via.placeholder.com/60x60?text=No+image';
+              }}
+            />
           ) : (
-            <div className="image-placeholder">
+            <div className="image-placeholder" style={{ 
+              width: '60px', 
+              height: '60px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              backgroundColor: '#f0f0f0',
+              fontSize: '11px',
+              textAlign: 'center'
+            }}>
               <span>Sin imagen</span>
             </div>
           )}
