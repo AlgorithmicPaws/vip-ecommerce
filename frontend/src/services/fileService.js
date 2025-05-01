@@ -96,20 +96,64 @@ export const handleProductImageUpload = async (event, category, productId = 'new
  * @returns {string} - Complete URL
  */
 export const getImageUrl = (imagePath) => {
+  // For debugging
+  console.log('Processing image path:', imagePath);
+  
   if (!imagePath) {
+    console.log('No image path provided');
     return null;
   }
   
   // If it's already a full URL, return it
   if (imagePath.startsWith('http')) {
+    console.log('Image already has full URL:', imagePath);
     return imagePath;
   }
   
   // If it's a data URL, return it
   if (imagePath.startsWith('data:')) {
+    console.log('Image is a data URL');
     return imagePath;
   }
   
-  // Otherwise, create a full URL
-  return `${API_URL}/static${imagePath}`;
+  // API URL
+  
+  let finalUrl;
+  
+  // Check if the path already has /static in it
+  if (imagePath.includes('/static/')) {
+    // Path already has /static, so don't add it again
+    if (imagePath.startsWith('/')) {
+      finalUrl = `${API_URL}${imagePath}`;
+    } else {
+      finalUrl = `${API_URL}/${imagePath}`;
+    }
+  } else if (imagePath.includes('/images/products/')) {
+    // Path has /images/products but not /static
+    if (imagePath.startsWith('/')) {
+      finalUrl = `${API_URL}/static${imagePath}`;
+    } else {
+      finalUrl = `${API_URL}/static/${imagePath}`;
+    }
+  } else {
+    // Ensure the path has a leading slash
+    const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+    // Return the complete URL with /static prefix
+    finalUrl = `${API_URL}/static${normalizedPath}`;
+  }
+  
+  console.log('Final image URL:', finalUrl);
+  
+  // Verify the image exists by making a HEAD request
+  fetch(finalUrl, { method: 'HEAD' })
+    .then(response => {
+      if (!response.ok) {
+        console.warn(`Image at ${finalUrl} may not exist: ${response.status}`);
+      }
+    })
+    .catch(error => {
+      console.warn(`Error checking image at ${finalUrl}:`, error);
+    });
+  
+  return finalUrl;
 };

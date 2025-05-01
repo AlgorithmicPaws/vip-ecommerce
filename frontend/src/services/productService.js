@@ -171,57 +171,107 @@ export const addProductImage = async (productId, imageUrl, isPrimary = true) => 
   }
 };
 
-
 /**
- * Transform API product data to frontend format (Seller name NOT included here)
+ * Transform API product data to frontend format
  * @param {Object} apiProduct - Product data from API
  * @returns {Object|null} - Transformed product data for frontend or null if input is invalid
  */
 export const transformApiProduct = (apiProduct) => {
-  if (!apiProduct || typeof apiProduct !== 'object' || !apiProduct.product_id) {
-    console.warn('Invalid API product data received in transformApiProduct:', apiProduct);
+  // For debugging
+  console.log("Raw API product data:", apiProduct);
+  
+  // Check if product exists and has either product_id or id
+  if (!apiProduct) {
+    console.warn('Null product received in transformApiProduct');
     return null;
   }
-
-  let primaryImage = null;
-  if (apiProduct.images && Array.isArray(apiProduct.images) && apiProduct.images.length > 0) {
-    const primary = apiProduct.images.find(img => img && img.is_primary);
-    primaryImage = primary?.image_url || apiProduct.images[0]?.image_url || null;
+  
+  // We're getting two different formats - handle both:
+  // 1. Data directly from API has product_id, stock_quantity
+  // 2. Data after reload has id, stock, image (which is already a URL)
+  
+  const productId = apiProduct.product_id || apiProduct.id;
+  if (!productId) {
+    console.warn('Product without ID received:', apiProduct);
+    return null;
   }
-
-  // --- Seller name is NOT extracted here in this alternative approach ---
-  // The 'seller' field will be added later in the component after fetching seller details.
-
-  let price = 0;
-  if (apiProduct.price !== null && apiProduct.price !== undefined) {
-    const numPrice = parseFloat(apiProduct.price);
-    if (!isNaN(numPrice)) price = numPrice;
+  
+  // Handle stock from either field
+  const stock = apiProduct.stock_quantity !== undefined 
+    ? apiProduct.stock_quantity 
+    : (apiProduct.stock !== undefined ? apiProduct.stock : 0);
+    
+  // Handle price
+  const price = typeof apiProduct.price === 'string' 
+    ? parseFloat(apiProduct.price) 
+    : (typeof apiProduct.price === 'number' ? apiProduct.price : 0);
+    
+  // Handle category name
+  let categoryName = 'Sin categoría';
+  let categoryIds = [];
+  
+  if (apiProduct.category) {
+    // If category is already a string (after first transform)
+    categoryName = apiProduct.category;
+  } else if (apiProduct.categories && apiProduct.categories[0]) {
+    // If categories is an array with objects (from API)
+    categoryName = apiProduct.categories[0].name || 'Sin categoría';
+    categoryIds = apiProduct.categories
+      .map(cat => cat?.category_id)
+      .filter(id => id != null);
   }
-
-  let stock = 0;
-  if (apiProduct.stock_quantity !== null && apiProduct.stock_quantity !== undefined) {
-    const numStock = parseInt(apiProduct.stock_quantity, 10);
-    if (!isNaN(numStock)) stock = numStock;
+  
+  // Handle images - this is the critical part
+  let imageUrl = null;
+  
+  // First, check if image is directly available (after reload)
+  if (apiProduct.image) {
+    imageUrl = apiProduct.image;
+  } 
+  // Then check for images array (from API)
+  else if (apiProduct.images && apiProduct.images.length > 0) {
+    // Look for primary image first
+    const primaryImage = apiProduct.images.find(img => img && img.is_primary);
+    if (primaryImage && primaryImage.image_url) {
+      // Process with getImageUrl to get full URL
+      const imgPath = primaryImage.image_url;
+      imageUrl = getImageUrl(imgPath);
+    } else if (apiProduct.images[0] && apiProduct.images[0].image_url) {
+      // Fallback to first image if no primary
+      const imgPath = apiProduct.images[0].image_url;
+      imageUrl = getImageUrl(imgPath);
+    }
   }
-
-  const categoryName = apiProduct.categories?.[0]?.name || 'Sin categoría';
-  const categoryIds = apiProduct.categories?.map(cat => cat?.category_id).filter(id => id != null) || [];
-  const imageUrls = apiProduct.images?.map(img => img?.image_url ? getImageUrl(img.image_url) : null).filter(url => url != null) || [];
-
-  return {
-    id: apiProduct.product_id,
+  
+  // Only process images array if it exists and has items
+  const imageUrls = [];
+  if (apiProduct.images && Array.isArray(apiProduct.images)) {
+    apiProduct.images.forEach(img => {
+      if (img && img.image_url) {
+        const url = getImageUrl(img.image_url);
+        if (url) imageUrls.push(url);
+      }
+    });
+  }
+  
+  const result = {
+    id: productId,
     name: apiProduct.name || 'Nombre no disponible',
     price: price,
     stock: stock,
     category: categoryName,
-    categoryIds: categoryIds,
+    categoryIds: categoryIds || apiProduct.categoryIds || [],
     description: apiProduct.description || '',
-    image: primaryImage ? getImageUrl(primaryImage) : null,
+    image: imageUrl,
     images: imageUrls,
-    // seller: "Desconocido", // Set default here, will be overwritten later
-    sellerId: apiProduct.seller_id || null, // Crucial for fetching seller name later
+    sellerId: apiProduct.seller_id || null,
     rating: typeof apiProduct.rating === 'number' ? apiProduct.rating : 4.5,
   };
+
+  // Debug the transformed product
+  console.log("Transformed product:", result);
+  
+  return result;
 };
 
 /**

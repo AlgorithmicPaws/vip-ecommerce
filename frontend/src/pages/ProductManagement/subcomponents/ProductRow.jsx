@@ -10,15 +10,43 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
     return !isNaN(numPrice) ? numPrice.toFixed(2) : '0.00';
   };
 
+  // For debugging
+  console.log("ProductRow rendering with product:", product);
+
   return (
     <tr>
       <td>{product.id}</td>
       <td>
         <div className="product-image-small">
           {product.image ? (
-            <img src={product.image} alt={product.name} />
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              style={{
+                width: "60px", 
+                height: "60px", 
+                objectFit: "contain",
+                border: "1px solid #eee",
+                borderRadius: "4px"
+              }}
+              onError={(e) => {
+                console.error("Image failed to load:", product.image);
+                e.target.onerror = null;
+                e.target.src = "https://via.placeholder.com/60x60?text=No+Image";
+              }}
+            />
           ) : (
-            <div className="image-placeholder">
+            <div className="image-placeholder" style={{
+              width: "60px", 
+              height: "60px", 
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#f0f0f0",
+              borderRadius: "4px",
+              fontSize: "11px",
+              color: "#666"
+            }}>
               <span>Sin imagen</span>
             </div>
           )}
@@ -27,7 +55,7 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
       <td>{product.name}</td>
       <td>${formatPrice(product.price)}</td>
       <td>{product.stock}</td>
-      <td>{product.category}</td>
+      <td>{product.category || 'Sin categoría'}</td>
       <td>
         <div className="action-buttons">
           <button 

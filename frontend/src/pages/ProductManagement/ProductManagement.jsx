@@ -46,14 +46,19 @@ const ProductManagement = () => {
   }, [isAuthenticated, isSeller, navigate]);
 
   // Procesar productos para asegurar que las imágenes tengan URLs completas
+// Fix for processProductImages function in ProductManagement.jsx
+
+// Procesar productos para asegurar que las imágenes tengan URLs completas
   const processProductImages = (products) => {
-    return products.map(product => ({
+  // Filter out null products before mapping
+  return products
+    .filter(product => product !== null) // Remove null products
+    .map(product => ({
       ...product,
       // Asegurar que la imagen tenga la URL completa para acceder desde el backend
       image: product.image ? getImageUrl(product.image) : null
     }));
-  };
-
+};
   // Cargar productos y categorías
   useEffect(() => {
     const loadData = async () => {
