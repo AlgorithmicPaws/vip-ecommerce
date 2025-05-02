@@ -22,7 +22,10 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*").split(",")
 app = FastAPI(
     title="E-Commerce API",
     description="API for E-Commerce platform",
-    version="0.1.0"
+    version="0.1.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json"
 )
 
 # Configure CORS

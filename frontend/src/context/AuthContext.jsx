@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }) => {
     setError(null);
     try {
       // This will be implemented in userService
-      const response = await fetch('http://localhost:8000/users/', {
+      const response = await fetch('http://vipscm.shop/api/users/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
