@@ -25,7 +25,8 @@ app = FastAPI(
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    root_path="/api"  
 )
 
 # Configure CORS
@@ -71,8 +72,15 @@ Base.metadata.create_all(bind=engine)
 # Create static directory for file uploads if it doesn't exist
 os.makedirs("static/images/products", exist_ok=True)
 
-# Mount static directory to serve uploaded files
+# Ensure permissions are set correctly
+os.system("chmod -R 755 static")
+
+# Mount static directory with explicit configuration
 app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/check-static/{path:path}")
+async def check_static(path: str):
+    return {"static_path": f"/static/{path}", "exists": os.path.exists(f"static/{path}")}
 
 # Include service routers   
 app.include_router(user_router)

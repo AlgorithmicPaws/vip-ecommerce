@@ -119,44 +119,55 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
   
-  // API URL
+  const API_URL = import.meta.env.VITE_API_URL || 'http://vipscm.shop/api';
+  
+  // Parse the API URL to extract base parts
+  let apiBase;
+  try {
+    // Create URL object to properly parse the API URL
+    const apiUrl = new URL(API_URL);
+    apiBase = `${apiUrl.protocol}//${apiUrl.host}`;
+  } catch (error) {
+    console.error('Error parsing API URL:', error);
+    apiBase = API_URL; // Fallback to original if parsing fails
+  }
   
   let finalUrl;
   
-  // Check if the path already has /static in it
-  if (imagePath.includes('/static/')) {
-    // Path already has /static, so don't add it again
-    if (imagePath.startsWith('/')) {
-      finalUrl = `${API_URL}${imagePath}`;
+  // Clean up the image path - remove any API URL that might be in it
+  let cleanPath = imagePath;
+  if (cleanPath.includes('vipscm.shop') || cleanPath.includes('/api/')) {
+    // Extract just the path part after /api/ if it exists
+    const pathMatch = cleanPath.match(/\/api\/(.*)/);
+    if (pathMatch && pathMatch[1]) {
+      cleanPath = pathMatch[1];
     } else {
-      finalUrl = `${API_URL}/${imagePath}`;
+      // Try to extract just the path after the domain
+      const urlParts = cleanPath.split('/');
+      if (urlParts.length > 2) {
+        // Skip protocol and domain parts
+        cleanPath = '/' + urlParts.slice(3).join('/');
+      }
     }
-  } else if (imagePath.includes('/images/products/')) {
+  }
+  
+  // Normalize the path
+  cleanPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
+  
+  // Now construct the final URL properly
+  if (cleanPath.includes('/static/')) {
+    // If path already has /static, don't add it again
+    // But still make sure it has the correct domain
+    finalUrl = `${apiBase}${cleanPath}`;
+  } else if (cleanPath.includes('/images/products/')) {
     // Path has /images/products but not /static
-    if (imagePath.startsWith('/')) {
-      finalUrl = `${API_URL}/static${imagePath}`;
-    } else {
-      finalUrl = `${API_URL}/static/${imagePath}`;
-    }
+    finalUrl = `${apiBase}/static${cleanPath}`;
   } else {
-    // Ensure the path has a leading slash
-    const normalizedPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-    // Return the complete URL with /static prefix
-    finalUrl = `${API_URL}/static${normalizedPath}`;
+    // Add /static to the path
+    finalUrl = `${apiBase}/static${cleanPath}`;
   }
   
   console.log('Final image URL:', finalUrl);
-  
-  // Verify the image exists by making a HEAD request
-  fetch(finalUrl, { method: 'HEAD' })
-    .then(response => {
-      if (!response.ok) {
-        console.warn(`Image at ${finalUrl} may not exist: ${response.status}`);
-      }
-    })
-    .catch(error => {
-      console.warn(`Error checking image at ${finalUrl}:`, error);
-    });
   
   return finalUrl;
 };
