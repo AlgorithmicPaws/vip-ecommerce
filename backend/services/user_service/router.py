@@ -12,6 +12,10 @@ router = APIRouter(
     prefix="/users",
     tags=["users"]
 )
+# Add a specific OPTIONS handler for the registration endpoint
+@router.options("/", include_in_schema=False)
+async def options_user_create():
+    return {}
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):

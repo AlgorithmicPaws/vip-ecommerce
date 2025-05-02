@@ -8,10 +8,11 @@ RUN npm ci
 
 # Copy the rest of the frontend code
 COPY . .
-
-# Build the frontend application
-RUN npm run build
-
+# Set the API URL during build time
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+# Build the frontend application with production env
+RUN npm run build -- --mode production
 # Production stage
 FROM nginx:alpine
 

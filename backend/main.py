@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi import Request
+from fastapi.responses import JSONResponse
 import os
 from core.database import engine
 from models import Base
@@ -34,6 +36,9 @@ if "*" not in origins:
         "http://localhost:5173",           
         "http://127.0.0.1:5173",
         "http://frontend",  # For Docker service name
+        "https://vipscm.shop",  # Production domain with HTTPS
+        "http://vipscm.shop",   # Production domain without HTTPS 
+        "http://168.231.73.206" # Server IP
     ])
 
 app.add_middleware(
@@ -41,9 +46,22 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],    
+    allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=1728000
 )
-
+# Add a specific OPTIONS handler at the application level
+@app.options("/{full_path:path}")
+async def options_handler(request: Request):
+    return JSONResponse(
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept",
+            "Access-Control-Max-Age": "1728000",
+        },
+    )
 # Create database tables if they don't exist
 Base.metadata.create_all(bind=engine)
 

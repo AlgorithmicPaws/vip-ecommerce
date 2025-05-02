@@ -12,6 +12,10 @@ router = APIRouter(
     prefix="/auth",
     tags=["authentication"]
 )
+# Add a specific OPTIONS handler for the registration endpoint
+@router.options("/", include_in_schema=False)
+async def options_user_create():
+    return {}
 
 @router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
 def login_json(

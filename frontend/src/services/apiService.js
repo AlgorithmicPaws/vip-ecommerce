@@ -6,7 +6,12 @@ import { authHeader } from './authService';
  */
 
 // Base API URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_URL = import.meta.env.VITE_API_URL|| 'http://vipscm.shop/api';;
+// Add warning if not set
+if (!API_URL) {
+  console.error('VITE_API_URL is not set! Configure your environment variables.');
+}
+
 /**
  * Generic HTTP GET request with authentication
  * @param {string} endpoint - API endpoint
