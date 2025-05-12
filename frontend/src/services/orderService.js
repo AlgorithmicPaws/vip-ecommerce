@@ -9,11 +9,8 @@ import * as api from './apiService';
  */
 export const createOrder = async (orderData) => {
   try {
-    // Add detailed logging for troubleshooting
-    console.log('Sending order data to API:', JSON.stringify(orderData, null, 2));
     
     const response = await api.post('/orders/', orderData);
-    console.log('Order created successfully:', response);
     
     return response;
   } catch (error) {
@@ -77,8 +74,6 @@ export const cancelOrder = async (orderId, reason) => {
  * @returns {Promise} - Always a successful response
  */
 export const submitPaymentConfirmation = async (orderId, formData) => {
-  // Log what would be sent to the server
-  console.log(`Submitting payment confirmation for order ${orderId}`);
   
   // Extract data from FormData to log it (for demonstration only)
   let paymentInfo = {};
@@ -87,7 +82,6 @@ export const submitPaymentConfirmation = async (orderId, formData) => {
     const dataString = formData.get('data');
     if (dataString) {
       paymentInfo = JSON.parse(dataString);
-      console.log('Payment info:', paymentInfo);
     }
     
     // Get the file from formData (if any)

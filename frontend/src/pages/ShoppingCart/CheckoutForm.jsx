@@ -118,7 +118,6 @@ const CheckoutForm = ({ onSubmit, isSubmitting }) => {
       // If valid, call the onSubmit prop passed from ShoppingCart
       onSubmit(formData); // Pass the validated form data
     } else {
-      console.log("Checkout form validation failed:", errors);
       // Optionally scroll to the first error
       const firstErrorField = document.querySelector('.form-group .error-message');
       if (firstErrorField) {

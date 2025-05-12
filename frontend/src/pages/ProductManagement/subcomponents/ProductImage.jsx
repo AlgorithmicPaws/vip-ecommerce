@@ -12,7 +12,6 @@ const ProductImage = ({ image, onChange, category, productId = 'new', disabled =
     if (image) {
       // Ensure we're using the complete URL
       const fullImageUrl = getImageUrl(image);
-      console.log('Setting image display to:', fullImageUrl);
       setDisplaySrc(fullImageUrl);
     } else {
       setDisplaySrc(null);
@@ -34,7 +33,6 @@ const ProductImage = ({ image, onChange, category, productId = 'new', disabled =
         
         // Update display source for preview
         const fullImageUrl = getImageUrl(imagePath);
-        console.log('New image uploaded, setting display to:', fullImageUrl);
         setDisplaySrc(fullImageUrl);
       }
     } catch (err) {

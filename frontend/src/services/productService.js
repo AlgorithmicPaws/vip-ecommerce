@@ -177,8 +177,6 @@ export const addProductImage = async (productId, imageUrl, isPrimary = true) => 
  * @returns {Object|null} - Transformed product data for frontend or null if input is invalid
  */
 export const transformApiProduct = (apiProduct) => {
-  // For debugging
-  console.log("Raw API product data:", apiProduct);
   
   // Check if product exists and has either product_id or id
   if (!apiProduct) {
@@ -267,9 +265,6 @@ export const transformApiProduct = (apiProduct) => {
     sellerId: apiProduct.seller_id || null,
     rating: typeof apiProduct.rating === 'number' ? apiProduct.rating : 4.5,
   };
-
-  // Debug the transformed product
-  console.log("Transformed product:", result);
   
   return result;
 };

@@ -197,7 +197,6 @@ const BrandCatalogPage = () => {
   const handleAddToCart = (e, product) => {
     e.stopPropagation();
     // Aquí iría la lógica real para añadir al carrito
-    console.log('Añadido al carrito:', product);
     
     // Mostrar mensaje
     setAddedToCartMessage({ show: true, productId: product.id });
