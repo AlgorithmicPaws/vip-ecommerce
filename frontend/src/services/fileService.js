@@ -98,6 +98,13 @@ export const handleProductImageUpload = async (event, category, productId = 'new
  * @param {string} imagePath - The image path
  * @returns {string} - Complete URL
  */
+/**
+ * Get the complete URL for an image path
+ * Handles Docker container paths correctly
+ * 
+ * @param {string} imagePath - The image path
+ * @returns {string} - Complete URL
+ */
 export const getImageUrl = (imagePath) => {
   // For debugging
   console.log('Processing image path:', imagePath);
@@ -129,45 +136,35 @@ export const getImageUrl = (imagePath) => {
     apiBase = `${apiUrl.protocol}//${apiUrl.host}`;
   } catch (error) {
     console.error('Error parsing API URL:', error);
-    apiBase = API_URL; // Fallback to original if parsing fails
+    apiBase = API_URL.replace(/\/api$/, ''); // Remove /api if it exists
   }
   
+  // Handle Docker-specific path structure
   let finalUrl;
   
-  // Clean up the image path - remove any API URL that might be in it
+  // Normalize the path - remove any leading /api/ or duplicate /static/
   let cleanPath = imagePath;
-  if (cleanPath.includes('vipscm.shop') || cleanPath.includes('/api/')) {
-    // Extract just the path part after /api/ if it exists
-    const pathMatch = cleanPath.match(/\/api\/(.*)/);
-    if (pathMatch && pathMatch[1]) {
-      cleanPath = pathMatch[1];
-    } else {
-      // Try to extract just the path after the domain
-      const urlParts = cleanPath.split('/');
-      if (urlParts.length > 2) {
-        // Skip protocol and domain parts
-        cleanPath = '/' + urlParts.slice(3).join('/');
-      }
-    }
-  }
   
-  // Normalize the path
+  // Remove any API path prefix
+  cleanPath = cleanPath.replace(/^.*?\/api\//, '/');
+  
+  // Ensure path starts with /
   cleanPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
   
-  // Now construct the final URL properly
-  if (cleanPath.includes('/static/')) {
-    // If path already has /static, don't add it again
-    // But still make sure it has the correct domain
+  // Check if the path includes the category/product_id structure
+  if (cleanPath.includes('/images/products/')) {
+    // Make sure it has /static/ prefix for the backend
+    if (!cleanPath.includes('/static/')) {
+      cleanPath = `/static${cleanPath}`;
+    }
+    
+    // Construct the final URL
     finalUrl = `${apiBase}${cleanPath}`;
-  } else if (cleanPath.includes('/images/products/')) {
-    // Path has /images/products but not /static
-    finalUrl = `${apiBase}/static${cleanPath}`;
   } else {
-    // Add /static to the path
-    finalUrl = `${apiBase}/static${cleanPath}`;
+    // For other cases, add /static if needed
+    finalUrl = `${apiBase}${cleanPath.includes('/static/') ? cleanPath : `/static${cleanPath}`}`;
   }
   
   console.log('Final image URL:', finalUrl);
-  
   return finalUrl;
-};
+}
