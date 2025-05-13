@@ -10,9 +10,6 @@ const ProductRow = ({ product, onEdit, onDelete }) => {
     return !isNaN(numPrice) ? numPrice.toFixed(2) : '0.00';
   };
 
-  // For debugging
-  console.log("ProductRow rendering with product:", product);
-
   return (
     <tr>
       <td>{product.id}</td>

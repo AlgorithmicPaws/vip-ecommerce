@@ -1,4 +1,3 @@
-/* Estilos para la pantalla de administración de productos */
 .product-management-container {
   display: flex;
   min-height: 100vh; /* Altura completa de la ventana */
@@ -27,7 +26,7 @@
 }
 
 .sidebar-header h2 {
-  color: #F2A900;
+  color: #f2a900;
   margin: 0;
   font-size: 1.5rem;
 }
@@ -59,15 +58,15 @@
 
 .sidebar-nav li a:hover {
   background-color: rgba(242, 169, 0, 0.1);
-  color: #F2A900;
+  color: #f2a900;
   border-left: 3px solid rgba(242, 169, 0, 0.5);
 }
 
 .sidebar-nav li.active a {
   background-color: rgba(242, 169, 0, 0.2);
-  color: #F2A900;
+  color: #f2a900;
   font-weight: 500;
-  border-left: 3px solid #F2A900;
+  border-left: 3px solid #f2a900;
 }
 
 .sidebar-footer {
@@ -81,7 +80,7 @@
 
 .profile-link {
   display: block;
-  color: #F2A900;
+  color: #f2a900;
   text-decoration: none;
   padding: 8px 0;
   text-align: center;
@@ -93,7 +92,7 @@
 
 .logout-btn-sm {
   padding: 8px 0;
-  background-color: #F2A900;
+  background-color: #f2a900;
   color: #000;
   border: none;
   border-radius: 4px;
@@ -127,7 +126,6 @@
   font-size: 1.8rem;
   font-weight: 600;
   letter-spacing: 0.5px;
-  
 }
 
 .user-info {
@@ -140,7 +138,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #F2A900;
+  background-color: #f2a900;
   color: #000;
   display: flex;
   align-items: center;
@@ -171,7 +169,8 @@
   width: 100%;
 }
 
-.search-bar input, .category-filter select {
+.search-bar input,
+.category-filter select {
   width: 100%;
   padding: 10px 15px;
   border: 1px solid #ddd;
@@ -180,13 +179,14 @@
   transition: border-color 0.3s ease;
 }
 
-.search-bar input:focus, .category-filter select:focus {
+.search-bar input:focus,
+.category-filter select:focus {
   outline: none;
-  border-color: #F2A900;
+  border-color: #f2a900;
 }
 
 .search-btn {
-  background-color: #F2A900;
+  background-color: #f2a900;
   color: #000;
   border: none;
   border-radius: 0 5px 5px 0;
@@ -202,7 +202,7 @@
 /* Botón de añadir producto más profesional */
 .add-product-btn {
   padding: 12px 20px;
-  background-color: #F2A900;
+  background-color: #f2a900;
   color: #000;
   border: none;
   border-radius: 5px;
@@ -248,7 +248,8 @@
   border-collapse: collapse;
 }
 
-.products-table th, .products-table td {
+.products-table th,
+.products-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #eaeaea;
@@ -295,7 +296,7 @@
 }
 
 .edit-btn-sm {
-  background-color: #F2A900;
+  background-color: #f2a900;
   color: #000;
   border: none;
   padding: 6px 12px;
@@ -319,7 +320,6 @@
   font-weight: 600;
   transition: background-color 0.3s ease;
 }
-
 
 .delete-btn-sm:hover {
   background-color: #f1b0b7;
@@ -355,7 +355,7 @@
   align-items: center;
   padding: 15px 20px;
   border-bottom: 1px solid #eaeaea;
-  background-color: #F2A900;
+  background-color: #f2a900;
   color: #000;
   border-radius: 10px 10px 0 0;
 }
@@ -400,7 +400,9 @@
   letter-spacing: 0.3px;
 }
 
-.form-group input, .form-group select, .form-group textarea {
+.form-group input,
+.form-group select,
+.form-group textarea {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -409,9 +411,11 @@
   transition: border-color 0.3s ease;
 }
 
-.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
   outline: none;
-  border-color: #F2A900;
+  border-color: #f2a900;
 }
 
 .form-group textarea {
@@ -468,8 +472,9 @@
   background-color: #e0e0e0;
 }
 
-.save-btn, .confirm-btn {
-  background-color: #F2A900;
+.save-btn,
+.confirm-btn {
+  background-color: #f2a900;
   color: #000;
   border: none;
   padding: 10px 20px;
@@ -479,7 +484,8 @@
   transition: background-color 0.3s ease;
 }
 
-.save-btn:hover, .confirm-btn:hover {
+.save-btn:hover,
+.confirm-btn:hover {
   background-color: #d89600;
 }
 
@@ -497,7 +503,7 @@
   .product-management-content {
     width: 100%;
   }
-  
+
   .form-row {
     flex-direction: column;
     gap: 0;
@@ -508,31 +514,31 @@
   .product-management-container {
     flex-direction: column;
   }
-  
+
   .product-management-sidebar {
     width: 100%;
     height: auto;
     min-height: auto;
   }
-  
+
   .sidebar-nav {
     display: none;
   }
-  
+
   .product-management-content {
     margin-left: 0;
   }
-  
+
   .content-actions {
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .search-filters {
     flex-direction: column;
     max-width: none;
   }
-  
+
   .add-product-btn {
     width: 100%;
   }
@@ -594,7 +600,7 @@
   height: 40px;
   border: 4px solid rgba(242, 169, 0, 0.3);
   border-radius: 50%;
-  border-top-color: #F2A900;
+  border-top-color: #f2a900;
   animation: spin 1s linear infinite;
 }
 
@@ -604,4 +610,272 @@
   }
 }
 
-/* Ajustes para asegurar que el sidebar llegue hasta el footer */
+.add-category-btn {
+  padding: 6px 10px;
+
+  background-color: #f2a900; /* Color principal */
+
+  color: #000; /* Texto en negro */
+
+  border: none;
+
+  border-radius: 5px;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  font-weight: 600;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.add-category-btn::before {
+  content: "+"; /* Icono de "+" antes del texto */
+
+  font-size: 1.2rem;
+
+  font-weight: bold;
+
+  margin-right: 8px;
+}
+
+.add-category-btn:hover {
+  background-color: #d89600; /* Color más oscuro al pasar el mouse */
+}
+
+.add-category-modal {
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  width: 100%;
+
+  height: 100%;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 50%; /* Ancho predeterminado */
+  max-width: 700px; /* Ancho máximo */
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  overflow-y: auto; /* Permite scroll si el contenido es muy grande */
+  max-height: 90vh; /* Limita la altura máxima al 90% de la ventana */
+}
+
+.modal-actions input {
+  flex: 1; /* El input ocupará el espacio restante */
+
+  padding: 10px;
+
+  border: 1px solid #ccc;
+
+  border-radius: 4px;
+}
+
+.modal-actions button {
+  padding: 10px 20px;
+
+  border: none;
+
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+/* Ajustes generales para pantallas pequeñas */
+
+@media (max-width: 768px) {
+  .product-management-container {
+    flex-direction: column;
+  }
+
+  .product-management-sidebar {
+    width: 100%;
+
+    height: auto;
+
+    min-height: auto;
+  }
+
+  .product-management-content {
+    width: 100%;
+
+    margin-left: 0;
+
+    padding: 15px;
+  }
+
+  .content-actions {
+    flex-direction: column;
+
+    gap: 15px;
+  }
+
+  .search-filters {
+    flex-direction: column;
+
+    max-width: none;
+
+    gap: 10px;
+  
+    modal-actions {
+    flex-direction: column; /* Apila los elementos verticalmente */
+    align-items: stretch; /* Asegura que los elementos ocupen todo el ancho */
+    gap: 15px; /* Espaciado más amplio entre los elementos */
+  }
+
+  .modal-actions input {
+    width: 100%; /* El input ocupa todo el ancho */
+  }
+
+  .modal-actions button {
+    width: 100%; /* Los botones ocupan todo el ancho */
+  }
+  }
+
+  .add-product-btn,
+  .add-category-btn {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+  .products-table-container {
+    padding: 10px;
+  }
+
+  .products-table th,
+  .products-table td {
+    font-size: 0.9rem;
+
+    padding: 8px;
+  }
+
+  .products-table {
+    font-size: 0.9rem;
+  }
+}
+
+/* Ajustes para pantallas muy pequeñas (teléfonos) */
+
+@media (max-width: 576px) {
+  .content-header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 10px;
+  }
+
+  .content-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .search-filters {
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .add-product-btn,
+  .add-category-btn {
+    width: 100%;
+
+    padding: 10px;
+
+    font-size: 1rem;
+  }
+
+  .products-table-container {
+    padding: 5px;
+  }
+
+  .products-table th,
+  .products-table td {
+    font-size: 0.8rem;
+
+    padding: 5px;
+  }
+
+  .modal-content {
+    width: 90%;
+
+    padding: 15px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .modal-actions input {
+    width: 100%;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+/* Ajustes para el pop-up en pantallas pequeñas */
+
+@media (max-width: 480px) {
+  .add-category-modal {
+    padding: 10px;
+  }
+
+  .modal-content {
+    width: 95%;
+
+    padding: 10px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .modal-actions input {
+    width: 100%;
+
+    margin-bottom: 10px;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+.modal-actions button:first-child {
+  background-color: #4caf50;
+
+  color: white;
+}
+
+.modal-actions button:last-child {
+  background-color: #f44336;
+
+  color: white;
+}

@@ -68,8 +68,6 @@ const SellerRegistration = () => {
           number_id: formData.documentNumber || formData.nit || "12345678"
         };
   
-        console.log("Datos a enviar:", postData);
-  
         // Register as seller
         await post('/sellers/', postData);
         setFormSubmitted(true);

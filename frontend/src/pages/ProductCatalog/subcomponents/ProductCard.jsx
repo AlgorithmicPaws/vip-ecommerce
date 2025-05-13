@@ -17,7 +17,6 @@ const ProductCard = ({ product, onNavigateToDetail, onOpenModal, showAddedMessag
       return;
     }
     // Call the navigation handler passed from parent
-    console.log("Card background clicked, calling onNavigateToDetail"); // Debug log
     if (onNavigateToDetail) {
       onNavigateToDetail(product);
     } else {
@@ -29,7 +28,6 @@ const ProductCard = ({ product, onNavigateToDetail, onOpenModal, showAddedMessag
   // --- "Add to Cart" button calls onOpenModal ---
   const handleAddToCartClick = (e) => {
     e.stopPropagation(); // Prevent card click handler
-    console.log("Add to Cart button clicked, calling onOpenModal"); // Debug log
     if (onOpenModal) {
       onOpenModal(product); // Call modal opener
     }
@@ -38,14 +36,12 @@ const ProductCard = ({ product, onNavigateToDetail, onOpenModal, showAddedMessag
   // --- "View Cart" button navigates to cart ---
   const handleViewCartClick = (e) => {
     e.stopPropagation(); // Prevent card click handler
-    console.log("View Cart button clicked, navigating to /cart"); // Debug log
     navigate('/cart');
   };
 
   // --- "Ver Detalles" button calls onNavigateToDetail ---
   const handleViewDetailsClick = (e) => {
     e.stopPropagation(); // Prevent card click handler
-    console.log("View Details button clicked, calling onNavigateToDetail"); // Debug log
     if (onNavigateToDetail) {
       onNavigateToDetail(product); // Call navigation handler
     } else {

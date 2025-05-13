@@ -1,38 +1,50 @@
-import React from 'react';
-import SearchFilters from '../subcomponents/SearchFilters';
-import ProductRow from '../subcomponents/ProductRow';
-import LoadingIndicator from '../subcomponents/LoadingIndicator';
+import React from "react";
+import SearchFilters from "../subcomponents/SearchFilters";
+import ProductRow from "../subcomponents/ProductRow";
+import LoadingIndicator from "../subcomponents/LoadingIndicator";
+import { useState } from "react";
+import AddCategory from "../subcomponents/AddCategory";
 
-const ProductsTable = ({ 
-  products, 
-  loading, 
-  onAddProduct, 
-  onEditProduct, 
+const ProductsTable = ({
+  products,
+  loading,
+  onAddProduct,
+  onEditProduct,
   onDeleteProduct,
   onSearchChange,
   onCategoryChange,
   categories,
   searchTerm,
-  categoryFilter
+  categoryFilter,
 }) => {
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+
+  const handleAddCategoryClick = () => {
+    setIsAddCategoryOpen(true);
+  };
+
+  const handleCloseAddCategory = () => {
+    setIsAddCategoryOpen(false);
+  };
+
   return (
     <div className="products-section">
       <div className="content-actions">
-        <SearchFilters 
+        <SearchFilters
           searchTerm={searchTerm}
           categoryFilter={categoryFilter}
           categories={categories}
           onSearchChange={onSearchChange}
           onCategoryChange={onCategoryChange}
         />
-        <button 
-          className="add-product-btn"
-          onClick={onAddProduct}
-        >
+        <button className="add-category-btn" onClick={handleAddCategoryClick}>
+          Añadir Categoría
+        </button>
+        <button className="add-product-btn" onClick={onAddProduct}>
           Añadir Producto
         </button>
       </div>
-      
+
       <div className="products-table-container">
         {loading ? (
           <LoadingIndicator message="Cargando productos..." />
@@ -50,8 +62,8 @@ const ProductsTable = ({
               </tr>
             </thead>
             <tbody>
-              {products.map(product => (
-                <ProductRow 
+              {products.map((product) => (
+                <ProductRow
                   key={product.id}
                   product={product}
                   onEdit={() => onEditProduct(product)}
@@ -66,6 +78,7 @@ const ProductsTable = ({
           </div>
         )}
       </div>
+      {isAddCategoryOpen && <AddCategory onClose={handleCloseAddCategory} />}
     </div>
   );
 };

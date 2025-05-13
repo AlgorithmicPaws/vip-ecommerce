@@ -115,12 +115,8 @@ const ShoppingCart = () => {
         // The backend should calculate subtotal, shipping, total based on items and rules
       };
 
-      console.log('Submitting Order Data:', JSON.stringify(apiOrderData, null, 2));
-
       // Call the order creation service
       const createdOrder = await orderService.createOrder(apiOrderData);
-
-      console.log('Order Created Successfully:', createdOrder);
 
       // Store order details for confirmation display/email/PDF
       setOrderId(createdOrder.order_id);
@@ -145,7 +141,6 @@ const ShoppingCart = () => {
       try {
           const pdfBlob = await pdfService.generateOrderInvoice(createdOrder); // Generate PDF
           await emailService.sendOrderConfirmationEmail(createdOrder, user.email, pdfBlob); // Send email with PDF
-          console.log("Order confirmation email sent.");
       } catch (postOrderError) {
           console.error("Error sending confirmation email/PDF:", postOrderError);
           // Don't block the UI for this, maybe log it or show a minor warning

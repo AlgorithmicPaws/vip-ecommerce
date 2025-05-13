@@ -39,7 +39,6 @@ export const uploadProductImage = async (file, category = 'uncategorized', produ
     
     // Get fresh auth headers - important to get the latest token
     const headers = authHeader();
-    console.log("Auth headers for upload:", headers); // Debug log
     
     // Send the request
     const response = await fetch(`${API_URL}/files/product-image`, {
@@ -47,9 +46,7 @@ export const uploadProductImage = async (file, category = 'uncategorized', produ
       headers: headers,
       body: formData
     });
-    
-    // Log status for debugging
-    console.log("File upload response status:", response.status);
+  
     
     if (!response.ok) {
       let errorDetail;
@@ -96,23 +93,18 @@ export const handleProductImageUpload = async (event, category, productId = 'new
  * @returns {string} - Complete URL
  */
 export const getImageUrl = (imagePath) => {
-  // For debugging
-  console.log('Processing image path:', imagePath);
   
   if (!imagePath) {
-    console.log('No image path provided');
     return null;
   }
   
   // If it's already a full URL, return it
   if (imagePath.startsWith('http')) {
-    console.log('Image already has full URL:', imagePath);
     return imagePath;
   }
   
   // If it's a data URL, return it
   if (imagePath.startsWith('data:')) {
-    console.log('Image is a data URL');
     return imagePath;
   }
   
@@ -141,8 +133,7 @@ export const getImageUrl = (imagePath) => {
     // Return the complete URL with /static prefix
     finalUrl = `${API_URL}/static${normalizedPath}`;
   }
-  
-  console.log('Final image URL:', finalUrl);
+
   
   // Verify the image exists by making a HEAD request
   fetch(finalUrl, { method: 'HEAD' })

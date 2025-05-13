@@ -149,9 +149,7 @@ export const getCurrentUser = async () => {
     
     // Update user info in localStorage with the latest data
     localStorage.setItem(USER_INFO_KEY, JSON.stringify(userData.user));
-    
-    // Debug log to see if seller role is present
-    console.log("Current user data:", userData);
+  
     
     return userData;
   } catch (error) {

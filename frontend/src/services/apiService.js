@@ -14,7 +14,6 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
  */
 export const get = async (endpoint) => {
   try {
-    console.log(`Making GET request to ${endpoint}`);
     
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'GET',
@@ -65,7 +64,6 @@ export const get = async (endpoint) => {
  */
 export const post = async (endpoint, data) => {
   try {
-    console.log(`Making POST request to ${endpoint}`);
     
     // Create the fetch request
     const response = await fetch(`${API_URL}${endpoint}`, {
@@ -85,7 +83,6 @@ export const post = async (endpoint, data) => {
       responseData = await response.json();
     } else {
       responseData = await response.text();
-      console.log('Response as text:', responseData);
     }
 
     if (!response.ok) {
@@ -119,7 +116,6 @@ export const post = async (endpoint, data) => {
  */
 export const put = async (endpoint, data) => {
   try {
-    console.log(`Making PUT request to ${endpoint}`);
     
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'PUT',
@@ -170,7 +166,6 @@ export const put = async (endpoint, data) => {
  */
 export const del = async (endpoint) => {
   try {
-    console.log(`Making DELETE request to ${endpoint}`);
     
     const response = await fetch(`${API_URL}${endpoint}`, {
       method: 'DELETE',

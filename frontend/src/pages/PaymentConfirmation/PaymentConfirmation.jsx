@@ -145,9 +145,6 @@ const PaymentConfirmation = () => {
          notes: paymentInfo.notes
        };
 
-       console.log("Submitting Payment Confirmation:", JSON.stringify(receiptInfo, null, 2));
-       console.log("With receipt file:", receiptFile ? receiptFile.name : 'No file');
-
        // Create FormData to send both form data and file
        const formData = new FormData();
        

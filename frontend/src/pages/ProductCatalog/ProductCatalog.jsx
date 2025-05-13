@@ -74,7 +74,6 @@ const ProductCatalog = () => {
   // Handler to NAVIGATE to detail page
   // Triggered by card background click or "Ver Detalles" button
   const handleNavigateToDetail = useCallback((product) => {
-    console.log("Attempting to navigate to detail for:", product?.id); // Debug log
     if (product && product.id) {
         navigate(`/catalog/product/${product.id}`);
     } else {
@@ -85,7 +84,6 @@ const ProductCatalog = () => {
   // Handler to OPEN THE MODAL
   // Triggered ONLY by "Añadir al Carrito" button on card
   const handleOpenModal = useCallback((product) => {
-    console.log("Attempting to open modal for:", product?.id); // Debug log
     if (product && product.id) {
         setSelectedProduct(product);
         setProductQuantity(1);
