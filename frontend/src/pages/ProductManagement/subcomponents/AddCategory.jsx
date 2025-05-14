@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { createCategory, getCategories } from "../../../services/categoryService";
+import Notification from "./Notification";// Ajusta la ruta según tu estructura
 
 const AddCategory = ({ onClose }) => {
   const [categoryName, setCategoryName] = useState("");
   const [categories, setCategories] = useState([]);
+  const [notification, setNotification] = useState({
+    message: "",
+    type: "", // 'success' o 'error'
+    show: false
+  });
 
-  // Cargar las categorías existentes al montar el componente
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categories = await getCategories(); // Obtiene la lista de categorías
-        setCategories(categories); // Asigna la lista al estado
+        const categories = await getCategories();
+        setCategories(categories);
       } catch (error) {
+        showNotification("Error al cargar las categorías", "error");
         console.error("Error al cargar las categorías:", error);
       }
     };
@@ -19,36 +25,52 @@ const AddCategory = ({ onClose }) => {
     fetchCategories();
   }, []);
 
-  const handleSave = async () => {
-    if (categoryName.trim()) {
-      // Verificar si la categoría ya existe
-      const categoryExists = categories.some(
-        (category) => category.name.toLowerCase() === categoryName.toLowerCase()
-      );
-
-      if (categoryExists) {
-        alert("La categoría ya existe.");
-        return;
-      }
-
-      try {
-        // Crear la nueva categoría
-        await createCategory({ name: categoryName });
-        alert("Categoría creada exitosamente.");
-
-        // Recargar las categorías después de crear una nueva
-        const updatedCategories = await getCategories();
-        setCategories(updatedCategories);
-
-        onClose(); // Cierra el pop-up después de guardar
-      } catch (error) {
-        console.error("Error al crear la categoría:", error);
-        alert("Hubo un error al crear la categoría. Inténtalo de nuevo.");
-      }
-    } else {
-      alert("El nombre de la categoría no puede estar vacío.");
-    }
+  const showNotification = (message, type) => {
+    setNotification({
+      message,
+      type,
+      show: true
+    });
   };
+
+  const closeNotification = () => {
+    setNotification({
+      message: "",
+      type: "",
+      show: false
+    });
+  };
+
+  const handleSave = async () => {
+  if (!categoryName.trim()) {
+    showNotification("El nombre de la categoría no puede estar vacío.", "error");
+    return;
+  }
+
+  // Verificar si la categoría ya existe
+  const categoryExists = categories.some(
+    (category) => category.name.toLowerCase() === categoryName.toLowerCase()
+  );
+
+  if (categoryExists) {
+    showNotification("La categoría ya existe.", "error");
+    return;
+  }
+
+  try {
+    // Crear la nueva categoría
+    await createCategory({ name: categoryName });
+    showNotification("Categoría creada exitosamente.", "success");
+
+    // Recargar la página después de un pequeño retraso para que se vea la notificación
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  } catch (error) {
+    showNotification("Hubo un error al crear la categoría. Inténtalo de nuevo.", "error");
+    console.error("Error al crear la categoría:", error);
+  }
+};
 
   return (
     <div className="add-category-modal">
@@ -65,6 +87,15 @@ const AddCategory = ({ onClose }) => {
           <button onClick={onClose}>Cancelar</button>
         </div>
       </div>
+      
+      {/* Mostrar notificación */}
+      {notification.show && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </div>
   );
 };

@@ -27,6 +27,16 @@ const ProductsTable = ({
     setIsAddCategoryOpen(false);
   };
 
+  // Función para actualizar las categorías desde el componente hijo
+  const refreshCategories = async () => {
+    try {
+      const updatedCategories = await getCategories();
+      onCategoryChange({ target: { value: categoryFilter } }, updatedCategories);
+    } catch (error) {
+      console.error("Error al actualizar categorías:", error);
+    }
+  };
+
   return (
     <div className="products-section">
       <div className="content-actions">
