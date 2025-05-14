@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
 
   db:
@@ -32,6 +34,18 @@ services:
       - app-network
     environment:
       - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      
+      - '80:80'     # Puerto HTTP
+      - '443:443'   # Puerto HTTPS
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+    networks:
+      - app-network
 
   backend:
       build:
@@ -63,4 +77,6 @@ networks:
 
 volumes:
   postgres_data: # Persists DB data across container restarts/recreations
-  static-data:   # Persists static backend data
+  static-data:   # Persists static backend data 
+  npm_data:
+  npm_letsencrypt:
