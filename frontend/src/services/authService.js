@@ -5,7 +5,7 @@
  */
 
 // Base API URL - Using environment variable with fallback
-const API_URL = import.meta.env.VITE_API_URL || 'http://vipscm.shop/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://vipscm.shop/api';
 
 // Token key for localStorage
 const TOKEN_KEY = 'auth_token';

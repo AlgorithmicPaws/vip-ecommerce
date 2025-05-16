@@ -33,7 +33,7 @@ services:
     networks:
       - app-network
     environment:
-      - VITE_API_URL=${VITE_API_URL:-http://vipscm.shop/api}
+      - VITE_API_URL=${VITE_API_URL:-https://vipscm.shop/api}
   proxy:
     image: 'jc21/nginx-proxy-manager:latest'
     restart: unless-stopped

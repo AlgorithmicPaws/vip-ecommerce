@@ -6,7 +6,7 @@ import { authHeader } from './authService';
  */
 
 // Base API URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://vipscm.shop/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://vipscm.shop/api';
 /**
  * Generic HTTP GET request with authentication
  * @param {string} endpoint - API endpoint
