@@ -17,25 +17,6 @@ const ProductsTable = ({
   searchTerm,
   categoryFilter,
 }) => {
-  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
-
-  const handleAddCategoryClick = () => {
-    setIsAddCategoryOpen(true);
-  };
-
-  const handleCloseAddCategory = () => {
-    setIsAddCategoryOpen(false);
-  };
-
-  // Función para actualizar las categorías desde el componente hijo
-  const refreshCategories = async () => {
-    try {
-      const updatedCategories = await getCategories();
-      onCategoryChange({ target: { value: categoryFilter } }, updatedCategories);
-    } catch (error) {
-      console.error("Error al actualizar categorías:", error);
-    }
-  };
 
   return (
     <div className="products-section">
@@ -46,13 +27,8 @@ const ProductsTable = ({
           categories={categories}
           onSearchChange={onSearchChange}
           onCategoryChange={onCategoryChange}
+          onAddProduct={onAddProduct}
         />
-        <button className="add-category-btn" onClick={handleAddCategoryClick}>
-          Añadir Categoría
-        </button>
-        <button className="add-product-btn" onClick={onAddProduct}>
-          Añadir Producto
-        </button>
       </div>
 
       <div className="products-table-container">
@@ -88,7 +64,7 @@ const ProductsTable = ({
           </div>
         )}
       </div>
-      {isAddCategoryOpen && <AddCategory onClose={handleCloseAddCategory} />}
+      
     </div>
   );
 };

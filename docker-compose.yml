@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres_password}
       - POSTGRES_DB=${DB_NAME:-ecommercedb}
     ports:
-      - "5432:5432"
+      - "5433:5433"
     networks:
       - app-network
     healthcheck:

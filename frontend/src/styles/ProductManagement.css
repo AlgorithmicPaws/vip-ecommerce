@@ -149,15 +149,19 @@
 .content-actions {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch; /* Mejor alineación vertical */
+  gap: 20px;            /* Espacio entre los elementos principales */
   margin-bottom: 20px;
 }
 
 .search-filters {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
   gap: 15px;
   flex-grow: 1;
-  max-width: 600px;
+  min-width: 0;         /* Evita desbordes en flex */
 }
 
 .search-bar {
@@ -529,11 +533,6 @@
     margin-left: 0;
   }
 
-  .content-actions {
-    flex-direction: column;
-    gap: 15px;
-  }
-
   .search-filters {
     flex-direction: column;
     max-width: none;
@@ -723,12 +722,6 @@
     margin-left: 0;
 
     padding: 15px;
-  }
-
-  .content-actions {
-    flex-direction: column;
-
-    gap: 15px;
   }
 
   .search-filters {

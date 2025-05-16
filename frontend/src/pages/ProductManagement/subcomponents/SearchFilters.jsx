@@ -1,12 +1,24 @@
 import React, { useState } from 'react';
+import AddCategory from './AddCategory'; // Adjust the import path as necessary
 
 const SearchFilters = ({ 
   searchTerm, 
   categoryFilter, 
   categories, 
   onSearchChange, 
-  onCategoryChange 
+  onCategoryChange,
+  onAddProduct
 }) => {
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+
+  const handleAddCategoryClick = () => {
+    setIsAddCategoryOpen(true);
+  };
+
+  const handleCloseAddCategory = () => {
+    setIsAddCategoryOpen(false);
+  };
+
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
   const handleSearchInputChange = (e) => {
@@ -46,6 +58,14 @@ const SearchFilters = ({
           ))}
         </select>
       </div>
+
+      <button className="add-category-btn" onClick={handleAddCategoryClick}>
+          Añadir Categoría
+        </button>
+        <button className="add-product-btn" onClick={onAddProduct}>
+          Añadir Producto
+        </button>
+        {isAddCategoryOpen && <AddCategory onClose={handleCloseAddCategory} />}
     </div>
   );
 };
